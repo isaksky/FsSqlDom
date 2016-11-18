@@ -13,7 +13,7 @@ let referenceBinaries = []
 // Web site location for the generated documentation
 let website = "/FsSqlDom"
 
-let githubLink = "https://github.com/isaksky/FsSqlDom/isaksky/FsSqlDom"
+let githubLink = "https://github.com/isaksky/FsSqlDom"
 
 // Specify more information about your project
 let info =

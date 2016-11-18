@@ -16,6 +16,8 @@ open System.IO
 open SourceLink
 #endif
 
+#load @"docs/tools/build_lib.fsx"
+
 // --------------------------------------------------------------------------------------
 // START TODO: Provide project-specific details below
 // --------------------------------------------------------------------------------------
@@ -360,6 +362,10 @@ Target "Release" (fun _ ->
     // TODO: |> uploadFile "PATH_TO_FILE"
     |> releaseDraft
     |> Async.RunSynchronously
+)
+
+Target "BuildLib" (fun _ ->
+  Build_lib.buildLib()
 )
 
 Target "BuildPackage" DoNothing

@@ -6,6 +6,6 @@ This typically includes custom builds of third-party software, private (i.e. to 
 ---
 NOTE: 
 
-This file is a placeholder, used to preserve directory structure in Git.
+The file here is:
 
-This file does not need to be edited.
+C:\Program Files (x86)\Microsoft SQL Server\130\SDK\Assemblies\Microsoft.SqlServer.TransactSql.ScriptDom.dll
