@@ -1,6 +1,8 @@
 #r "System.dll"
 #r "../../lib/Microsoft.SqlServer.TransactSql.ScriptDom.dll"
 
+// Warning: Bad code
+
 open System
 open System.Reflection
 open System.Collections.Generic

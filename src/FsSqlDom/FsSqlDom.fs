@@ -1,7 +1,13 @@
-module FsSqlDom
+namespace FsSqlDom
 
 open System
 open Microsoft.SqlServer.TransactSql
+
+// Turn off missing pattern match cases for tests
+#nowarn "25"
+
+// Turn off unused variables warning
+#nowarn "1182"
 
 type [<RequireQualifiedAccess>] TSqlFragment = 
   | AdHocDataSource of InitString:StringLiteral option * ProviderName:StringLiteral option
@@ -6358,4 +6364,4 @@ and [<RequireQualifiedAccess>] CommonTableExpression =
 and [<RequireQualifiedAccess>] WorkloadGroupParameterType =
   | WorkloadGroupParameterType  
   static member FromTs(src:ScriptDom.WorkloadGroupParameterType) : WorkloadGroupParameterType =
-    WorkloadGroupParameterType.WorkloadGroupParameterType 
+    WorkloadGroupParameterType.WorkloadGroupParameterType
