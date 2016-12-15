@@ -26,6 +26,19 @@ type Util =
     use tr = new StringReader(s) :> TextReader
     Util.parse(tr, initialQuotedIdentifiers)
 
+  static member parseExpr(s:string, ?initialQuotedIdentifiers:bool) : Choice<ScalarExpression, IList<ScriptDom.ParseError>> =
+    let initialQuotedIdentifiers = defaultArg initialQuotedIdentifiers false
+    let parser = ScriptDom.TSql130Parser(initialQuotedIdentifiers)
+    let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
+    use tr = new StringReader(s) :> TextReader
+    let res = parser.ParseExpression(tr, &errs)
+
+    if errs.Count = 0 then
+      let converted = ScalarExpression.FromTs(res)
+      Choice1Of2(converted)
+    else
+      Choice2Of2(errs)
+
   static member getQueryExpr(frag: TSqlFragment) : QueryExpression option =
     match frag with
     | TSqlFragment.TSqlScript(script::_) ->
