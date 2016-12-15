@@ -9,6 +9,9 @@ type ParseFragmentResult =
   | Success of TSqlFragment
   | Failure of IList<ScriptDom.ParseError>
 
+module private Internal =
+  let defaultWriterOpts : SqlWriterOptions = { capitalizedKeywords = false}
+
 type Util =
   static member parse(tr:TextReader, initialQuotedIdentifiers:bool) =
     let parser = ScriptDom.TSql130Parser(initialQuotedIdentifiers)
@@ -50,3 +53,8 @@ type Util =
         | _ -> None
       | _ -> None
     | _ -> None
+
+  static member render(qexpr:QueryExpression) : string =
+    let w = SqlWriter(Internal.defaultWriterOpts)
+    w.write(qexpr)
+    w.ToString()
