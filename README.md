@@ -1,3 +1,3 @@
 # FsSqlDom
 
-Check out the blog post: https://gist.github.com/isaksky/8e4ff63c5f7d6cd882008b4ea984d366
+Check out the blog post: https://gist.github.com/isaksky/f8c4881bf93c7e57115439af07722ecc
