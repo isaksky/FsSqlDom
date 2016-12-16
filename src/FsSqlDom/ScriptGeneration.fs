@@ -93,7 +93,40 @@ type SqlWriter(opts:SqlWriterOptions) =
         x.write whereClause
       | None -> ()
 
-    | QueryExpression.BinaryQueryExpression(all, binaryQueryExpressionType, firstQueryExpression, forClause, offsetClause, orderByClause, secondQueryExpression) -> failwith "Not implemented yet"
+    | QueryExpression.BinaryQueryExpression(all, binaryQueryExpressionType, firstQueryExpression, forClause, offsetClause, orderByClause, secondQueryExpression) ->
+      x.write firstQueryExpression.Value 
+
+      match binaryQueryExpressionType with
+      | ScriptDom.BinaryQueryExpressionType.Union -> swk "union"
+      | ScriptDom.BinaryQueryExpressionType.Except -> swk "except"
+      | ScriptDom.BinaryQueryExpressionType.Intersect -> swk "intersect"
+      | _ -> failwith "Not implemented yet"
+
+      if all then swk "all"
+
+      x.write secondQueryExpression.Value
+
+      match orderByClause with
+      | Some(orderByClause) -> x.write orderByClause
+      | None -> ()
+
+  member x.write(orderByClause:OrderByClause) =
+    match orderByClause with
+    | OrderByClause.OrderByClause(orderEls) ->
+      x.sepw ", " orderEls x.write
+
+  member x.write(exprWithSortOrder:ExpressionWithSortOrder) =
+    match exprWithSortOrder with
+    | ExpressionWithSortOrder.ExpressionWithSortOrder(expr, sortOrder) ->
+      x.write expr.Value
+      x.write sortOrder
+
+  member x.write(sortOrder:ScriptDom.SortOrder) =
+    match sortOrder with
+    | ScriptDom.SortOrder.Ascending -> swk "asc"
+    | ScriptDom.SortOrder.Descending -> swk "desc"
+    | ScriptDom.SortOrder.NotSpecified -> ()
+    | _ -> failwith "Not implemented yet"
 
   member x.write(topFilt:TopRowFilter option) =
     match topFilt with
@@ -267,11 +300,25 @@ type SqlWriter(opts:SqlWriterOptions) =
     | TableReferenceWithAlias.OpenXmlTableReference(alias, flags, rowPattern, schemaDeclarationItems, tableName, variable) -> failwith "Not implemented yet"
     | TableReferenceWithAlias.PivotedTableReference(aggregateFunctionIdentifier, alias, inColumns, pivotColumn, tableReference, valueColumns) -> failwith "Not implemented yet"
     | TableReferenceWithAlias.SemanticTableReference(alias, columns, matchedColumn, matchedKey, semanticFunctionType, sourceKey, tableName) -> failwith "Not implemented yet"
-    | TableReferenceWithAlias.TableReferenceWithAliasAndColumns(_) -> failwith "Not implemented yet"
+    | TableReferenceWithAlias.TableReferenceWithAliasAndColumns(tac) ->
+      x.write tac
     | TableReferenceWithAlias.UnpivotedTableReference(alias, inColumns, pivotColumn, tableReference, valueColumn) -> failwith "Not implemented yet"
     | TableReferenceWithAlias.VariableTableReference(alias, variable) -> failwith "Not implemented yet"
     | TableReferenceWithAlias.NamedTableReference(alias, schemaObject, tableHints, tableSampleClause, temporalClause) ->
       x.write schemaObject.Value
+
+  member x.write(tac:TableReferenceWithAliasAndColumns) =
+    match tac with
+    | TableReferenceWithAliasAndColumns.BulkOpenRowset(alias, columns, dataFile, options) -> failwith "Not implemented yet"
+    | TableReferenceWithAliasAndColumns.ChangeTableChangesTableReference(alias, columns, sinceVersion, target) -> failwith "Not implemented yet"
+    | TableReferenceWithAliasAndColumns.ChangeTableVersionTableReference(alias, columns, primaryKeyColumns, primaryKeyValues, target) -> failwith "Not implemented yet"
+    | TableReferenceWithAliasAndColumns.DataModificationTableReference(alias, columns, dataModificationSpecification) -> failwith "Not implemented yet"
+    | TableReferenceWithAliasAndColumns.QueryDerivedTable(alias, columns, queryExpression) ->
+      wc '('; x.write queryExpression.Value; wc ')'
+      if alias.IsSome then wc ' '; x.write alias.Value
+    | TableReferenceWithAliasAndColumns.SchemaObjectFunctionTableReference(alias, columns, parameters, schemaObject) -> failwith "Not implemented yet"
+    | TableReferenceWithAliasAndColumns.VariableMethodCallTableReference(alias, columns, methodName, parameters, variable) -> failwith "Not implemented yet"
+    | TableReferenceWithAliasAndColumns.InlineDerivedTable(alias, columns, rowValues) -> failwith "Not implemented yet"
 
   member x.write(whereC:WhereClause) =
     match whereC with
@@ -300,11 +347,34 @@ type SqlWriter(opts:SqlWriterOptions) =
     | BooleanExpression.EventDeclarationCompareFunctionParameter(eventValue, name, sourceDeclaration) -> failwith "Not implemented yet"
     | BooleanExpression.ExistsPredicate(subquery) -> failwith "Not implemented yet"
     | BooleanExpression.FullTextPredicate(columns, fullTextFunctionType, languageTerm, propertyName, value) -> failwith "Not implemented yet"
-    | BooleanExpression.InPredicate(expression, notDefined, subquery, values) -> failwith "Not implemented yet"
+    | BooleanExpression.InPredicate(expression, notDefined, subquery, values) -> 
+      x.write expression.Value
+      swk " in ("
+      match subquery, values with
+      | Some(subquery), _ ->
+        x.write subquery
+      | _, vals ->
+        x.sepw ", " values x.write
+      wc ')'
     | BooleanExpression.LikePredicate(escapeExpression, firstExpression, notDefined, odbcEscape, secondExpression) -> failwith "Not implemented yet"
     | BooleanExpression.SubqueryComparisonPredicate(comparisonType, expression, subquery, subqueryComparisonPredicateType) -> failwith "Not implemented yet"
     | BooleanExpression.TSEqualCall(firstExpression, secondExpression) -> failwith "Not implemented yet"
     | BooleanExpression.UpdateCall(identifier) -> failwith "Not implemented yet"
-    | BooleanExpression.BooleanBinaryExpression(binaryExpressionType, firstExpression, secondExpression) -> failwith "Not implemented yet"
+    | BooleanExpression.BooleanBinaryExpression(binaryExpressionType, firstExpression, secondExpression) ->
+      x.write firstExpression.Value
+      x.write binaryExpressionType
+      space()
+      x.write secondExpression.Value
+
+  member x.write(bexprt:ScriptDom.BooleanBinaryExpressionType) =
+    match bexprt with
+    | ScriptDom.BooleanBinaryExpressionType.And -> swk "and"
+    | ScriptDom.BooleanBinaryExpressionType.Or -> swk "or"
+    | _ -> failwith "Not implemented yet"
+
+  member x.write(subQ:ScalarSubquery) =
+    match subQ with
+    | ScalarSubquery.ScalarSubquery(_, queryExpression) ->
+      x.write queryExpression.Value
 
   override x.ToString() = _sb.ToString()
