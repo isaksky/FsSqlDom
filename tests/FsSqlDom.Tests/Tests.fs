@@ -7,7 +7,7 @@ open FsSqlDom
 open NUnit.Framework
 
 [<Test>]
-let ``it works`` () =
+let ``converting parsed result`` () =
   let sql = "select * from foo"
 
   match Util.parse(sql) with
