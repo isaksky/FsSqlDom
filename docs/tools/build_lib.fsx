@@ -190,14 +190,14 @@ and getPropertyAccess (prop:PropertyInfo) =
     match prop.PropertyType.Namespace with
     | "Microsoft.SqlServer.TransactSql.ScriptDom" when not prop.PropertyType.IsEnum && not prop.PropertyType.IsValueType ->
       if doesTypeHaveChildren (prop.PropertyType) then
-        sprintf "(src.%s |> Option.ofObj |> Option.map (%s.FromTs)) (* %s *)" (prop.Name) tname  __LINE__
+        sprintf "(src.%s |> Option.ofObj |> Option.map (%s.FromTs))" (prop.Name) tname
       else
-        sprintf "(src.%s |> Option.ofObj |> Option.map (%s.FromTs)) (* %s *)" (prop.Name) baseName __LINE__
+        sprintf "(src.%s |> Option.ofObj |> Option.map (%s.FromTs))" (prop.Name) baseName
     | _ ->
       if prop.PropertyType.IsValueType then
-        sprintf "(src.%s) (* %s *)" (prop.Name) __LINE__
+        sprintf "(src.%s)" (prop.Name)
       else
-         sprintf "(Option.ofObj (src.%s)) (* %s *)" (prop.Name) __LINE__
+         sprintf "(Option.ofObj (src.%s))" (prop.Name)
 
 let printDUs (tree:TypeHier) (sb:Text.StringBuilder) =
   let cont (s:string) = sb.Append(s) |> ignore
@@ -250,7 +250,7 @@ let printDUs (tree:TypeHier) (sb:Text.StringBuilder) =
         w "\n"
       let renderProps (thier:TypeHier) (asBase:bool) =
         if not asBase && thier.children.Count > 0 then
-            w "((%s.FromTs(src))) (* %s *)" thier.typ.Name __LINE__
+            w "((%s.FromTs(src)))" thier.typ.Name
             //w "((%s.%s.FromTs(src))))) (* %s *)\n" thier.typ.BaseType.Name cctyp.typ.Name __LINE__
           else
             match getProps thier.typ with
@@ -273,7 +273,7 @@ let printDUs (tree:TypeHier) (sb:Text.StringBuilder) =
             |> Array.sortBy (fun t -> t.typ.Name)
           
           for cctyp in cctyps do
-            w "      | :? ScriptDom.%s as src-> (* %s *)\n" cctyp.typ.Name __LINE__
+            w "      | :? ScriptDom.%s as src->\n" cctyp.typ.Name
             w "        %s.%s((%s.%s" tree.typ.Name ctyp.typ.Name ctyp.typ.Name cctyp.typ.Name
             renderProps cctyp false
             w "))\n"
@@ -296,7 +296,7 @@ let printDUs (tree:TypeHier) (sb:Text.StringBuilder) =
             w ")\n"
       if not <| tree.typ.IsAbstract then
         w "    | _ -> (* :? ScriptDom.%s as src *)\n" tree.typ.Name
-        w "      %s.Base((* %s *)" tree.typ.Name __LINE__
+        w "      %s.Base(" tree.typ.Name
         renderProps tree true
         w ")\n"
     else

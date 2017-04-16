@@ -4,6 +4,7 @@ open System
 open System.Collections.Generic
 open System.IO
 open Microsoft.SqlServer.TransactSql
+open FsSqlDom.Dom
 
 type ParseFragmentResult =
   | Success of TSqlFragment
@@ -19,7 +20,7 @@ type Util =
     let res = parser.Parse(tr, &errs)
 
     if errs.Count = 0 then
-      let converted = FsSqlDom.TSqlFragment.FromTs(res)
+      let converted = TSqlFragment.FromTs(res)
       ParseFragmentResult.Success(converted)
     else
       ParseFragmentResult.Failure(errs)

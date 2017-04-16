@@ -2,6 +2,7 @@
 open System
 open System.Text
 open Microsoft.SqlServer.TransactSql
+open FsSqlDom.Dom
 
 // Turn off unused variables warning
 #nowarn "1182"
