@@ -16,8 +16,8 @@ Check out the intro [blog post](https://gist.github.com/isaksky/f8c4881bf93c7e57
 
 It is mostly feature complete, though there are a couple of small things I'm considering:
 
--[ ] Currently, properties are exposed only of "leaf" types - one must destructure a type to the end of the type hierarchy in order to get the properties. But it may make sense to expose properties earlier, if the size of the generated code does not blow up too much.
--[ ] Maybe add a set of active patterns, in order to make analysis easier
+- [ ] Currently, properties are exposed only of "leaf" types - one must destructure a type to the end of the type hierarchy in order to get the properties. But it may make sense to expose properties earlier, if the size of the generated code does not blow up too much.
+- [ ] Maybe add a set of active patterns, in order to make analysis easier
 
 # Design questions
 
