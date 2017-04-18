@@ -61,7 +61,6 @@
   <Import Project="..\..\.paket\paket.targets" />
   <ItemGroup>
     <Compile Include="FsSqlDom.fs" />
-    <Compile Include="ScriptGeneration.fs" />
     <Compile Include="Util.fs" />
     <None Include="paket.references" />
     <None Include="paket.template" />

@@ -3,7 +3,7 @@ module FsSqlDom.Tests
 // Turn off missing pattern match cases for tests
 #nowarn "25"
 
-open FsSqlDom
+open FsSqlDom.Dom
 open NUnit.Framework
 
 [<Test>]

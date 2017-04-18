@@ -10,9 +10,6 @@ type ParseFragmentResult =
   | Success of TSqlFragment
   | Failure of IList<ScriptDom.ParseError>
 
-module private Internal =
-  let defaultWriterOpts : SqlWriterOptions = { capitalizedKeywords = false}
-
 type Util =
   static member parse(tr:TextReader, initialQuotedIdentifiers:bool) =
     let parser = ScriptDom.TSql130Parser(initialQuotedIdentifiers)
@@ -20,7 +17,7 @@ type Util =
     let res = parser.Parse(tr, &errs)
 
     if errs.Count = 0 then
-      let converted = TSqlFragment.FromTs(res)
+      let converted = TSqlFragment.FromCs(res)
       ParseFragmentResult.Success(converted)
     else
       ParseFragmentResult.Failure(errs)
@@ -38,7 +35,7 @@ type Util =
     let res = parser.ParseExpression(tr, &errs)
 
     if errs.Count = 0 then
-      let converted = ScalarExpression.FromTs(res)
+      let converted = ScalarExpression.FromCs(res)
       Choice1Of2(converted)
     else
       Choice2Of2(errs)
@@ -55,7 +52,10 @@ type Util =
       | _ -> None
     | _ -> None
 
-  static member render(qexpr:QueryExpression) : string =
-    let w = SqlWriter(Internal.defaultWriterOpts)
-    w.write(qexpr)
-    w.ToString()
+  static member render(frag:TSqlFragment, ?opts:ScriptDom.SqlScriptGeneratorOptions) : string =
+    let opts = defaultArg opts (ScriptDom.SqlScriptGeneratorOptions())
+    let gen = ScriptDom.Sql130ScriptGenerator(opts)
+    let frag = frag.ToCs()
+    use tr = new StringWriter()
+    gen.GenerateScript(frag, (tr :> TextWriter))
+    tr.ToString()
