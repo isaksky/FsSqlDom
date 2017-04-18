@@ -22,6 +22,6 @@ It is mostly feature complete, though there are a couple of small things I'm con
 # Design questions
 
 * Why generate only discriminated unions (DUs) with many fields, instead of DUs with a single record value?
-** I agree that this is generally better, but when you are already dealing with thousands of types, adding even more is not an obvious win. The set of types is already quite big, and with records it would get much bigger. VS 2015 struggles with it as it is.
+  * I agree that this is normally better, but when you are already dealing with thousands of types, adding even more is not an obvious win. The set of types is already quite big, and with records it would get much bigger.
 
 
