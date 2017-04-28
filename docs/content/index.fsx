@@ -55,13 +55,12 @@ the project and submit pull requests. If you're adding a new public API, please 
 consider adding [samples][content] that can be turned into a documentation. You might
 also want to read the [library design notes][readme] to understand how it works.
 
-The library is available under Public Domain license, which allows modification and 
-redistribution for both commercial and non-commercial purposes. For more information see the 
+The library is available under the MIT license. For more information see the 
 [License file][license] in the GitHub repository. 
 
-  [content]: https://github.com/fsprojects/FsSqlDom/tree/master/docs/content
-  [gh]: https://github.com/fsprojects/FsSqlDom
-  [issues]: https://github.com/fsprojects/FsSqlDom/issues
-  [readme]: https://github.com/fsprojects/FsSqlDom/blob/master/README.md
-  [license]: https://github.com/fsprojects/FsSqlDom/blob/master/LICENSE.txt
+  [content]: https://github.com/isaksky/FsSqlDom/tree/master/docs/content
+  [gh]: https://github.com/isaksky/FsSqlDom
+  [issues]: https://github.com/isaksky/FsSqlDom/issues
+  [readme]: https://github.com/isaksky/FsSqlDom/blob/master/README.md
+  [license]: https://github.com/isaksky/FsSqlDom/blob/master/LICENSE.txt
 *)
