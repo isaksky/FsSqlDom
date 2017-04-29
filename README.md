@@ -3,11 +3,11 @@
 A library to work with SQL syntax trees in F#. Can be used for:
 
 * Analyzing queries
-  * Find performance problems
-  * Check permissions
+  * Finding performance problems
+  * Checking permissions
 * Rewriting queries
   * Optimize poorly written queries
-  * Add/remove conditions to `WHERE` clause, etc
+  * Add/remove conditions to `WHERE` clause for security, etc
 * Generating scripts from modified SQL syntax trees
 
 It covers 100% of TSQL, because it leverages the existing [TransactSql.ScriptDom](https://msdn.microsoft.com/en-us/library/microsoft.sqlserver.transactsql.scriptdom.aspx) C# library from Microsoft, and is able to convert losslessly* back and forth between Microsofts C# type hierarchy, and a new set of discriminated unions in F#.
