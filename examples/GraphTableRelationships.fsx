@@ -30,15 +30,19 @@ join sys.objects o on m.object_id = o.object_id"
     ret.Add def
   ret
 
+let normalizeTablename (tname:string) =
+  if tname.StartsWith("dbo.") then tname.Substring(4) else tname
+
 let fetchTables() =
   use cmd = conn.CreateCommand()
   cmd.CommandText <- "select s.name + '.' + t.name from sys.tables t join sys.schemas s on t.schema_id = s.schema_id
  where t.is_ms_shipped = 0
- union 
+ union all
  select s.name + '.' + v.name from sys.views v join sys.schemas s on v.schema_id = s.schema_id"
   use rdr = cmd.ExecuteReader()
   let ret = HashSet<_>()
   while rdr.Read() do ignore <| (ret.Add <| rdr.GetString(0))
+  for t in (Array.ofSeq ret) do ret.Add (normalizeTablename t) |> ignore
   ret
 
 let parse (sql:string) =
@@ -103,6 +107,8 @@ let getScalarColRefs (sexpr:ScalarExpression) =
   colRefs
 
 type JoinAnalyzer() =
+
+
   member val tableToAlias = Dictionary<string, string>()
   member val aliasToTable = Dictionary<string, string>()
   //member val mappings = Dictionary<string, string>()
@@ -110,6 +116,8 @@ type JoinAnalyzer() =
   member val condConnections = HashSet<string*string>()
 
   member x.AddMapping(tname:string, alias: string option) =
+    let tname = normalizeTablename tname
+    printfn "Adding %s..." tname
     match alias with
     | Some(alias) -> 
       x.tableToAlias.Add(tname, alias)
@@ -118,6 +126,7 @@ type JoinAnalyzer() =
     ignore <| x.tables.Add tname
 
   member x.ResolveTable (t:string) =
+    let t = normalizeTablename t
     if x.tables.Contains t then Some t
     else 
       let ok, v = x.aliasToTable.TryGetValue t
@@ -323,3 +332,4 @@ let run() =
   printfn "Result: %A" relationships
   visualize relationships
     
+do run()    
