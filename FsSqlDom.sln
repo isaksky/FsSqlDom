@@ -36,6 +36,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ED8079DD
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsSqlDom.Tests", "tests\FsSqlDom.Tests\FsSqlDom.Tests.fsproj", "{349D1936-1EA0-4D16-B58F-A938375CB91C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{485A95AE-CA87-4E27-AE7E-175FB81B620F}"
+	ProjectSection(SolutionItems) = preProject
+		examples\GraphTableRelationships.fsx = examples\GraphTableRelationships.fsx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

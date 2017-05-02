@@ -52,10 +52,15 @@ type Util =
       | _ -> None
     | _ -> None
 
-  static member render(frag:TSqlFragment, ?opts:ScriptDom.SqlScriptGeneratorOptions) : string =
+  static member renderCs(frag:ScriptDom.TSqlFragment, ?opts:ScriptDom.SqlScriptGeneratorOptions) : string =
     let opts = defaultArg opts (ScriptDom.SqlScriptGeneratorOptions())
     let gen = ScriptDom.Sql130ScriptGenerator(opts)
-    let frag = frag.ToCs()
     use tr = new StringWriter()
     gen.GenerateScript(frag, (tr :> TextWriter))
     tr.ToString()
+
+  static member render(frag:TSqlFragment, ?opts:ScriptDom.SqlScriptGeneratorOptions) : string =
+    let frag = frag.ToCs()
+    let opts = defaultArg opts (ScriptDom.SqlScriptGeneratorOptions())
+    Util.renderCs(frag, opts=opts)
+
