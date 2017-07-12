@@ -56,7 +56,7 @@ let parse (sql:string) =
   else
     Choice2Of2(errs)
 
-type Ops =
+type ExprUtils =
   static member GetName(ident:Identifier) : string =
     match ident with
     | Identifier.Base(QuoteType=quoteType; Value=Some(v)) -> v
@@ -64,34 +64,35 @@ type Ops =
       
   static member GetName(mult:MultiPartIdentifier) : string list  =
     match mult with
-    | MultiPartIdentifier.SchemaObjectName(so) -> Ops.GetName so
-    | MultiPartIdentifier.Base(count, identifiers) -> identifiers |> List.map Ops.GetName 
+    | MultiPartIdentifier.SchemaObjectName(so) -> ExprUtils.GetName so
+    | MultiPartIdentifier.Base(count, identifiers) -> identifiers |> List.map ExprUtils.GetName 
       
   static member GetName(so:SchemaObjectName) : string list  =
     match so with
     | SchemaObjectName.ChildObjectName(baseIdentifier, childIdentifier, count, databaseIdentifier, identifiers, schemaIdentifier, serverIdentifier) -> failwith "Not implemented yet"
     | SchemaObjectName.SchemaObjectNameSnippet(baseIdentifier, count, databaseIdentifier, identifiers, schemaIdentifier, script, serverIdentifier) -> failwith "Not implemented yet"
     | SchemaObjectName.Base(Identifiers=identifiers) -> 
-      identifiers |> List.map Ops.GetName 
+      identifiers |> List.map ExprUtils.GetName 
   
   static member GetName(idOrVal:IdentifierOrValueExpression) : string  =
     match idOrVal with
     | IdentifierOrValueExpression.IdentifierOrValueExpression(Identifier=Some(ident)) ->
-      Ops.GetName ident
+      ExprUtils.GetName ident
     | _ -> failwith "Can't get name of expr without identifier"
 
   static member GetName(so:SchemaObjectNameOrValueExpression) : string list  =
     match so with
     | SchemaObjectNameOrValueExpression.SchemaObjectNameOrValueExpression(SchemaObjectName=Some(son)) ->
-      Ops.GetName(son)
+      ExprUtils.GetName(son)
     | _ -> failwith "Can't get name, missing schema object"
 
   static member GetName(tra:TableReferenceWithAlias) : string option * string list =
     match tra with
     | TableReferenceWithAlias.NamedTableReference(Alias=alias; SchemaObject=Some(schemaObject)) -> 
-      (alias |> Option.map Ops.GetName), (Ops.GetName(schemaObject))
+      (alias |> Option.map ExprUtils.GetName), (ExprUtils.GetName(schemaObject))
     | _ -> failwith "Not implemented yet"
 
+// Gather all column references (each column reference returned as string list of identifiers)
 let getScalarColRefs (sexpr:ScalarExpression) : (string list) list =
   let colRefs = ResizeArray<_>()
   sexpr.ToCs().Accept(
@@ -100,7 +101,7 @@ let getScalarColRefs (sexpr:ScalarExpression) : (string list) list =
               cr.MultiPartIdentifier 
               |> MultiPartIdentifier.FromCs 
               |> fun x ->
-                colRefs.Add (Ops.GetName x)
+                colRefs.Add (ExprUtils.GetName x)
               })
   colRefs |> List.ofSeq
 
@@ -121,8 +122,6 @@ let columnsByTable : Lazy<Dictionary<string, HashSet<string>>> =
     ret
 
 type JoinAnalyzer() =
-
-
   member val tableToAlias = Dictionary<string, string>()
   member val aliasToTable = Dictionary<string, string>()
   //member val mappings = Dictionary<string, string>()
@@ -161,19 +160,19 @@ type JoinAnalyzer() =
       printfn "Can't resolve table for %A" xs
       None
 
-  member x.AddJoinedTablesOrAliases t1 t2 =
-    match ((x.ResolveTable t1), (x.ResolveTable t2)) with
-    | Some a, Some b ->
-      let t1 = [a; List.last t1]
-      let t2 = [b; List.last t2]
-      let lhs = String.concat "." t1
-      let rhs = String.concat "." t2
-      let (lhs, rhs) =
-        if a < b then (lhs, rhs) else (rhs, lhs)
+  member x.AddJoinedTablesOrAliases col_x col_y =
+    match ((x.ResolveTable col_x), (x.ResolveTable col_y)) with
+    | Some table_x, Some table_y ->
+      // Column references now fully qualified
+      let col_x = [table_x; List.last col_x] |> String.concat "."
+      let col_y = [table_y; List.last col_y] |> String.concat "."
 
-      let (a, b) = if a < b then a, b else b, a
-      printfn "CONNECT %A = %A" t1 t2
-      ignore <| x.condConnections.Add (a, b, sprintf "%s = %s" lhs rhs)
+      // Normalize order, to avoid repeating joins we already know about
+      let (col_x, col_y) =
+        if table_x < table_y then (col_x, col_y) else (col_y, col_x)
+      let (table_x, table_y) = if table_x < table_y then table_x, table_y else table_y, table_x
+
+      ignore <| x.condConnections.Add (table_x, table_y, sprintf "%s = %s" col_x col_y)
     | _, _ -> ()
 
   member x.AddConditions(bexpr:BooleanExpression) =
@@ -181,9 +180,9 @@ type JoinAnalyzer() =
     | BooleanExpression.BooleanComparisonExpression(_comparisonType, Some(firstExpression), Some(secondExpression)) ->
       let first = getScalarColRefs firstExpression
       let second = getScalarColRefs secondExpression
-      for t1 in first do
-        for t2 in second do
-          x.AddJoinedTablesOrAliases t1 t2
+      for col_x in first do
+        for col_y in second do
+          x.AddJoinedTablesOrAliases col_x col_y
     | BooleanExpression.BooleanParenthesisExpression(Some(expression)) -> x.AddConditions(expression)
     | BooleanExpression.BooleanBinaryExpression(_binaryExpressionType, Some(firstExpression), Some(secondExpression)) ->
       x.AddConditions firstExpression
@@ -196,8 +195,8 @@ let rec processJoins (ctx:JoinAnalyzer) (table:TableReference) (depth:int) : uni
       (TableReferenceWithAlias.NamedTableReference
         (Alias=alias; SchemaObject=Some
           (schemaObject))) ->
-          let aliasName = alias |> Option.map (Ops.GetName)
-          let name = Ops.GetName schemaObject |> String.concat "."
+          let aliasName = alias |> Option.map (ExprUtils.GetName)
+          let name = ExprUtils.GetName schemaObject |> String.concat "."
           ctx.AddMapping (name, aliasName)
 
   | TableReference.JoinParenthesisTableReference(Some(join)) ->
@@ -263,7 +262,7 @@ let [<Literal>] html = """
 </body>
 </html>
   """
-
+// Set of tableA * tableB * Join Condition 
 let visualize (rels:Set<string*string*string>) =
   let script =
     let mutable nextId = 0
@@ -283,23 +282,14 @@ let visualize (rels:Set<string*string*string>) =
     let nodes = Text.StringBuilder()
     w nodes "var nodes = new vis.DataSet(["
 
-    for (a, b, condstr) in rels do
-      let aid = mkId a
-      let bid = mkId b
+    for (table_a, table_b, condstr) in rels do
+      let aid = mkId table_a
+      let bid = mkId table_b
       w edges (sprintf "{from: %d, to: %d, title: \"%s\"}," aid bid condstr)
 
     for KeyValue(tname, id) in ids do
-      let iszdd = tname.StartsWith "zdd_"
-      let isxss = tname.StartsWith "xss_"
-      let isdd =  tname.StartsWith "xdd_"
-
-      let shape = if iszdd || isxss || isdd then "box" else "ellipse"
-      let color =
-        if iszdd then "#FFFF00"
-        elif isxss then "pink"
-        elif isdd then "gold"
-        else "#97C2FC"
-
+      let shape =  "ellipse"
+      let color = "#97C2FC"
       w nodes (sprintf "{id: %d, label: '%s', shape: '%s', color: '%s'}," id tname shape color)
 
     w edges "]);"
@@ -346,8 +336,7 @@ let visualize (rels:Set<string*string*string>) =
     sr.Flush()
   let _process = System.Diagnostics.Process.Start(path)
   ()
-
-
+  
 let run() =
   let realTables = fetchTables()
   let relationships = HashSet<_>(HashIdentity.Structural)
@@ -382,8 +371,6 @@ let run() =
   printfn "Result: %A" relationships
   visualize relationships
 
-
-    
-do run()    
+do run()
 
 
