@@ -92,19 +92,33 @@ type Ops =
       (alias |> Option.map Ops.GetName), (Ops.GetName(schemaObject))
     | _ -> failwith "Not implemented yet"
 
-let getScalarColRefs (sexpr:ScalarExpression) =
+let getScalarColRefs (sexpr:ScalarExpression) : (string list) list =
   let colRefs = ResizeArray<_>()
   sexpr.ToCs().Accept(
     { new ScriptDom.TSqlFragmentVisitor() with
             override x.ExplicitVisit(cr:ScriptDom.ColumnReferenceExpression) =
               cr.MultiPartIdentifier 
               |> MultiPartIdentifier.FromCs 
-              |> fun x -> 
-                match Ops.GetName x with
-                | [pfx; _colname] -> colRefs.Add pfx
-                | _ -> ()
+              |> fun x ->
+                colRefs.Add (Ops.GetName x)
               })
-  colRefs
+  colRefs |> List.ofSeq
+
+let columnsByTable : Lazy<Dictionary<string, HashSet<string>>> =
+  lazy  
+    let ret = Dictionary<string, HashSet<string>>()
+    use cmd = conn.CreateCommand()
+    cmd.CommandText <- "select table_name, column_name from information_schema.columns"
+    use rdr = cmd.ExecuteReader()
+    while rdr.Read() do
+      let tname = rdr.GetString(0) |> normalizeTablename
+      let cname = rdr.GetString(1)
+      let ok, cols = ret.TryGetValue tname
+      if ok then
+        cols.Add cname |> ignore
+      else
+        ret.[tname] <- HashSet([cname]) 
+    ret
 
 type JoinAnalyzer() =
 
@@ -113,7 +127,7 @@ type JoinAnalyzer() =
   member val aliasToTable = Dictionary<string, string>()
   //member val mappings = Dictionary<string, string>()
   member val tables = HashSet<string>()
-  member val condConnections = HashSet<string*string>()
+  member val condConnections = HashSet<string*string*string>()
 
   member x.AddMapping(tname:string, alias: string option) =
     let tname = normalizeTablename tname
@@ -125,16 +139,41 @@ type JoinAnalyzer() =
     | None -> ()
     ignore <| x.tables.Add tname
 
-  member x.ResolveTable (t:string) =
-    let t = normalizeTablename t
-    if x.tables.Contains t then Some t
-    else 
-      let ok, v = x.aliasToTable.TryGetValue t
-      if ok then Some(v) else None
+  member x.ResolveTableForCol (col:string) =
+    let tables = 
+      [ for t in x.tables do
+          if columnsByTable.Value.[t].Contains(col) then yield t ]
+    match tables with
+    | [t] -> Some(t)
+    | xs -> None
+
+  member x.ResolveTable (t:string list) =
+    match t with
+    | [t; _] ->
+      let t = normalizeTablename t
+      if x.tables.Contains t then Some t
+      else 
+        let ok, v = x.aliasToTable.TryGetValue t
+        if ok then Some(v) else None
+    | [c] ->
+      x.ResolveTableForCol c
+    | xs ->
+      printfn "Can't resolve table for %A" xs
+      None
 
   member x.AddJoinedTablesOrAliases t1 t2 =
     match ((x.ResolveTable t1), (x.ResolveTable t2)) with
-    | Some a, Some b -> ignore <| x.condConnections.Add (a, b)
+    | Some a, Some b ->
+      let t1 = [a; List.last t1]
+      let t2 = [b; List.last t2]
+      let lhs = String.concat "." t1
+      let rhs = String.concat "." t2
+      let (lhs, rhs) =
+        if a < b then (lhs, rhs) else (rhs, lhs)
+
+      let (a, b) = if a < b then a, b else b, a
+      printfn "CONNECT %A = %A" t1 t2
+      ignore <| x.condConnections.Add (a, b, sprintf "%s = %s" lhs rhs)
     | _, _ -> ()
 
   member x.AddConditions(bexpr:BooleanExpression) =
@@ -225,7 +264,7 @@ let [<Literal>] html = """
 </html>
   """
 
-let visualize (rels:Set<string*string>) =
+let visualize (rels:Set<string*string*string>) =
   let script =
     let mutable nextId = 0
     let ids = Dictionary<string, int>()
@@ -244,13 +283,24 @@ let visualize (rels:Set<string*string>) =
     let nodes = Text.StringBuilder()
     w nodes "var nodes = new vis.DataSet(["
 
-    for (a, b) in rels do
+    for (a, b, condstr) in rels do
       let aid = mkId a
       let bid = mkId b
-      w edges (sprintf "{from: %d, to: %d}," aid bid)
+      w edges (sprintf "{from: %d, to: %d, title: \"%s\"}," aid bid condstr)
 
     for KeyValue(tname, id) in ids do
-      w nodes (sprintf "{id: %d, label: '%s'}," id tname)
+      let iszdd = tname.StartsWith "zdd_"
+      let isxss = tname.StartsWith "xss_"
+      let isdd =  tname.StartsWith "xdd_"
+
+      let shape = if iszdd || isxss || isdd then "box" else "ellipse"
+      let color =
+        if iszdd then "#FFFF00"
+        elif isxss then "pink"
+        elif isdd then "gold"
+        else "#97C2FC"
+
+      w nodes (sprintf "{id: %d, label: '%s', shape: '%s', color: '%s'}," id tname shape color)
 
     w edges "]);"
     w nodes "]);"
@@ -327,9 +377,13 @@ let run() =
   printfn "Result: %A" realTables
   let relationships = 
     relationships 
-    |> Seq.filter (fun (a, b) -> (realTables.Contains a) && (realTables.Contains b))
+    |> Seq.filter (fun (a, b, _) -> (realTables.Contains a) && (realTables.Contains b))
     |> Set.ofSeq
   printfn "Result: %A" relationships
   visualize relationships
+
+
     
 do run()    
+
+
