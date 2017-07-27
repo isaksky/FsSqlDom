@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="FsSqlDomGalleryUI.AnalyzeTableRelsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FsSqlDomGalleryUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Button Name="_begin_btn" Click="_begin_btn_Click" HorizontalAlignment="Center" Padding="5" Margin="5">Begin</Button>
+        <ScrollViewer Grid.Row="1" Name="Scroller" Margin="0" Background="Black">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding ConsoleOutput, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=.}" Foreground="White" FontFamily="Consolas"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

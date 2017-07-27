@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsSqlDomGallery", "FsSqlDomGallery\FsSqlDomGallery.fsproj", "{5C09D0E1-9185-4E62-9E23-6D9929277562}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FsSqlDomGalleryUI", "FsSqlDomGalleryUI\FsSqlDomGalleryUI.csproj", "{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C09D0E1-9185-4E62-9E23-6D9929277562}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C09D0E1-9185-4E62-9E23-6D9929277562}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C09D0E1-9185-4E62-9E23-6D9929277562}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C09D0E1-9185-4E62-9E23-6D9929277562}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

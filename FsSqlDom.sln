@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{63297B98-5CED-492C-A5B7-A5B4F73CF142}"
 	ProjectSection(SolutionItems) = preProject
@@ -39,7 +39,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{485A95AE-CA87-4E27-AE7E-175FB81B620F}"
 	ProjectSection(SolutionItems) = preProject
 		examples\GraphTableRelationships.fsx = examples\GraphTableRelationships.fsx
+		examples\PTest.fsx = examples\PTest.fsx
+		examples\SyntaxBuilder.fsx = examples\SyntaxBuilder.fsx
 	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsSqlDomGallery", "examples\FsSqlDomGallery\FsSqlDomGallery\FsSqlDomGallery.fsproj", "{5C09D0E1-9185-4E62-9E23-6D9929277562}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FsSqlDomGalleryUI", "examples\FsSqlDomGallery\FsSqlDomGalleryUI\FsSqlDomGalleryUI.csproj", "{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +61,14 @@ Global
 		{349D1936-1EA0-4D16-B58F-A938375CB91C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{349D1936-1EA0-4D16-B58F-A938375CB91C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{349D1936-1EA0-4D16-B58F-A938375CB91C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C09D0E1-9185-4E62-9E23-6D9929277562}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C09D0E1-9185-4E62-9E23-6D9929277562}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C09D0E1-9185-4E62-9E23-6D9929277562}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C09D0E1-9185-4E62-9E23-6D9929277562}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,5 +77,7 @@ Global
 		{83F16175-43B1-4C90-A1EE-8E351C33435D} = {A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}
 		{8E6D5255-776D-4B61-85F9-73C37AA1FB9A} = {A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}
 		{349D1936-1EA0-4D16-B58F-A938375CB91C} = {ED8079DD-2B06-4030-9F0F-DC548F98E1C4}
+		{5C09D0E1-9185-4E62-9E23-6D9929277562} = {485A95AE-CA87-4E27-AE7E-175FB81B620F}
+		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD} = {485A95AE-CA87-4E27-AE7E-175FB81B620F}
 	EndGlobalSection
 EndGlobal
