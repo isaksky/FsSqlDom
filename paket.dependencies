@@ -21,3 +21,4 @@ group Example
 	source https://nuget.org/api/v2
 	nuget FSharp.Compiler.Service
 	nuget DataConnectionDialog
+	nuget FSharp.Core

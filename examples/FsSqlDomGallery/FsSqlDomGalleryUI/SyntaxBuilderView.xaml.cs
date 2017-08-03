@@ -16,7 +16,6 @@ using System.IO;
 using static Microsoft.FSharp.Compiler.Interactive.Shell;
 using Microsoft.FSharp.Core;
 using System.Reflection;
-using Microsoft.FSharp.Collections;
 using System.Threading;
 
 namespace FsSqlDomGalleryUI {
@@ -88,78 +87,79 @@ namespace FsSqlDomGalleryUI {
                 return fsi;
             }
         }
-    
 
-    async void Syntax_Click(object sender, RoutedEventArgs e) {
-        var syntax_txt = _syntax_tb.Text;
-        _syntax_tb.Background = Brushes.Gold;
 
-        var query_txt = await Task.Factory.StartNew(() => {
-            var fsi = GetFsi();
-            lock (_fsi_lock) {
-                var ret = fsi.EvalInteractionNonThrowing(syntax_txt);
-                if (ret.Item2 != null) {
-                    var errs = ret.Item2;
-                    foreach (var err in errs) {
-                        MessageBox.Show(err.Message);
+        async void Syntax_Click(object sender, RoutedEventArgs e) {
+            var syntax_txt = _syntax_tb.Text;
+            var bg_default = _syntax_tb.Background;
+            _syntax_tb.Background = Brushes.Gold;
+
+            var query_txt = await Task.Factory.StartNew(() => {
+                var fsi = GetFsi();
+                lock (_fsi_lock) {
+                    var ret = fsi.EvalInteractionNonThrowing(syntax_txt);
+                    if (ret.Item2 != null) {
+                        var errs = ret.Item2;
+                        foreach (var err in errs) {
+                            MessageBox.Show(err.Message);
+                        }
                     }
-                }
 
-                var script_gen_result = fsi.EvalExpressionNonThrowing(@"
+                    var script_gen_result = fsi.EvalExpressionNonThrowing(@"
                     let opts = SqlScriptGeneratorOptions()
                     let gen = Sql130ScriptGenerator(opts)
                     let tr = new StringWriter()
                     gen.GenerateScript(var0, (tr :> TextWriter))
                     tr.ToString()");
 
-                if (script_gen_result.Item1 != null) {
-                    if (script_gen_result.Item1.IsChoice1Of2) {
-                        var v = ((FSharpChoice<FSharpOption<FsiValue>, Exception>.Choice1Of2)script_gen_result.Item1).Item.Value;
+                    if (script_gen_result.Item1 != null) {
+                        if (script_gen_result.Item1.IsChoice1Of2) {
+                            var v = ((FSharpChoice<FSharpOption<FsiValue>, Exception>.Choice1Of2)script_gen_result.Item1).Item.Value;
 
-                        var str = (string)v.ReflectionValue;
-                        if (str != null) {
-                            return str;
+                            var str = (string)v.ReflectionValue;
+                            if (str != null) {
+                                return str;
+                            }
+
+                        } else {
+                            var er = ((FSharpChoice<FSharpOption<FsiValue>, Exception>.Choice2Of2)script_gen_result.Item1).Item;
                         }
-
-                    } else {
-                        var er = ((FSharpChoice<FSharpOption<FsiValue>, Exception>.Choice2Of2)script_gen_result.Item1).Item;
+                    } else if (script_gen_result.Item2 != null && script_gen_result.Item2.Length > 0) {
+                        var errs = script_gen_result.Item2;
+                        var errmsg = String.Join("\n", errs.Select(err => err.Message));
+                        return "ERROR:\n" + errmsg;
                     }
-                } else if (script_gen_result.Item2 != null && script_gen_result.Item2.Length > 0) {
-                    var errs = script_gen_result.Item2;
-                    var errmsg = String.Join("\n", errs.Select(err => err.Message));
-                    return "ERROR:\n" + errmsg;
+                    return "";
                 }
-                return "";
-            }
-        });
-
-        this.Dispatcher.Invoke(() => {
-            _query_tb.Text = query_txt;
-            _syntax_tb.Background = Brushes.White;
-        });
-    }
-
-    async void Button_Click(object sender, RoutedEventArgs e) {
-        var query = _query_tb.Text;
-        try {
-            var syntax = await Task.Factory.StartNew(() => {
-                return SyntaxBuilding.build_syntax(query);
             });
-            this.Dispatcher.Invoke(() => {
-                _syntax_tb.Text = syntax;
-            });
-        } catch (SyntaxBuilding.SyntaxException ex) {
-            var sb = new StringBuilder();
-            sb.AppendLine(ex.Message);
-            foreach (var err in ex.errors) {
-                sb.AppendLine($"{err.Line}: {err.Message}");
-            }
 
             this.Dispatcher.Invoke(() => {
-                _syntax_tb.Text = sb.ToString();
+                _query_tb.Text = query_txt;
+                _syntax_tb.Background = bg_default;
             });
         }
 
+        async void Button_Click(object sender, RoutedEventArgs e) {
+            var query = _query_tb.Text;
+            try {
+                var syntax = await Task.Factory.StartNew(() => {
+                    return SyntaxBuilding.build_syntax(query);
+                });
+                this.Dispatcher.Invoke(() => {
+                    _syntax_tb.Text = syntax;
+                });
+            } catch (SyntaxBuilding.SyntaxException ex) {
+                var sb = new StringBuilder();
+                sb.AppendLine(ex.Message);
+                foreach (var err in ex.errors) {
+                    sb.AppendLine($"{err.Line}: {err.Message}");
+                }
+
+                this.Dispatcher.Invoke(() => {
+                    _syntax_tb.Text = sb.ToString();
+                });
+            }
+
+        }
     }
-}
 }

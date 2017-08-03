@@ -25,7 +25,7 @@
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                  FontFamily="Fira Code Retina, Courier New"
                      Background="LightGoldenrodYellow"
-            TextWrapping="Wrap" Text="select top 10 id, name, description from projects" 
+            TextWrapping="Wrap" Text="select top 10 id, name, description from projects"
             AcceptsReturn="True" Name="_query_tb" AcceptsTab="True" />
         </ScrollViewer>
 

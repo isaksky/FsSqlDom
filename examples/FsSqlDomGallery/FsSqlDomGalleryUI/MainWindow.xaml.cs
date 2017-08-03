@@ -22,20 +22,16 @@ namespace FsSqlDomGalleryUI {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e) {
-
-        }
-
-        private void _build_syntax_button_Click(object sender, RoutedEventArgs e) {
+        private void _analyze_button_Click(object sender, RoutedEventArgs e) {
             _tab_control.SelectedIndex = 1;
         }
 
-        private void _analyze_button_Click(object sender, RoutedEventArgs e) {
+        private void _build_syntax_button_Click(object sender, RoutedEventArgs e) {
             _tab_control.SelectedIndex = 2;
         }
 
         private void _analyze_rels_button_Click(object sender, RoutedEventArgs e) {
-
+            _tab_control.SelectedIndex = 3;
         }
     }
 }
