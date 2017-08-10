@@ -35,7 +35,8 @@
             </TabItem>
             
             <TabItem Header="C# Query Analysis">
-                
+                <local:CSharpQueryAnalyzerView />
+
             </TabItem>
 
             <TabItem Header="Syntax Builder">

@@ -8,19 +8,37 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Margin="10" Background="OldLace">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" MinWidth="100" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" MinWidth="100" />
         </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label>ConnectionString:</Label>
-        <TextBox Grid.Column="1" Margin="0,0,0,10" />
-        <Label Grid.Row="1">E-mail:</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" />
-        <Label Grid.Row="2">Comment:</Label>
-        <TextBox Grid.Row="2" Grid.Column="1" AcceptsReturn="True" />
+
+        <ScrollViewer Grid.Column="0"
+            VerticalScrollBarVisibility="Auto"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBox FontSize="18"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 FontFamily="Fira Code Retina, Courier New"
+                     Background="LightGoldenrodYellow"
+            TextWrapping="Wrap" Text="select top 10 id, name, description from projects"
+            AcceptsReturn="True" Name="_query_tb" AcceptsTab="True" />
+        </ScrollViewer>
+
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="2"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBlock  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      Background="Cornsilk"
+           TextWrapping="Wrap" Text="" FontSize="18"
+                 Name="_analysis_tb" FontFamily="Fira Code Retina, Courier New" />
+        </ScrollViewer>
+
+        <Button Name="_build_syntax_btn" Grid.Row="1" Grid.ColumnSpan="3" Margin="5" Click="_build_syntax_btn_Click">Analyze</Button>
     </Grid>
 </UserControl>
