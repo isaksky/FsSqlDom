@@ -47,13 +47,6 @@ namespace FsSqlDomGalleryUI {
         async void _begin_btn_Click(object sender, RoutedEventArgs e) {
             string connstr;
             if (TryGetDataConnectionStringFromUser(out connstr)) {
-                // HACK - Work around named instance madness
-                var builder = new DbConnectionStringBuilder();
-                builder.ConnectionString = connstr;
-                builder.Remove("data source");
-                builder.Add("Data Source", "ISAK-NEW\\SQLEXPRESS");
-                connstr = builder.ConnectionString;
-
                 log($"Got connection string: {connstr}");
                 Action<string> dispatch_log = (s) => {
                     Dispatcher.Invoke(() => log(s));
