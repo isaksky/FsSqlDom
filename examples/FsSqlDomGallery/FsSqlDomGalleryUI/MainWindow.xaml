@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FsSqlDomGalleryUI"
         mc:Ignorable="d"
-        Title="FsSqlDom Gallery" Height="350" Width="525">
+        Title="FsSqlDom Gallery" Height="440" Width="525">
     <Grid>
         <TabControl Name="_tab_control">
             <TabItem Header="Getting started">
@@ -24,6 +24,9 @@
                         <Button Name="_analyze_button"
                                 Click="_analyze_button_Click"
                                 Content="Simple C# Query Analysis" FontSize="18" Padding="20" />
+                        <Button Name="_transform_btn"
+                                Click="_transform_btn_Click"
+                                Content="Simple C# Query Transformation" FontSize="18" Padding="20" />
                         <Button Name="_build_syntax_button" 
                                 Click="_build_syntax_button_Click"
                                 Content="Build Syntax" FontSize="18" Padding="20" />
@@ -36,7 +39,10 @@
             
             <TabItem Header="C# Query Analysis">
                 <local:CSharpQueryAnalyzerView />
+            </TabItem>
 
+            <TabItem Header="C# Query Analysis">
+                <local:CSharpQueryMutatorView />
             </TabItem>
 
             <TabItem Header="Syntax Builder">

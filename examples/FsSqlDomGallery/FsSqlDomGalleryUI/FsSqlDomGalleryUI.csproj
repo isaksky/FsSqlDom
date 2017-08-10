@@ -65,6 +65,9 @@
     <Compile Include="CSharpQueryAnalyzerView.xaml.cs">
       <DependentUpon>CSharpQueryAnalyzerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CSharpQueryMutator.xaml.cs">
+      <DependentUpon>CSharpQueryMutator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SyntaxBuilderView.xaml.cs">
       <DependentUpon>SyntaxBuilderView.xaml</DependentUpon>
     </Compile>
@@ -73,6 +76,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CSharpQueryAnalyzerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CSharpQueryMutator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -35,7 +35,7 @@ namespace FsSqlDomGalleryUI {
                 var parser = new TSql130Parser(false);
                 IList<ParseError> errors;
                 var fragment = parser.Parse(new StringReader(syntax_txt), out errors);
-
+                
                 var analyzer = new MyNaiveAnalyzer();
                 fragment.Accept(analyzer);
 
@@ -49,7 +49,7 @@ namespace FsSqlDomGalleryUI {
         }
     }
 
-    internal class MyNaiveAnalyzer : TSqlFragmentVisitor {
+    class MyNaiveAnalyzer : TSqlFragmentVisitor {
         StringBuilder _sb = new StringBuilder();
         public MyNaiveAnalyzer() {
         }
