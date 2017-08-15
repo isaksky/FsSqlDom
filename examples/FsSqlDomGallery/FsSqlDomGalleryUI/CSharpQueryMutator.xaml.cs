@@ -33,6 +33,9 @@ namespace FsSqlDomGalleryUI {
                 var parser = new TSql130Parser(false);
                 IList<ParseError> errors;
                 var fragment = parser.Parse(new StringReader(syntax_txt), out errors);
+                if (errors.Count > 0) {
+                    return "ERROR:\n" + String.Join("\n", errors.Select(err => err.Message));
+                }
 
                 fragment.Accept(new MyNaiveMutator());
                 var renderer = new Sql130ScriptGenerator();
@@ -45,6 +48,11 @@ namespace FsSqlDomGalleryUI {
                 _analysis_tb.Text = analysis_txt;
                 _analysis_tb.Background = bg_default;
             });
+        }
+
+        private void _query_tb_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 
@@ -60,11 +68,35 @@ namespace FsSqlDomGalleryUI {
             return ret;
         }
 
+        bool FilterSelectElement(SelectElement sel)
+        {
+            var scalar = sel as SelectScalarExpression;
+            if (scalar == null)
+            {
+                return true; // TODO - Filter select star
+            }
+            var colref = scalar.Expression as ColumnReferenceExpression;
+            if (colref != null)
+            {
+                var idents = colref.MultiPartIdentifier?.Identifiers;
+                if (idents != null && idents.Count > 0)
+                {
+                    return !String.Equals(idents.Last().Value, "SecretColumn", StringComparison.InvariantCultureIgnoreCase);
+                }
+            }
+            return true;
+        }
+
         public override void Visit(QuerySpecification node) {
-            var extraCondition = new BooleanComparisonExpression {
+            var selElements = node.SelectElements.Where(FilterSelectElement).ToList();
+            node.SelectElements.Clear();
+            foreach (var item in selElements) node.SelectElements.Add(item);
+
+            var extraCondition = new BooleanComparisonExpression
+            {
                 ComparisonType = BooleanComparisonType.Equals,
-                FirstExpression = ColRef("nice.where.but"),
-                SecondExpression = ColRef("also.this")
+                FirstExpression = ColRef("CompanyID"),
+                SecondExpression = new VariableReference { Name = "@CompanyId" }
             };
 
             if (node.WhereClause == null) {
@@ -81,7 +113,6 @@ namespace FsSqlDomGalleryUI {
                         SecondExpression = extraCondition
                     };
             } else {
-                extraCondition.FirstExpression = ColRef("please.where");
                 node.WhereClause.SearchCondition = extraCondition;
             }
         }

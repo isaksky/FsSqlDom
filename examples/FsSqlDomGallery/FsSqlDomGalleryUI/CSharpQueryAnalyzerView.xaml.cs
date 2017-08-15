@@ -35,7 +35,10 @@ namespace FsSqlDomGalleryUI {
                 var parser = new TSql130Parser(false);
                 IList<ParseError> errors;
                 var fragment = parser.Parse(new StringReader(syntax_txt), out errors);
-                
+                if (errors.Count > 0) {
+                    return "ERROR:\n" + String.Join("\n", errors.Select(err => err.Message));
+                }
+
                 var analyzer = new MyNaiveAnalyzer();
                 fragment.Accept(analyzer);
 
@@ -51,8 +54,7 @@ namespace FsSqlDomGalleryUI {
 
     class MyNaiveAnalyzer : TSqlFragmentVisitor {
         StringBuilder _sb = new StringBuilder();
-        public MyNaiveAnalyzer() {
-        }
+        public MyNaiveAnalyzer() { }
 
         public override void Visit(AddAlterFullTextIndexAction node) {
             base.Visit(node);

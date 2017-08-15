@@ -25,15 +25,26 @@
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                  FontFamily="Fira Code Retina, Courier New"
                      Background="LightGoldenrodYellow"
-            TextWrapping="Wrap" Text="select top 10 id, name, description from projects"
-            AcceptsReturn="True" Name="_query_tb" AcceptsTab="True" />
+            TextWrapping="Wrap" Text="WITH Sales_CTE (SalesPersonID, SalesOrderID, SalesYear)&#x0a;
+AS&#x0a;
+(&#x0a;
+    SELECT SalesPersonID, SalesOrderID, YEAR(OrderDate) AS SalesYear&#x0a;
+    FROM Sales.SalesOrderHeader&#x0a;
+    WHERE SalesPersonID IS NOT NULL&#x0a;
+)&#x0a;
+-- Define the outer query referencing the CTE name.&#x0a;
+SELECT SalesPersonID, COUNT(SalesOrderID) AS TotalSales, SalesYear, SECRETCOLUMN&#x0a;
+FROM Sales_CTE&#x0a;
+GROUP BY SalesYear, SalesPersonID&#x0a;
+ORDER BY SalesPersonID, SalesYear;"
+            AcceptsReturn="True" Name="_query_tb" AcceptsTab="True" TextChanged="_query_tb_TextChanged" />
         </ScrollViewer>
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="2"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TextBlock  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            <TextBox  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       Background="Cornsilk"
            TextWrapping="Wrap" Text="" FontSize="18"
                  Name="_analysis_tb" FontFamily="Fira Code Retina, Courier New" />
