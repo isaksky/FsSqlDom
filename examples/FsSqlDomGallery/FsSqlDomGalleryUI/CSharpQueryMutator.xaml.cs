@@ -49,40 +49,28 @@ namespace FsSqlDomGalleryUI {
                 _analysis_tb.Background = bg_default;
             });
         }
-
-        private void _query_tb_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
     }
 
     class MyNaiveMutator : TSqlFragmentVisitor {
-        public MyNaiveMutator() {}
+        public MyNaiveMutator() { }
 
         static ColumnReferenceExpression ColRef(string identifier) {
             var ret = new ColumnReferenceExpression { MultiPartIdentifier = new MultiPartIdentifier() };
-            foreach(var part in identifier.Split('.')) {
+            foreach (var part in identifier.Split('.')) {
                 var id = new Identifier { Value = part };
                 ret.MultiPartIdentifier.Identifiers.Add(id);
             }
             return ret;
         }
 
-        bool FilterSelectElement(SelectElement sel)
-        {
+        bool FilterSelectElement(SelectElement sel) {
             var scalar = sel as SelectScalarExpression;
-            if (scalar == null)
-            {
-                return true; // TODO - Filter select star
-            }
+            if (scalar == null) return true; // TODO - Filter select star
             var colref = scalar.Expression as ColumnReferenceExpression;
-            if (colref != null)
-            {
+            if (colref != null) {
                 var idents = colref.MultiPartIdentifier?.Identifiers;
                 if (idents != null && idents.Count > 0)
-                {
                     return !String.Equals(idents.Last().Value, "SecretColumn", StringComparison.InvariantCultureIgnoreCase);
-                }
             }
             return true;
         }
@@ -92,18 +80,15 @@ namespace FsSqlDomGalleryUI {
             node.SelectElements.Clear();
             foreach (var item in selElements) node.SelectElements.Add(item);
 
-            var extraCondition = new BooleanComparisonExpression
-            {
+            var extraCondition = new BooleanComparisonExpression {
                 ComparisonType = BooleanComparisonType.Equals,
                 FirstExpression = ColRef("CompanyID"),
                 SecondExpression = new VariableReference { Name = "@CompanyId" }
             };
 
-            if (node.WhereClause == null) {
-                node.WhereClause = new WhereClause();
-            }
+            if (node.WhereClause == null) node.WhereClause = new WhereClause();
 
-            if (node.WhereClause.SearchCondition != null ) {
+            if (node.WhereClause.SearchCondition != null) {
                 node.WhereClause.SearchCondition =
                     new BooleanBinaryExpression {
                         BinaryExpressionType = BooleanBinaryExpressionType.And,

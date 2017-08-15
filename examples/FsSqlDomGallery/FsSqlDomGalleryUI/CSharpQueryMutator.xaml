@@ -37,7 +37,7 @@ SELECT SalesPersonID, COUNT(SalesOrderID) AS TotalSales, SalesYear, SECRETCOLUMN
 FROM Sales_CTE&#x0a;
 GROUP BY SalesYear, SalesPersonID&#x0a;
 ORDER BY SalesPersonID, SalesYear;"
-            AcceptsReturn="True" Name="_query_tb" AcceptsTab="True" TextChanged="_query_tb_TextChanged" />
+            AcceptsReturn="True" Name="_query_tb" AcceptsTab="True" />
         </ScrollViewer>
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
