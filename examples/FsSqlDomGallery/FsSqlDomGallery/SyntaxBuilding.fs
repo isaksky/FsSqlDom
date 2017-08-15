@@ -19,13 +19,18 @@ type StringBuilder with
       Printf.kprintf cont fmt
     // WriteLine with format string
     member this.wl fmt =
-      let cont s =
-        this.AppendLine(s) |>ignore
+      let cont (s:string) =
+        if s.Length > 0 then
+          this.AppendLine(s) |>ignore
       Printf.kprintf cont fmt
     // Write plain string
     member this.ws (s:string) = this.Append(s) |> ignore
     // Write character
     member this.wc (c:char) = this.Append(c) |> ignore
+
+type Type with
+  member x.TreeName =
+    "ScriptDom." + x.Name
 
 let parse (sql:string) =
   let parser = TSql130Parser(false)
@@ -38,10 +43,21 @@ let parse (sql:string) =
   else
     Choice2Of2(errs)
 
-type StringTree(var_id: int) =
-  member val children = ResizeArray<StringTree>() with get
-  member val sb = StringBuilder() with get
-  member x.var_id = var_id
+type CodeNode() =
+  member val is_inline = false with get, set
+  member val var_id = 0 with get, set
+  member val prop_name = "" with get, set
+  member val format_str = "" with get, set
+  member val is_list_prop = false with get, set
+  member val dependencies = ResizeArray<CodeNode>() with get, set
+  member val list_dependencies = ResizeArray<CodeNode>() with get, set
+  member val friendly_type_name = "" with get, set
+
+let combine_sbs (b:StringBuilder) (a:StringBuilder) =
+  let a = a.ToString().Trim()
+  if a.Length > 0 then
+    a + "\n" + b.ToString()
+  else b.ToString()
 
 let prop_checksum (pi: PropertyInfo) = pi.Name + "_" + pi.PropertyType.FullName
 
@@ -71,9 +87,72 @@ let get_props_to_init (expr: TSqlFragment) (default_instance: TSqlFragment) =
 let is_simple_inline_prop (pi:PropertyInfo) =
   pi.PropertyType.IsValueType || pi.PropertyType.IsEnum || pi.PropertyType = typeof<string>
 
-let rec render (sb:StringBuilder) (tree:StringTree) =
-  for c in tree.children do render sb c
-  sb.Append (tree.sb.ToString()) |> ignore
+let friendly_var_name (node: CodeNode) = 
+  sprintf "%s%d" node.friendly_type_name node.var_id
+
+let rec render' (tree:CodeNode) : string * string =
+  if tree.is_inline then
+    let pre_sb = StringBuilder()
+    let pre_pre_sb = StringBuilder()
+
+    let depstmp = ResizeArray<obj>()
+    for node in tree.dependencies do
+      let pre, cur = render' node
+      pre_sb.wl "%s" pre
+      depstmp.Add (box cur)
+    
+    let deps : obj[] = Array.ofSeq depstmp
+    let cur = String.Format(tree.format_str, deps)
+
+    let pre = 
+      pre_pre_sb
+      |> combine_sbs pre_sb
+    pre, cur
+  else
+    let pre_sb = StringBuilder()
+
+    let vname = friendly_var_name tree
+
+    let depstmp = ResizeArray<obj>()
+
+    for node in tree.dependencies do
+      let pre, cur = render' node
+      if pre <> "" then
+        pre_sb.wl "%s" pre
+
+      depstmp.Add (box cur)
+
+    let deps : obj[] = depstmp |> Array.ofSeq
+    let decl = String.Format(tree.format_str, deps)
+    let list_sb_inline = StringBuilder()
+    let list_sb = StringBuilder()
+    let mutable statement_sep = ""
+    for list_prop in tree.list_dependencies do
+      for node in list_prop.dependencies do
+        statement_sep <- "\n"
+        let npre, ncur = (render' node)
+        if npre.Trim() <> "" then 
+          list_sb.wl "%s" npre
+
+        list_sb_inline.wl "%s.%s.Add (%s)" vname (list_prop.prop_name) ncur
+    
+    let pre =
+      (pre_sb
+      |> combine_sbs list_sb
+      |> fun x -> x.ToString())
+      //+ (if list_sb.Length > 0 then "\n" else "")
+      + (sprintf "let %s = %s" vname decl)
+      + statement_sep
+      + list_sb_inline.ToString()
+    
+    pre, vname
+
+
+let rec render (tree: CodeNode) : string =
+  let pre, cur = render' tree
+  pre
+
+
 
 let simple_literal (typ:Type) (o:obj) =
   
@@ -88,83 +167,88 @@ let simple_literal (typ:Type) (o:obj) =
 
 let get_cs_build_str (expr: TSqlFragment) : string =
   let var_id = ref 0
-  let root = StringTree(!var_id)  
+  let root = CodeNode(var_id = !var_id)  
 
-  let rec addTop (expr: TSqlFragment) (tree: StringTree) =
-    let sb = tree.sb
-    let var = sprintf "var%d" tree.var_id
-    sb.w "let %s = %s(" var (expr.GetType().Name)
+  let rec addTop (expr: TSqlFragment) (tree: CodeNode) =
+    let sb = StringBuilder()
+    sb.w "%s" (expr.GetType().TreeName)
 
+    addProps expr tree
+    
+    tree.is_inline <- false
+
+  and addProps (expr: TSqlFragment) (tree: CodeNode) : unit =
     (* Yup. 😎 *)
     let instance_default = Activator.CreateInstance(expr.GetType())  :?> TSqlFragment
-
-    let props = get_props_to_init expr instance_default
-
-    if Array.forall is_simple_inline_prop props then
-      seq {
-        for i = 0 to props.Length - 1 do
-          let pi = props.[i]
-          let o = pi.GetValue(expr)
-          match o with
-          | null -> ()
-          | _ ->
-            //if o <> pi.GetValue(instance_default) then // don't care about props that are same as the default
-            yield sprintf "%s = %s" (pi.Name) (simple_literal (pi.PropertyType) o)
-      } |> String.concat ", " |> sb.ws
-      sb.ws ")\n"
-    else
-      sb.ws ")\n"
-      for pi in get_props_to_init expr instance_default do
-        let typ = pi.PropertyType
-        let v = pi.GetValue(expr)
-        //if v <> pi.GetValue instance_default then
-        addInner v var (pi.Name) (pi.PropertyType) tree     
+    let mutable i = 0
+    let prop_inits = ResizeArray<string>()
+    tree.is_inline <- true
+    for pi in get_props_to_init expr instance_default do
+      let typ = pi.PropertyType
+      let v = pi.GetValue(expr)
+      match getInner v (pi.Name) (pi.PropertyType) with
+      | None -> ()
+      | Some child ->
+        if not child.is_inline then tree.is_inline <- false
+        if child.is_list_prop then
+          tree.list_dependencies.Add child
+          tree.is_inline <- false
+        else
+          tree.dependencies.Add child
+          prop_inits.Add (sprintf "%s = {%d}" pi.Name i)
+          i <- i + 1
+    tree.format_str <- sprintf "%s(%s)" (expr.GetType().TreeName) (prop_inits |> String.concat ", ")
+    tree.friendly_type_name <- 
+      let s = expr.GetType().Name
+      Char.ToLowerInvariant(s.[0]).ToString() + s.Substring(1)
             
-  and addInnerListMember (o: obj) (var:string) (pname:string) (parent_tree: StringTree) =
-    if Object.ReferenceEquals(null, o) then
-      ()
-    else
-      let typ = o.GetType()
-      if typ.IsEnum then
-        parent_tree.sb.wl "%s.%s.Add (%s)" var pname (simple_literal typ o)
-      elif typ.IsValueType then
-        parent_tree.sb.wl "%s.%s.Add (%s)" var pname (o.ToString())
-      else
-        match o with
-        | :? TSqlFragment as frag ->
-          incr var_id
-          parent_tree.sb.wl "%s.%s.Add var%d" var pname !var_id
-          let sub = StringTree(!var_id)
-          parent_tree.children.Add sub
-          addTop frag sub
-        | x -> failwithf "Unhandled value: %A" x
-
-  and addInner (o: obj) (parent_var:string) (pname:string) (ptyp:Type) (tree: StringTree) =
+  and getInner (o: obj) (pname:string) (ptyp:Type) : CodeNode option =
+    
     if ptyp.IsEnum then
-      tree.sb.wl "%s.%s <- %s" parent_var pname (ptyp.Name + "." + (o.ToString()))
+      CodeNode
+        ( prop_name = pname, 
+          is_inline = true, 
+          format_str = sprintf "%s" (ptyp.TreeName + "." + (o.ToString())))
+      |> Some
     elif ptyp.IsValueType then
-      tree.sb.wl "%s.%s <- %A" parent_var pname o
+      CodeNode
+          ( prop_name = pname, 
+            is_inline = true, 
+            format_str = sprintf "%A" o)
+      |> Some
     else
       match o with
-      | null -> ()
+      | null -> None
       | :? string as s ->
-        tree.sb.wl "%s.%s <- %A" parent_var pname o
+        CodeNode
+          ( prop_name = pname, 
+            is_inline = true, 
+            format_str = "\"" + s + "\"")
+        |> Some
       | :? TSqlFragment as frag ->
-        incr var_id
+        let inner = CodeNode(prop_name = pname)
+        addProps frag inner
+        
+        if not inner.is_inline then 
+          incr var_id
+          inner.var_id <- !var_id
 
-        tree.sb.wl "%s.%s <- var%d" parent_var pname !var_id
-        let sub = StringTree(!var_id)
-        tree.children.Add sub
-        addTop frag sub
+        Some inner
       | :? seq<obj> as xs ->
+        let list_prop = CodeNode(prop_name = pname, is_list_prop = true)
         for x in xs do
-          addInnerListMember x parent_var (pname) tree
-      | x -> tree.sb.wl "// what is %s %A ? " (ptyp.Name) x
+          match getInner x "" (x.GetType()) with
+          | None -> ()
+          | Some child ->
+            list_prop.dependencies.Add child 
+        incr var_id
+        list_prop.var_id <- !var_id
+        Some list_prop
+      | x -> failwithf "Unhandled value: %A" x
+      //| x -> tree.sb.wl "// what is %s %A ? " (ptyp.Name) x
 
   addTop expr root
-  let sb = StringBuilder()
-  render sb root
-  sb.ToString()
+  render root
 
 type SyntaxException(msg, errors) =
   inherit Exception(msg)
