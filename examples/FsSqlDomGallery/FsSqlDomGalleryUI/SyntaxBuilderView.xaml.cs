@@ -39,6 +39,7 @@ namespace FsSqlDomGalleryUI {
 
         public SyntaxBuilderView() {
             InitializeComponent();
+            _static_tb.Text = EVAL_STR;
             // Initialize Fsi on another thread.
             Task.Factory.StartNew(() => GetFsi());
         }
@@ -88,6 +89,12 @@ namespace FsSqlDomGalleryUI {
             }
         }
 
+        static readonly string EVAL_STR =
+@"let opts = ScriptDom.SqlScriptGeneratorOptions()
+let gen = ScriptDom.Sql130ScriptGenerator(opts)
+let tr = new StringWriter()
+gen.GenerateScript(tSqlScript0, (tr :> TextWriter))
+tr.ToString()";
 
         async void Syntax_Click(object sender, RoutedEventArgs e) {
             var syntax_txt = _syntax_tb.Text;
@@ -112,16 +119,9 @@ namespace FsSqlDomGalleryUI {
                         }
                         if (errSb.Length > 0)
                             MessageBox.Show(errSb.ToString().Substring(0, Math.Min(400, errSb.Length)));
-
                     }
 
-
-                    var script_gen_result = fsi.EvalExpressionNonThrowing(@"
-                    let opts = ScriptDom.SqlScriptGeneratorOptions()
-                    let gen = ScriptDom.Sql130ScriptGenerator(opts)
-                    let tr = new StringWriter()
-                    gen.GenerateScript(tSqlScript0, (tr :> TextWriter))
-                    tr.ToString()");
+                    var script_gen_result = fsi.EvalExpressionNonThrowing(EVAL_STR);
 
                     if (script_gen_result.Item1 != null) {
                         if (script_gen_result.Item1.IsChoice1Of2) {

@@ -41,7 +41,7 @@
                 <local:CSharpQueryAnalyzerView />
             </TabItem>
 
-            <TabItem Header="C# Query Analysis">
+            <TabItem Header="C# Query Transformation">
                 <local:CSharpQueryMutatorView />
             </TabItem>
 

@@ -32,14 +32,24 @@
 
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="2"
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" 
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TextBox  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                <TextBox  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                       Background="Cornsilk"
            TextWrapping="Wrap" Text="" FontSize="18"
                  Name="_syntax_tb" FontFamily="Fira Code Retina, Courier New"
                  AcceptsReturn="True" AcceptsTab="True" />
-        </ScrollViewer>
+                
+            </ScrollViewer>
+            <TextBox HorizontalAlignment="Stretch" FontFamily="Fira Code Retina, Courier New" VerticalAlignment="Stretch" Name="_static_tb" FontSize="14" Background="Beige"
+                     Grid.Row="1" IsReadOnly="True" />
+        </Grid>
+        
 
 
         <Button Name="_build_syntax_btn" Grid.Row="1" Margin="5" Click="Button_Click">Build Syntax --&gt;</Button>
