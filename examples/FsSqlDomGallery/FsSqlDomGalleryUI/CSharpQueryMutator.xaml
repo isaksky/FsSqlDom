@@ -25,16 +25,17 @@
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                  FontFamily="Fira Code Retina, Courier New"
                      Background="LightGoldenrodYellow"
-            TextWrapping="Wrap" Text="WITH Sales_CTE (SalesPersonID, SalesOrderID, SalesYear)&#x0a;
-AS&#x0a;
-(&#x0a;
-    SELECT SalesPersonID, SalesOrderID, YEAR(OrderDate) AS SalesYear&#x0a;
-    FROM Sales.SalesOrderHeader&#x0a;
-    WHERE SalesPersonID IS NOT NULL&#x0a;
-)&#x0a;
--- Define the outer query referencing the CTE name.&#x0a;
-SELECT SalesPersonID, COUNT(SalesOrderID) AS TotalSales, SalesYear, SECRETCOLUMN&#x0a;
-FROM Sales_CTE&#x0a;
+            TextWrapping="Wrap" Text="WITH     Sales_CTE (SalesPersonID, SalesOrderID, SalesYear)&#x0a;
+AS       (SELECT SalesPersonID,&#x0a;
+                 SalesOrderID,&#x0a;
+                 YEAR(OrderDate) AS SalesYear&#x0a;
+          FROM   Sales.SalesOrderHeader&#x0a;
+          WHERE  SalesPersonID IS NOT NULL)&#x0a;
+SELECT   SalesPersonID,&#x0a;
+         COUNT(SalesOrderID) AS TotalSales,&#x0a;
+         SalesYear,&#x0a;
+         SECRETCOLUMN&#x0a;
+FROM     Sales_CTE&#x0a;
 GROUP BY SalesYear, SalesPersonID&#x0a;
 ORDER BY SalesPersonID, SalesYear;"
             AcceptsReturn="True" Name="_query_tb" AcceptsTab="True" />
