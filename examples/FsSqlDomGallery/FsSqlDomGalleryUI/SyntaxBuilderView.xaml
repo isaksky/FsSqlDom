@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FsSqlDomGalleryUI"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="100" />
+            <ColumnDefinition Width="1*" MinWidth="100" />
             <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="*" MinWidth="100" />
+            <ColumnDefinition Width="2*" MinWidth="100" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>

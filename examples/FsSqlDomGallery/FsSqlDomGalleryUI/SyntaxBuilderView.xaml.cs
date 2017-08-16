@@ -79,7 +79,7 @@ namespace FsSqlDomGalleryUI {
                     "open System.Text",
                     "open System.Collections.Generic",
                     @"#r ""Microsoft.SqlServer.TransactSql.ScriptDom.dll""",
-                    "open Microsoft.SqlServer.TransactSql.ScriptDom"}) {
+                    "open Microsoft.SqlServer.TransactSql"}) {
                     fsi.EvalInteraction(line);
                 }
                 sbOut.Clear();
@@ -98,18 +98,29 @@ namespace FsSqlDomGalleryUI {
                 var fsi = GetFsi();
                 lock (_fsi_lock) {
                     var ret = fsi.EvalInteractionNonThrowing(syntax_txt);
-                    if (ret.Item2 != null) {
-                        var errs = ret.Item2;
-                        foreach (var err in errs) {
-                            MessageBox.Show(err.Message);
+                    if (ret.Item1.IsChoice2Of2) {
+                        var er = ((FSharpChoice<Microsoft.FSharp.Core.Unit, Exception>.Choice2Of2)ret.Item1).Item;
+                        var errSb = new StringBuilder();
+                        errSb.Append(er.Message);
+                        return "";
+
+                        if (ret.Item2 != null) {
+                            var errs = ret.Item2;
+                            var errStr = String.Join("\n", errs.Select(err => err.Message));
+                            errSb.AppendLine(errStr);
+                            return "";
                         }
+                        if (errSb.Length > 0)
+                            MessageBox.Show(errSb.ToString().Substring(0, Math.Min(400, errSb.Length)));
+
                     }
 
+
                     var script_gen_result = fsi.EvalExpressionNonThrowing(@"
-                    let opts = SqlScriptGeneratorOptions()
-                    let gen = Sql130ScriptGenerator(opts)
+                    let opts = ScriptDom.SqlScriptGeneratorOptions()
+                    let gen = ScriptDom.Sql130ScriptGenerator(opts)
                     let tr = new StringWriter()
-                    gen.GenerateScript(var0, (tr :> TextWriter))
+                    gen.GenerateScript(tSqlScript0, (tr :> TextWriter))
                     tr.ToString()");
 
                     if (script_gen_result.Item1 != null) {
@@ -123,6 +134,7 @@ namespace FsSqlDomGalleryUI {
 
                         } else {
                             var er = ((FSharpChoice<FSharpOption<FsiValue>, Exception>.Choice2Of2)script_gen_result.Item1).Item;
+                            MessageBox.Show(er.Message);
                         }
                     } else if (script_gen_result.Item2 != null && script_gen_result.Item2.Length > 0) {
                         var errs = script_gen_result.Item2;
