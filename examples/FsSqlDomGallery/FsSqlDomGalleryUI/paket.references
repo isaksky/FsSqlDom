@@ -1,0 +1,6 @@
+group Example
+
+FSharp.Compiler.Service
+DataConnectionDialog
+FSharp.Core
+

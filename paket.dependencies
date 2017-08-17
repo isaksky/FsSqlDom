@@ -16,3 +16,9 @@ group Test
   
   nuget NUnit ~> 3
   nuget NUnit.Runners ~> 3
+  
+group Example
+	source https://nuget.org/api/v2
+	nuget FSharp.Compiler.Service
+	nuget DataConnectionDialog
+	nuget FSharp.Core

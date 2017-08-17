@@ -34,11 +34,11 @@ let project = "FsSqlDom"
 
 // Short summary of the project
 // (used as description in AssemblyInfo and as a short summary for NuGet package)
-let summary = "F# helper for SQL parsing"
+let summary = "Library for SQL parsing, AST manipulation and SQL generation in F#"
 
 // Longer description of the project
 // (used as a description for NuGet package; line breaks are automatically cleaned up)
-let description = "F# helper for SQL parsing"
+let description = "Library for SQL parsing, AST manipulation and SQL generation in F#"
 
 // List of author names (for NuGet package)
 let authors = [ "Isak Sky" ]
