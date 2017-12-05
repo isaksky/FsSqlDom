@@ -9,8 +9,6 @@ open Microsoft.SqlServer.TransactSql.ScriptDom
 open System.Reflection
 open Microsoft.FSharp.Reflection
 
-open FsSqlDom
-
 type StringBuilder with
     // Write with format string
     member this.w fmt =
@@ -90,68 +88,71 @@ let is_simple_inline_prop (pi:PropertyInfo) =
 let friendly_var_name (node: CodeNode) = 
   sprintf "%s%d" node.friendly_type_name node.var_id
 
-let rec render' (tree:CodeNode) : string * string =
-  if tree.is_inline then
-    let pre_sb = StringBuilder()
-    let pre_pre_sb = StringBuilder()
-
-    let depstmp = ResizeArray<obj>()
-    for node in tree.dependencies do
-      let pre, cur = render' node
-      pre_sb.wl "%s" pre
-      depstmp.Add (box cur)
-    
-    let deps : obj[] = Array.ofSeq depstmp
-    let cur = String.Format(tree.format_str, deps)
-
-    let pre = 
-      pre_pre_sb
-      |> combine_sbs pre_sb
-    pre, cur
-  else
-    let pre_sb = StringBuilder()
-
-    let vname = friendly_var_name tree
-
-    let depstmp = ResizeArray<obj>()
-
-    for node in tree.dependencies do
-      let pre, cur = render' node
-      if pre <> "" then
-        pre_sb.wl "%s" pre
-
-      depstmp.Add (box cur)
-
-    let deps : obj[] = depstmp |> Array.ofSeq
-    let decl = String.Format(tree.format_str, deps)
-    let list_sb_inline = StringBuilder()
-    let list_sb = StringBuilder()
-    let mutable statement_sep = ""
-    for list_prop in tree.list_dependencies do
-      for node in list_prop.dependencies do
-        statement_sep <- "\n"
-        let npre, ncur = (render' node)
-        if npre.Trim() <> "" then 
-          list_sb.wl "%s" npre
-
-        list_sb_inline.wl "%s.%s.Add (%s)" vname (list_prop.prop_name) ncur
-    
-    let pre =
-      (pre_sb
-      |> combine_sbs list_sb
-      |> fun x -> x.ToString())
-      //+ (if list_sb.Length > 0 then "\n" else "")
-      + (sprintf "let %s = %s" vname decl)
-      + statement_sep
-      + list_sb_inline.ToString()
-    
-    pre, vname
-
-
 let rec render (tree: CodeNode) : string =
+  let rendered = HashSet<int>()
+  let rec render' (tree:CodeNode) : string * string =
+    
+    if tree.is_inline then
+      let pre_sb = StringBuilder()
+      let pre_pre_sb = StringBuilder()
+
+      let depstmp = ResizeArray<obj>()
+      for node in tree.dependencies do
+        let pre, cur = render' node
+        pre_sb.wl "%s" pre
+        depstmp.Add (box cur)
+    
+      let deps : obj[] = Array.ofSeq depstmp
+      let cur = String.Format(tree.format_str, deps)
+
+      let pre = 
+        pre_pre_sb
+        |> combine_sbs pre_sb
+      pre, cur
+    else
+      let pre_sb = StringBuilder()
+
+      let vname = friendly_var_name tree
+
+      if rendered.Contains tree.var_id then
+        "", vname
+      else
+        let depstmp = ResizeArray<obj>()
+
+        for node in tree.dependencies do
+          let pre, cur = render' node
+          if pre <> "" then
+            pre_sb.wl "%s" pre
+
+          depstmp.Add (box cur)
+
+        let deps : obj[] = depstmp |> Array.ofSeq
+        let decl = String.Format(tree.format_str, deps)
+        let list_sb_inline = StringBuilder()
+        let list_sb = StringBuilder()
+        let mutable statement_sep = ""
+        for list_prop in tree.list_dependencies do
+          for node in list_prop.dependencies do
+            statement_sep <- "\n"
+            let npre, ncur = (render' node)
+            if npre.Trim() <> "" then 
+              list_sb.wl "%s" npre
+
+            list_sb_inline.wl "%s.%s.Add (%s)" vname (list_prop.prop_name) ncur
+    
+        let pre =
+          (pre_sb
+          |> combine_sbs list_sb
+          |> fun x -> x.ToString())
+          //+ (if list_sb.Length > 0 then "\n" else "")
+          + (sprintf "let %s = %s" vname decl)
+          + statement_sep
+          + list_sb_inline.ToString()
+      
+        rendered.Add (tree.var_id) |> ignore
+        pre, vname
   let pre, cur = render' tree
   pre
-
 
 
 let simple_literal (typ:Type) (o:obj) =
@@ -165,9 +166,11 @@ let simple_literal (typ:Type) (o:obj) =
   else
     failwith "not a simple type"
 
-let get_cs_build_str (expr: TSqlFragment) : string =
+let get_cs_build_str (expr: TSqlFragment) (reuse_vars: bool) : string =
   let var_id = ref 0
-  let root = CodeNode(var_id = !var_id)  
+  let root = CodeNode(var_id = !var_id)
+
+  let existing_vars = Dictionary<FsSqlDom.Dom.TSqlFragment, CodeNode>(HashIdentity.Structural)
 
   let rec addTop (expr: TSqlFragment) (tree: CodeNode) =
     let sb = StringBuilder()
@@ -203,7 +206,6 @@ let get_cs_build_str (expr: TSqlFragment) : string =
       Char.ToLowerInvariant(s.[0]).ToString() + s.Substring(1)
             
   and getInner (o: obj) (pname:string) (ptyp:Type) : CodeNode option =
-    
     if ptyp.IsEnum then
       CodeNode
         ( prop_name = pname, 
@@ -226,14 +228,30 @@ let get_cs_build_str (expr: TSqlFragment) : string =
             format_str = "\"" + s + "\"")
         |> Some
       | :? TSqlFragment as frag ->
-        let inner = CodeNode(prop_name = pname)
-        addProps frag inner
+        if reuse_vars then
+          let fs_frag = FsSqlDom.Dom.TSqlFragment.FromCs frag
+          match existing_vars.TryGetValue(fs_frag) with
+          | false, _ ->
+            let inner = CodeNode(prop_name = pname)
+            addProps frag inner
         
-        if not inner.is_inline then 
-          incr var_id
-          inner.var_id <- !var_id
+            if not inner.is_inline then 
+              incr var_id
+              inner.var_id <- !var_id
+            existing_vars.Add(fs_frag, inner)
+            Some inner
+          | true, codenode ->
+            Some codenode          
+        else
 
-        Some inner
+          let inner = CodeNode(prop_name = pname)
+          addProps frag inner
+        
+          if not inner.is_inline then 
+            incr var_id
+            inner.var_id <- !var_id
+
+          Some inner
       | :? seq<obj> as xs ->
         let list_prop = CodeNode(prop_name = pname, is_list_prop = true)
         for x in xs do
@@ -254,13 +272,13 @@ type SyntaxException(msg, errors) =
   inherit Exception(msg)
   member x.errors = errors
 
-let build_syntax (sql_query:string) : string =
+let build_syntax(sql_query:string, reuse_vars: bool) : string =
   let parser = TSql130Parser(false)
   let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
   use tr = new StringReader(sql_query) :> TextReader
   let res = parser.Parse(tr, &errs)
 
   if errs.Count = 0 then
-    get_cs_build_str res
+    get_cs_build_str res reuse_vars
   else
     raise <| SyntaxException("Invalid SQL", ResizeArray<_>(errs))

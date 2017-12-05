@@ -153,9 +153,10 @@ tr.ToString()";
 
         async void Button_Click(object sender, RoutedEventArgs e) {
             var query = _query_tb.Text;
+            var reuse_vars = _reuse_vars_cb.IsChecked ?? false;
             try {
                 var syntax = await Task.Factory.StartNew(() => {
-                    return SyntaxBuilding.build_syntax(query);
+                    return SyntaxBuilding.build_syntax(query, reuse_vars);
                 });
                 this.Dispatcher.Invoke(() => {
                     _syntax_tb.Text = syntax;
