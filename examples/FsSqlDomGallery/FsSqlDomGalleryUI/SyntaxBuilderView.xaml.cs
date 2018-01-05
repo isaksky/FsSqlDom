@@ -154,9 +154,11 @@ tr.ToString()";
         async void Button_Click(object sender, RoutedEventArgs e) {
             var query = _query_tb.Text;
             var reuse_vars = _reuse_vars_cb.IsChecked ?? false;
+            var use_fsharp_syntax = _lang_combo_box.SelectedIndex == 0;
+
             try {
                 var syntax = await Task.Factory.StartNew(() => {
-                    return SyntaxBuilding.build_syntax(query, reuse_vars);
+                    return SyntaxBuilding.build_syntax(query, reuse_vars, use_fsharp_syntax);
                 });
                 this.Dispatcher.Invoke(() => {
                     _syntax_tb.Text = syntax;
@@ -173,6 +175,12 @@ tr.ToString()";
                 });
             }
 
+        }
+
+        private void _lang_combo_box_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (_build_query_btn != null /* it is null on startup */ ) { 
+                _build_query_btn.IsEnabled = _lang_combo_box.SelectedIndex == 0;
+            }
         }
     }
 }

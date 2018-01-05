@@ -88,7 +88,7 @@ let is_simple_inline_prop (pi:PropertyInfo) =
 let friendly_var_name (node: CodeNode) = 
   sprintf "%s%d" node.friendly_type_name node.var_id
 
-let rec render (tree: CodeNode) : string =
+let rec render (tree: CodeNode) (fsharp_syntax:bool) : string =
   let rendered = HashSet<int>()
   let rec render' (tree:CodeNode) : string * string =
     
@@ -137,15 +137,19 @@ let rec render (tree: CodeNode) : string =
             let npre, ncur = (render' node)
             if npre.Trim() <> "" then 
               list_sb.wl "%s" npre
-
-            list_sb_inline.wl "%s.%s.Add (%s)" vname (list_prop.prop_name) ncur
+            list_sb_inline.w "%s.%s.Add (%s)" vname (list_prop.prop_name) ncur
+            if not fsharp_syntax then list_sb_inline.wc ';'
+            list_sb_inline.wc '\n'
     
         let pre =
           (pre_sb
           |> combine_sbs list_sb
           |> fun x -> x.ToString())
-          //+ (if list_sb.Length > 0 then "\n" else "")
-          + (sprintf "let %s = %s" vname decl)
+          + (if list_sb.Length > 0 then "\n" else "") 
+          + if fsharp_syntax then 
+              (sprintf "let %s = %s" vname decl)
+            else
+              (sprintf "var %s = %s;" vname decl)
           + statement_sep
           + list_sb_inline.ToString()
       
@@ -166,7 +170,7 @@ let simple_literal (typ:Type) (o:obj) =
   else
     failwith "not a simple type"
 
-let get_cs_build_str (expr: TSqlFragment) (reuse_vars: bool) : string =
+let get_cs_build_str (expr: TSqlFragment) (reuse_vars: bool) (fsharp_syntax: bool) : string =
   let var_id = ref 0
   let root = CodeNode(var_id = !var_id)
 
@@ -200,7 +204,14 @@ let get_cs_build_str (expr: TSqlFragment) (reuse_vars: bool) : string =
           tree.dependencies.Add child
           prop_inits.Add (sprintf "%s = {%d}" pi.Name i)
           i <- i + 1
-    tree.format_str <- sprintf "%s(%s)" (expr.GetType().TreeName) (prop_inits |> String.concat ", ")
+    if fsharp_syntax then
+      tree.format_str <- sprintf "%s(%s)" (expr.GetType().TreeName) (prop_inits |> String.concat ", ")
+    else
+      let arg_str =
+        if prop_inits.Count > 0 then
+          sprintf " {{ %s }}" (prop_inits |> String.concat ", ")
+        else "()"
+      tree.format_str <- sprintf "new %s%s" (expr.GetType().TreeName) arg_str
     tree.friendly_type_name <- 
       let s = expr.GetType().Name
       Char.ToLowerInvariant(s.[0]).ToString() + s.Substring(1)
@@ -266,19 +277,19 @@ let get_cs_build_str (expr: TSqlFragment) (reuse_vars: bool) : string =
       //| x -> tree.sb.wl "// what is %s %A ? " (ptyp.Name) x
 
   addTop expr root
-  render root
+  render root fsharp_syntax
 
 type SyntaxException(msg, errors) =
   inherit Exception(msg)
   member x.errors = errors
 
-let build_syntax(sql_query:string, reuse_vars: bool) : string =
+let build_syntax(sql_query:string, reuse_vars: bool, fsharp_syntax: bool) : string =
   let parser = TSql130Parser(false)
   let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
   use tr = new StringReader(sql_query) :> TextReader
   let res = parser.Parse(tr, &errs)
 
   if errs.Count = 0 then
-    get_cs_build_str res reuse_vars
+    get_cs_build_str res reuse_vars fsharp_syntax
   else
     raise <| SyntaxException("Invalid SQL", ResizeArray<_>(errs))

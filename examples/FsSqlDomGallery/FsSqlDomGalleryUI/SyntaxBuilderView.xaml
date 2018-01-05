@@ -20,9 +20,21 @@
         </Grid.RowDefinitions>
 
         <DockPanel Grid.Row="0"  Grid.ColumnSpan="3">
-            <CheckBox HorizontalAlignment="Right" 
-                      DockPanel.Dock="Right" 
-                      Name="_reuse_vars_cb">Reuse variables</CheckBox>
+            <Grid DockPanel.Dock="Right" HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                
+                <CheckBox HorizontalAlignment="Right" Name="_reuse_vars_cb">Reuse variables</CheckBox>
+                <ComboBox Name="_lang_combo_box" Grid.Column="1" HorizontalAlignment="Right" 
+                      DockPanel.Dock="Right" SelectedIndex="0" SelectionChanged="_lang_combo_box_SelectionChanged">
+                    <ComboBoxItem>F#</ComboBoxItem>
+                    <ComboBoxItem>C#</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+            
         </DockPanel>        
 
         <ScrollViewer Grid.Column="0" Grid.Row="1"
