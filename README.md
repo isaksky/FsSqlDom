@@ -24,7 +24,7 @@ Install from nuget:
 
 # Gallery WPF App
 
-The gallery is a Windows UI Application with some examples and tools to help use this library (and the C# library from Microsoft). 
+The main output of this project is a class library, but it also has a windows application with some examples and tools to help use the library (and the C# library from Microsoft).
 
 Features:
 
