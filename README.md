@@ -22,16 +22,23 @@ Install from nuget:
 
 [`Install-Package FsSqlDom`](https://www.nuget.org/packages/FsSqlDom/)
 
-# Project roadmap
+# Gallery WPF App
 
-It is mostly feature complete, though there are a couple of small things I'm considering:
+The gallery is a Windows UI Application with some examples and tools to help use this library (and the C# library from Microsoft). 
 
-- [ ] Currently, properties are exposed only of "leaf" types - one must destructure a type to the end of the type hierarchy in order to get the properties. But it may make sense to expose properties earlier, if the size of the generated code does not blow up too much.
-- [ ] Maybe add a set of active patterns, in order to make analysis easier
+Features:
+
+- Basic usage
+- Syntax Builder (similar to [Roslyn Quoter](http://roslynquoter.azurewebsites.net/)
+- Table Relationships vizualizer (based on analysing AST of views, procedures, and functions)
+
+### Screenshots:
+
+![UI](https://raw.githubusercontent.com/isaksky/FsSqlDom/master/docs/files/img/gallery.png)
+
+![Syntax Builder](https://raw.githubusercontent.com/isaksky/FsSqlDom/master/docs/files/img/syntax_view.png)
 
 # Design questions
 
-* Why generate only discriminated unions (DUs) with many fields, instead of DUs with a single record value?
-  * I agree that this is normally better, but when you are already dealing with thousands of types, adding even more is not an obvious win. The set of types is already quite big, and with records it would get much bigger.
-
-
+* Q: Why generate only discriminated unions (DUs) with many fields, instead of DUs with a single record value?
+  * A: In this case, it would result it way too many types, which creates a compiler (and tooling) performance problem.
