@@ -66,7 +66,7 @@ type AnalysisContext(connstr:string, logger: Action<string>) =
   member x.log = logger.Invoke
 
 let parse (sql:string) =
-  let parser = ScriptDom.TSql130Parser(false)
+  let parser = ScriptDom.TSql140Parser(false)
   let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
   use tr = new StringReader(sql) :> TextReader
   let res = parser.Parse(tr, &errs)

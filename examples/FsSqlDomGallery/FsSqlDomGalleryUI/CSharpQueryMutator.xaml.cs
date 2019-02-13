@@ -30,7 +30,7 @@ namespace FsSqlDomGalleryUI {
             _analysis_tb.Background = Brushes.Gold;
 
             var analysis_txt = await Task.Factory.StartNew(() => {
-                var parser = new TSql130Parser(false);
+                var parser = new TSql140Parser(false);
                 IList<ParseError> errors;
                 var fragment = parser.Parse(new StringReader(syntax_txt), out errors);
                 if (errors.Count > 0) {

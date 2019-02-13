@@ -12,7 +12,7 @@ type ParseFragmentResult =
 
 type Util =
   static member parse(tr:TextReader, initialQuotedIdentifiers:bool) =
-    let parser = ScriptDom.TSql130Parser(initialQuotedIdentifiers)
+    let parser = ScriptDom.TSql140Parser(initialQuotedIdentifiers)
     let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
     let res = parser.Parse(tr, &errs)
 
@@ -29,7 +29,7 @@ type Util =
 
   static member parseExpr(s:string, ?initialQuotedIdentifiers:bool) : Choice<ScalarExpression, IList<ScriptDom.ParseError>> =
     let initialQuotedIdentifiers = defaultArg initialQuotedIdentifiers false
-    let parser = ScriptDom.TSql130Parser(initialQuotedIdentifiers)
+    let parser = ScriptDom.TSql140Parser(initialQuotedIdentifiers)
     let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
     use tr = new StringReader(s) :> TextReader
     let res = parser.ParseExpression(tr, &errs)
@@ -46,7 +46,7 @@ type Util =
       match script with
       | TSqlBatch.TSqlBatch(statement::_) ->
         match statement with
-        | TSqlStatement.StatementWithCtesAndXmlNamespaces(StatementWithCtesAndXmlNamespaces.SelectStatement(SelectStatement.Base(_,_,_,qexpr,_))) ->
+        | TSqlStatement.StatementWithCtesAndXmlNamespaces(StatementWithCtesAndXmlNamespaces.SelectStatement(SelectStatement.Base(QueryExpression = qexpr))) ->
           qexpr
         | _ -> None
       | _ -> None
@@ -54,7 +54,7 @@ type Util =
 
   static member renderCs(frag:ScriptDom.TSqlFragment, ?opts:ScriptDom.SqlScriptGeneratorOptions) : string =
     let opts = defaultArg opts (ScriptDom.SqlScriptGeneratorOptions())
-    let gen = ScriptDom.Sql130ScriptGenerator(opts)
+    let gen = ScriptDom.Sql140ScriptGenerator(opts)
     use tr = new StringWriter()
     gen.GenerateScript(frag, (tr :> TextWriter))
     tr.ToString()

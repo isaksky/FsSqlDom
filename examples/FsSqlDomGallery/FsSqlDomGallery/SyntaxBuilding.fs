@@ -31,7 +31,7 @@ type Type with
     "ScriptDom." + x.Name
 
 let parse (sql:string) =
-  let parser = TSql130Parser(false)
+  let parser = TSql140Parser(false)
   let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
   use tr = new StringReader(sql) :> TextReader
   let res = parser.Parse(tr, &errs)
@@ -284,7 +284,7 @@ type SyntaxException(msg, errors) =
   member x.errors = errors
 
 let build_syntax(sql_query:string, reuse_vars: bool, fsharp_syntax: bool) : string =
-  let parser = TSql130Parser(false)
+  let parser = TSql140Parser(false)
   let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
   use tr = new StringReader(sql_query) :> TextReader
   let res = parser.Parse(tr, &errs)

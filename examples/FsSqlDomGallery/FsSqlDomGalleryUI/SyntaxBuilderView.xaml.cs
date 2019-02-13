@@ -91,7 +91,7 @@ namespace FsSqlDomGalleryUI {
 
         static readonly string EVAL_STR =
 @"let opts = ScriptDom.SqlScriptGeneratorOptions()
-let gen = ScriptDom.Sql130ScriptGenerator(opts)
+let gen = ScriptDom.Sql140ScriptGenerator(opts)
 let tr = new StringWriter()
 gen.GenerateScript(tSqlScript0, (tr :> TextWriter))
 tr.ToString()";

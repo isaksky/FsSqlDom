@@ -14,7 +14,7 @@ type ParseFragmentResult =
 
 type Util =
   static member parse(tr:TextReader, initialQuotedIdentifiers:bool) =
-    let parser = ScriptDom.TSql130Parser(initialQuotedIdentifiers)
+    let parser = ScriptDom.TSql140Parser(initialQuotedIdentifiers)
     let mutable errs : IList<_> = Unchecked.defaultof<IList<_>>
     let res = parser.Parse(tr, &errs)
 
