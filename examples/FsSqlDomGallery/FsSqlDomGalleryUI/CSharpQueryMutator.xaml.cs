@@ -38,7 +38,7 @@ namespace FsSqlDomGalleryUI {
                 }
 
                 fragment.Accept(new MyNaiveMutator());
-                var renderer = new Sql130ScriptGenerator();
+                var renderer = new Sql140ScriptGenerator();
                 string sql;
                 renderer.GenerateScript(fragment, out sql);
                 return sql;
