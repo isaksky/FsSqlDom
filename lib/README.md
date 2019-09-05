@@ -6,7 +6,4 @@ This typically includes custom builds of third-party software, private (i.e. to 
 ---
 NOTE: 
 
-The file here is:
-
-
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\SQLDB\DAC\140\Microsoft.SqlServer.TransactSql.ScriptDom.dll
+Extracted from: https://www.nuget.org/packages/Microsoft.SqlServer.DacFx.x64/
