@@ -4,7 +4,7 @@ open System.Reflection
 
 [<assembly: AssemblyTitleAttribute("FsSqlDom")>]
 [<assembly: AssemblyProductAttribute("FsSqlDom")>]
-[<assembly: AssemblyDescriptionAttribute("F# helper for SQL parsing")>]
+[<assembly: AssemblyDescriptionAttribute("Library for SQL parsing, AST manipulation and SQL generation in F#")>]
 [<assembly: AssemblyVersionAttribute("0.0.1")>]
 [<assembly: AssemblyFileVersionAttribute("0.0.1")>]
 do ()
@@ -12,6 +12,6 @@ do ()
 module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "FsSqlDom"
     let [<Literal>] AssemblyProduct = "FsSqlDom"
-    let [<Literal>] AssemblyDescription = "F# helper for SQL parsing"
+    let [<Literal>] AssemblyDescription = "Library for SQL parsing, AST manipulation and SQL generation in F#"
     let [<Literal>] AssemblyVersion = "0.0.1"
     let [<Literal>] AssemblyFileVersion = "0.0.1"

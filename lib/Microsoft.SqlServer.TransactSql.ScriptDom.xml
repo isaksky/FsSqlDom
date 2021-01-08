@@ -9,6 +9,351 @@
             Values for the CATALOG_COLLATION database option
             </summary>
         </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.OptionsHelper`1">
+            <summary>
+            Helper to deal with option lists (like in DECLARE CURSOR, for example)
+            </summary>
+            <typeparam name="OptionType">Enum representing option</typeparam>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.MaxAsciiCharValue">
+            <summary>
+            Maximum allowed ascii value of any character in the access key.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.Instance">
+            <summary>
+            Instance to call the methods statically.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.maxLength">
+            <summary>
+            Represents the max length 4K.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.fieldQuoteMaxLength">
+            <summary>
+            Represents the max length for quotefield delimiter.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.hexDecimalFieldQuoteMaxLen">
+            <summary>
+            Represents the max length for hexadecimal value of quotefield delimiter.
+            Maximum one can use 4 character for single character.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.credentialTypeMapping">
+            <summary>
+            Mapping of COPY credential identity option string values to supported COPY identity types.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.AssignValueToCopyOption(Microsoft.SqlServer.TransactSql.ScriptDom.CopyOption,Microsoft.SqlServer.TransactSql.ScriptDom.SingleValueTypeCopyOption)">
+            <summary>
+            Helper method to assign copy option values.
+            </summary>
+            <param name="copyOption">Copy option.</param>
+            <param name="singleValueTypeOption">The option value.</param>
+            <remarks>This method is used by the parser to construct the CopyOption object.
+            Please look at copyOption rule in Dsql10.g to understand its usage.</remarks>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.ValidateCopyCredential(Microsoft.SqlServer.TransactSql.ScriptDom.CopyCredentialOption)">
+            <summary>
+            Helper method to assign copy option values.
+            </summary>
+            <param name="credentialOption">Copy statement credential option.</param>
+            <returns>True, if credential option contains valid values, else False.</returns>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.ValidateSecret(Microsoft.SqlServer.TransactSql.ScriptDom.ValueExpression)">
+            <summary>
+            Validates secret option.
+            </summary>
+            <param name="valueExpression">Value expression containing the value.</param>
+            <returns>Value of literal.</returns>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.CheckForInvalidChars(System.String)">
+            <summary>
+            Checks for non ascii characters in access key.
+            </summary>
+            <param name="key">Access key.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.CheckForEmptyValues(System.String,System.Int32)">
+            <summary>
+            Checks for empty values.
+            </summary>
+            <param name="optionName">Name of the option.</param>
+            <param name="length">Length of the option's value.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.ValidateDelimiters(System.String,Microsoft.SqlServer.TransactSql.ScriptDom.ValueExpression)">
+            <summary>
+            Validates the delimiters.
+            </summary>
+            <param name="optionName">Name of the option.</param>
+            <param name="valueExpression">Value expression containing the value.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.ValidateAsStringLiteral(System.String,Microsoft.SqlServer.TransactSql.ScriptDom.ValueExpression,System.Boolean)">
+            <summary>
+            Validates the string literal.
+            </summary>
+            <param name="optionName">Name of the option.</param>
+            <param name="valueExpression">Value expression containing the value.</param>
+            <param name="checkForEmptyValues">If true then error is thrown if value is empty.</param>
+            <returns>Value of the expression.</returns>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.ValidateAsStringLiteral(System.String,Microsoft.SqlServer.TransactSql.ScriptDom.ValueExpression)">
+            <summary>
+            Validates the string literal.
+            </summary>
+            <param name = "optionName" > Name of the option.</param>
+            <param name = "valueExpression" > Value expression containing the value.</param>
+            <returns>Value of the expression.</returns>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyIdentifierOrValueOptionsHelper.GetCredentialType(System.String,Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCredentialType@)">
+            <summary>
+            Given the string value of the credential identity, it returns the type of credential used.
+            </summary>
+            <param name="credentialIdentity">Input string containing the credential identity.</param>
+            <param name="credentialType">Output credential type.</param>
+            <returns>Indicates whether the string to type mapping was successful.</returns>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyListOptionsHelper">
+            <summary>
+            Class to validate and assign values to copy options present in the form of list.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyListOptionsHelper.AssignCopyColumnOptions(Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption,Microsoft.SqlServer.TransactSql.ScriptDom.Identifier,Microsoft.SqlServer.TransactSql.ScriptDom.ScalarExpression,System.Boolean,Microsoft.SqlServer.TransactSql.ScriptDom.IntegerLiteral,System.Int32)">
+            <summary>
+            Assigns the values to CopyColumnOption object after basic validation.
+            </summary>
+            <param name="columnOption">Column option.</param>
+            <param name="columnName">Name of the column</param>
+            <param name="defaultColumnValue">Default column value if any</param>
+            <param name="defaultSpecified">True if default vlaue is specified</param>
+            <param name="fieldNumber">Corresponding column number in external file</param>
+            <param name="columnCount">Count of this column in the list, specifically passed for better error message</param>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyOptionKind">
+            <summary>
+            If this enum grows beyond 31, Parser needs to be updated - it uses 
+            Int32 to check for option duplication
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalFileOption">
+            <summary>
+            ExternalFileOption base class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalFileOption.CheckXMLValidity(Microsoft.SqlServer.TransactSql.ScriptDom.StringLiteral,System.String)">
+            <summary>
+            Checks whether sequence contains any unsupported xml character.
+            </summary>
+            <param name="sequence">Sequence of characters.</param>
+            <param name="option">Name of the option.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalFileOption.CheckXMLValidity(System.String,System.String)">
+            <summary>
+            Checks whether sequence contains any unsupported xml character.
+            </summary>
+            <param name="sequence">Sequence of characters.</param>
+            <param name="option">Name of the option.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalFileOption.CheckDelimiterValidity(System.String,System.String)">
+            <summary>
+            Check if a string is valid. We block using of characters
+            unsupported by XML, and verify that if the string is in correct
+            format if it is written in hexadecimal format.
+            </summary>
+            <param name="sequence">The string to be checked.</param>
+            <param name="option">The type of the delimiter.</param>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandFileFormatType">
+            <summary>
+            The supported file types for copy command.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandFileFormatType.Orc">
+            <summary>
+            ORC File created through hive.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandFileFormatType.Csv">
+            <summary>
+            For files following CSV standards.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandFileFormatType.Parquet">
+            <summary>
+            Parquet files created through Hive or Impala.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCompressionType">
+            <summary>
+            Compression type supported by copy command.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCompressionType.None">
+            <summary>
+            No compression.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCompressionType.Gzip">
+            <summary>
+            Gzip compression.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCompressionType.DefaultCodec">
+            <summary>
+            Default codec.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCompressionType.Snappy">
+            <summary>
+            Snappy codec.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCredentialType">
+            <summary>
+            Credential identity supported by COPY statement.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCredentialType.Sas">
+            <summary>
+            Shared Access Signature.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCredentialType.AccountKey">
+            <summary>
+            Storage Account Key.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCredentialType.ServicePrincipal">
+            <summary>
+            OAUTH2 / Service Principal.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCredentialType.ManagedIdentity">
+            <summary>
+            Managed Identity.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCredentialType.PassThrough">
+            <summary>
+            AAD Identity Paas Through.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandCredentialType.None">
+            <summary>
+            Public Account.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.FileFormatType">
+            <summary>
+            The supported external file formats.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.FileFormatType.Undefined">
+            <summary>
+            A default value to represent the uninitialized state.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.FileFormatType.RcFile">
+            <summary>
+            RC File created through hive.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.FileFormatType.Orc">
+            <summary>
+            ORC File created through hive.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.FileFormatType.DelimitedText">
+            <summary>
+            Delimited text files used by polybase.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.FileFormatType.Parquet">
+            <summary>
+            Parquet files created through Hive or Impala.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.FileFormatType.Csv">
+            <summary>
+            CSV only used by copy statement.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.FileFormatType.Parallel_Csv">
+            <summary>
+            CSV only used by copy statement to enable multithreading.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandDateFormat">
+            <summary>
+            Dateformat supported for copy command.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandDateFormat.mdy">
+            <summary>
+            Month day year.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandDateFormat.dmy">
+            <summary>
+            Day month year.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandDateFormat.ymd">
+            <summary>
+            Year month day.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandDateFormat.ydm">
+            <summary>
+            Year day month.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandDateFormat.myd">
+            <summary>
+            Month year day.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandDateFormat.dym">
+            <summary>
+            Day year month.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandEncoding">
+            <summary>
+            Encoding supported for copy command.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandEncoding.UTF8">
+            <summary>
+            UTF8 encoding.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandEncoding.UTF16">
+            <summary>
+            UTF16 encoding.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandIdentityInsert">
+            <summary>
+            Identity insert supported by copy command.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandIdentityInsert.ON">
+            <summary>
+            ON.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCommandIdentityInsert.OFF">
+            <summary>
+            OFF.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierOptionType">
+            <summary>
+            The workload classifier options.
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ScriptGenerator.SqlScriptGeneratorVisitor">
             <summary>
             Generate code for ALTER COLUMN ENCRYPTION KEY STATEMENT
@@ -285,6 +630,56 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewStatementBody)">
             <summary>
             Explicit Visitor for ViewStatementBody
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewForAppendOption)">
+            <summary>
+            Visitor for ViewForAppendOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewForAppendOption)">
+            <summary>
+            Explicit Visitor for ViewForAppendOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionOption)">
+            <summary>
+            Visitor for ViewDistributionOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionOption)">
+            <summary>
+            Explicit Visitor for ViewDistributionOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionPolicy)">
+            <summary>
+            Visitor for ViewDistributionPolicy
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionPolicy)">
+            <summary>
+            Explicit Visitor for ViewDistributionPolicy
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewRoundRobinDistributionPolicy)">
+            <summary>
+            Visitor for ViewRoundRobinDistributionPolicy
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewRoundRobinDistributionPolicy)">
+            <summary>
+            Explicit Visitor for ViewRoundRobinDistributionPolicy
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewHashDistributionPolicy)">
+            <summary>
+            Visitor for ViewHashDistributionPolicy
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewHashDistributionPolicy)">
+            <summary>
+            Explicit Visitor for ViewHashDistributionPolicy
             </summary>
         </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.TriggerObject)">
@@ -2557,6 +2952,16 @@
             Explicit Visitor for ColumnMasterKeyPathParameter
             </summary>
         </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyEnclaveComputationsParameter)">
+            <summary>
+            Visitor for ColumnMasterKeyEnclaveComputationsParameter
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyEnclaveComputationsParameter)">
+            <summary>
+            Explicit Visitor for ColumnMasterKeyEnclaveComputationsParameter
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.DropColumnMasterKeyStatement)">
             <summary>
             Visitor for DropColumnMasterKeyStatement
@@ -3285,6 +3690,16 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.LowPriorityLockWaitTableSwitchOption)">
             <summary>
             Explicit Visitor for LowPriorityLockWaitTableSwitchOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.TruncateTargetTableSwitchOption)">
+            <summary>
+            Visitor for TruncateTargetTableSwitchOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.TruncateTargetTableSwitchOption)">
+            <summary>
+            Explicit Visitor for TruncateTargetTableSwitchOption
             </summary>
         </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.DropClusteredConstraintOption)">
@@ -5287,6 +5702,16 @@
             Explicit Visitor for ChangeRetentionChangeTrackingOptionDetail
             </summary>
         </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.AcceleratedDatabaseRecoveryDatabaseOption)">
+            <summary>
+            Visitor for AcceleratedDatabaseRecoveryDatabaseOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.AcceleratedDatabaseRecoveryDatabaseOption)">
+            <summary>
+            Explicit Visitor for AcceleratedDatabaseRecoveryDatabaseOption
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.QueryStoreDatabaseOption)">
             <summary>
             Visitor for QueryStoreDatabaseOption
@@ -5735,6 +6160,96 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.TablePartitionOptionSpecifications)">
             <summary>
             Explicit Visitor for TablePartitionOptionSpecifications
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.LocationOption)">
+            <summary>
+            Visitor for LocationOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.LocationOption)">
+            <summary>
+            Explicit Visitor for LocationOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement)">
+            <summary>
+            Visitor for RenameEntityStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement)">
+            <summary>
+            Explicit Visitor for RenameEntityStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement)">
+            <summary>
+            Visitor for CopyStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement)">
+            <summary>
+            Explicit Visitor for CopyStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatementOptionBase)">
+            <summary>
+            Visitor for CopyStatementOptionBase
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatementOptionBase)">
+            <summary>
+            Explicit Visitor for CopyStatementOptionBase
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyOption)">
+            <summary>
+            Visitor for CopyOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyOption)">
+            <summary>
+            Explicit Visitor for CopyOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyCredentialOption)">
+            <summary>
+            Visitor for CopyCredentialOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyCredentialOption)">
+            <summary>
+            Explicit Visitor for CopyCredentialOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.SingleValueTypeCopyOption)">
+            <summary>
+            Visitor for SingleValueTypeCopyOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.SingleValueTypeCopyOption)">
+            <summary>
+            Explicit Visitor for SingleValueTypeCopyOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ListTypeCopyOption)">
+            <summary>
+            Visitor for ListTypeCopyOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ListTypeCopyOption)">
+            <summary>
+            Explicit Visitor for ListTypeCopyOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption)">
+            <summary>
+            Visitor for CopyColumnOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption)">
+            <summary>
+            Explicit Visitor for CopyColumnOption
             </summary>
         </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.DataCompressionOption)">
@@ -7797,6 +8312,16 @@
             Explicit Visitor for WindowsCreateLoginSource
             </summary>
         </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ExternalCreateLoginSource)">
+            <summary>
+            Visitor for ExternalCreateLoginSource
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ExternalCreateLoginSource)">
+            <summary>
+            Explicit Visitor for ExternalCreateLoginSource
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.CertificateCreateLoginSource)">
             <summary>
             Visitor for CertificateCreateLoginSource
@@ -8407,6 +8932,46 @@
             Explicit Visitor for CreateTypeTableStatement
             </summary>
         </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationStatement)">
+            <summary>
+            Visitor for SensitivityClassificationStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationStatement)">
+            <summary>
+            Explicit Visitor for SensitivityClassificationStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationOption)">
+            <summary>
+            Visitor for SensitivityClassificationOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationOption)">
+            <summary>
+            Explicit Visitor for SensitivityClassificationOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.AddSensitivityClassificationStatement)">
+            <summary>
+            Visitor for AddSensitivityClassificationStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.AddSensitivityClassificationStatement)">
+            <summary>
+            Explicit Visitor for AddSensitivityClassificationStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.DropSensitivityClassificationStatement)">
+            <summary>
+            Visitor for DropSensitivityClassificationStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.DropSensitivityClassificationStatement)">
+            <summary>
+            Explicit Visitor for DropSensitivityClassificationStatement
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.AuditSpecificationStatement)">
             <summary>
             Visitor for AuditSpecificationStatement
@@ -8645,6 +9210,16 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.MaxSizeAuditTargetOption)">
             <summary>
             Explicit Visitor for MaxSizeAuditTargetOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.RetentionDaysAuditTargetOption)">
+            <summary>
+            Visitor for RetentionDaysAuditTargetOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.RetentionDaysAuditTargetOption)">
+            <summary>
+            Explicit Visitor for RetentionDaysAuditTargetOption
             </summary>
         </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.MaxRolloverFilesAuditTargetOption)">
@@ -8905,6 +9480,126 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.DropWorkloadGroupStatement)">
             <summary>
             Explicit Visitor for DropWorkloadGroupStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierStatement)">
+            <summary>
+            Visitor for WorkloadClassifierStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierStatement)">
+            <summary>
+            Explicit Visitor for WorkloadClassifierStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierOption)">
+            <summary>
+            Visitor for WorkloadClassifierOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierOption)">
+            <summary>
+            Explicit Visitor for WorkloadClassifierOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWorkloadGroupOption)">
+            <summary>
+            Visitor for ClassifierWorkloadGroupOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWorkloadGroupOption)">
+            <summary>
+            Explicit Visitor for ClassifierWorkloadGroupOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierMemberNameOption)">
+            <summary>
+            Visitor for ClassifierMemberNameOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierMemberNameOption)">
+            <summary>
+            Explicit Visitor for ClassifierMemberNameOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmLabelOption)">
+            <summary>
+            Visitor for ClassifierWlmLabelOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmLabelOption)">
+            <summary>
+            Explicit Visitor for ClassifierWlmLabelOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierImportanceOption)">
+            <summary>
+            Visitor for ClassifierImportanceOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierImportanceOption)">
+            <summary>
+            Explicit Visitor for ClassifierImportanceOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmContextOption)">
+            <summary>
+            Visitor for ClassifierWlmContextOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmContextOption)">
+            <summary>
+            Explicit Visitor for ClassifierWlmContextOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierStartTimeOption)">
+            <summary>
+            Visitor for ClassifierStartTimeOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierStartTimeOption)">
+            <summary>
+            Explicit Visitor for ClassifierStartTimeOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierEndTimeOption)">
+            <summary>
+            Visitor for ClassifierEndTimeOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierEndTimeOption)">
+            <summary>
+            Explicit Visitor for ClassifierEndTimeOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.WlmTimeLiteral)">
+            <summary>
+            Visitor for WlmTimeLiteral
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.WlmTimeLiteral)">
+            <summary>
+            Explicit Visitor for WlmTimeLiteral
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.CreateWorkloadClassifierStatement)">
+            <summary>
+            Visitor for CreateWorkloadClassifierStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.CreateWorkloadClassifierStatement)">
+            <summary>
+            Explicit Visitor for CreateWorkloadClassifierStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.DropWorkloadClassifierStatement)">
+            <summary>
+            Visitor for DropWorkloadClassifierStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.DropWorkloadClassifierStatement)">
+            <summary>
+            Explicit Visitor for DropWorkloadClassifierStatement
             </summary>
         </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.BrokerPriorityStatement)">
@@ -9295,6 +9990,36 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ProcessAffinityRange)">
             <summary>
             Explicit Visitor for ProcessAffinityRange
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationSetExternalAuthenticationStatement)">
+            <summary>
+            Visitor for AlterServerConfigurationSetExternalAuthenticationStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationSetExternalAuthenticationStatement)">
+            <summary>
+            Explicit Visitor for AlterServerConfigurationSetExternalAuthenticationStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationOption)">
+            <summary>
+            Visitor for AlterServerConfigurationExternalAuthenticationOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationOption)">
+            <summary>
+            Explicit Visitor for AlterServerConfigurationExternalAuthenticationOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationContainerOption)">
+            <summary>
+            Visitor for AlterServerConfigurationExternalAuthenticationContainerOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationContainerOption)">
+            <summary>
+            Explicit Visitor for AlterServerConfigurationExternalAuthenticationContainerOption
             </summary>
         </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationSetBufferPoolExtensionStatement)">
@@ -9740,6 +10465,16 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewStatementBody)">
             <summary>
             Explicit Visitor for ViewStatementBody
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionPolicy)">
+            <summary>
+            Visitor for ViewDistributionPolicy
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionPolicy)">
+            <summary>
+            Explicit Visitor for ViewDistributionPolicy
             </summary>
         </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.TriggerStatementBody)">
@@ -10472,6 +11207,16 @@
             Explicit Visitor for PartitionSpecifications
             </summary>
         </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatementOptionBase)">
+            <summary>
+            Visitor for CopyStatementOptionBase
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatementOptionBase)">
+            <summary>
+            Explicit Visitor for CopyStatementOptionBase
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.BackupStatement)">
             <summary>
             Visitor for BackupStatement
@@ -10842,6 +11587,16 @@
             Explicit Visitor for MergeAction
             </summary>
         </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationStatement)">
+            <summary>
+            Visitor for SensitivityClassificationStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationStatement)">
+            <summary>
+            Explicit Visitor for SensitivityClassificationStatement
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.AuditSpecificationStatement)">
             <summary>
             Visitor for AuditSpecificationStatement
@@ -10922,6 +11677,26 @@
             Explicit Visitor for WorkloadGroupParameter
             </summary>
         </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierStatement)">
+            <summary>
+            Visitor for WorkloadClassifierStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierStatement)">
+            <summary>
+            Explicit Visitor for WorkloadClassifierStatement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierOption)">
+            <summary>
+            Visitor for WorkloadClassifierOption
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierOption)">
+            <summary>
+            Explicit Visitor for WorkloadClassifierOption
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlConcreteFragmentVisitor.Visit(Microsoft.SqlServer.TransactSql.ScriptDom.BrokerPriorityStatement)">
             <summary>
             Visitor for BrokerPriorityStatement
@@ -10982,6 +11757,20 @@
             Explicit Visitor for AvailabilityGroupOption
             </summary>
         </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ScriptGenerator.SqlScriptGeneratorVisitor.ExtractStringValue(Microsoft.SqlServer.TransactSql.ScriptDom.StringLiteral)">
+            <summary>
+            Extracts value from copy credential option.
+            </summary>
+            <param name="credOption">Copy option.</param>
+            <returns>Extracted string.</returns>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ScriptGenerator.SqlScriptGeneratorVisitor.ExtractStringValue(Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatementOptionBase)">
+            <summary>
+            Extracts value from copy option.
+            </summary>
+            <param name="option">Copy option.</param>
+            <returns>Extracted string.</returns>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ScriptGenerator.SqlScriptGeneratorVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyPathParameter)">
             <summary>
             Script generator for KEY_PATH = 'key_path'
@@ -10991,6 +11780,12 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ScriptGenerator.SqlScriptGeneratorVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyStoreProviderNameParameter)">
             <summary>
             Script generator for KEY_STORE_PROVIDER_NAME = 'key_store_provider_name'
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ScriptGenerator.SqlScriptGeneratorVisitor.ExplicitVisit(Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyEnclaveComputationsParameter)">
+            <summary>
+            Script generator for ENCLAVE_COMPUTATIONS (SIGNATURE = signature)
             </summary>
             <param name="node"></param>
         </member>
@@ -11145,6 +11940,682 @@
             Generates a script for this security policy option.
             </summary>
             <param name="node">The security policy option to script</param>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46001Message">
+            <summary>
+              Looks up a localized string similar to An internal parser error occurred..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46002Message">
+            <summary>
+              Looks up a localized string similar to {0} data type cannot have both National and Varying keywords..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46003Message">
+            <summary>
+              Looks up a localized string similar to {0} data type cannot have the National keyword..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46004Message">
+            <summary>
+              Looks up a localized string similar to {0} data type cannot have the Varying keyword..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46005Message">
+            <summary>
+              Looks up a localized string similar to Expected {0} but encountered {1} instead..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46006Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a WITH option for a procedure..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46007Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a WITH option for a trigger..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46008Message">
+            <summary>
+              Looks up a localized string similar to {0} data type cannot have exactly one parameter..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46009Message">
+            <summary>
+              Looks up a localized string similar to {0} data type cannot have two parameters..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46010Message">
+            <summary>
+              Looks up a localized string similar to Incorrect syntax near {0}..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46011Message">
+            <summary>
+              Looks up a localized string similar to Only Unique or Primary Key constraints can be created on computed columns, while Check, Foreign Key, and Not Null constraints require that computed columns be persisted..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46012Message">
+            <summary>
+              Looks up a localized string similar to More than one Default constraint is defined..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46013Message">
+            <summary>
+              Looks up a localized string similar to WITH VALUES can only be defined in an ALTER TABLE statement for a Default constraint..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46014Message">
+            <summary>
+              Looks up a localized string similar to A Default constraint can exist only at the column level in a CREATE or ALTER TABLE statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46015Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a valid option for an index that has the backward compatible syntax..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46016Message">
+            <summary>
+              Looks up a localized string similar to The column name is not valid. No table name was specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46017Message">
+            <summary>
+              Looks up a localized string similar to Count of column names cannot exceed 1024..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46018Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a valid option for CREATE STATISTICS..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46019Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a valid option for SAMPLE..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46020Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a valid option for UPDATE STATISTICS..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46021Message">
+            <summary>
+              Looks up a localized string similar to {0} does not allow a database name to be specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46022Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a recognized table or a view hint..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46023Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a recognized GROUP BY option..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46024Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a recognized COMPUTE function..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46025Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a WITH option for a view..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46026Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a WITH option for a CREATE FUNCTION or ALTER FUNCTION statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46027Message">
+            <summary>
+              Looks up a localized string similar to Exactly two part names are required in a DROP INDEX statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46028Message">
+            <summary>
+              Looks up a localized string similar to No more than four parts can be specified for this element name..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46029Message">
+            <summary>
+              Looks up a localized string similar to Unexpected end of file occurred..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46030Message">
+            <summary>
+              Looks up a localized string similar to Expected but did not find a closing quotation mark after the character string {0}..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46031Message">
+            <summary>
+              Looks up a localized string similar to Expected but did not find a closing square bracket after the identifier {0}..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46032Message">
+            <summary>
+              Looks up a localized string similar to Expected but did not find an end comment mark &apos;*/&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46033Message">
+            <summary>
+              Looks up a localized string similar to Expected but did not find a closing parenthesis after the identifier {0}..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46034Message">
+            <summary>
+              Looks up a localized string similar to Only one EXECUTE AS clause is allowed in this statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46035Message">
+            <summary>
+              Looks up a localized string similar to An ODBC join clause must encapsulate a qualified join or another ODBC join clause..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46036Message">
+            <summary>
+              Looks up a localized string similar to This usage of an ODBC clause is not supported. You must use curly brackets as delimiters..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46037Message">
+            <summary>
+              Looks up a localized string similar to The script contains syntax that is not supported by the version of SQL Server that is associated with the database project..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46038Message">
+            <summary>
+              Looks up a localized string similar to For DROP STATISTICS, you must provide both the object (table or view) name and the statistics name, in the form &quot;objectName.statisticsName&quot;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46039Message">
+            <summary>
+              Looks up a localized string similar to You cannot use the OUTPUT option in a CREATE FUNCTION statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46040Message">
+            <summary>
+              Looks up a localized string similar to An action of type &apos;INSERT&apos; is not allowed in &apos;WHEN SOURCE NOT MATCHED&apos; or &apos;MATCHED&apos; clauses of a MERGE statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46041Message">
+            <summary>
+              Looks up a localized string similar to An action of type &apos;{0}&apos; is not allowed in the &apos;WHEN NOT MATCHED&apos; clause of a MERGE statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46042Message">
+            <summary>
+              Looks up a localized string similar to More than one column ROWGUIDCOL constraint is specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46043Message">
+            <summary>
+              Looks up a localized string similar to More than one column IDENTITY constraint is specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46044Message">
+            <summary>
+              Looks up a localized string similar to Cannot have a logon trigger with a scope that is anything other than &apos;ALL SERVER&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46045Message">
+            <summary>
+              Looks up a localized string similar to The integer value {0} is out of range..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46047Message">
+            <summary>
+              Looks up a localized string similar to The ORDER BY clause is not valid in views, inline functions, derived tables, sub-queries, and common table expressions, unless TOP or FOR XML or OFFSET is also specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46048Message">
+            <summary>
+              Looks up a localized string similar to The TOP N WITH TIES clause is not allowed without a corresponding ORDER BY clause..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46049Message">
+            <summary>
+              Looks up a localized string similar to Option {0} is specified more than once..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46050Message">
+            <summary>
+              Looks up a localized string similar to The ALTER DATABASE change tracking option &apos;{0}&apos; was specified more than once. Each option can be specified only once..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46051Message">
+            <summary>
+              Looks up a localized string similar to FILESTREAM can only be declared for VARBINARY(MAX) columns..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46052Message">
+            <summary>
+              Looks up a localized string similar to The following string is not defined as a language alias in syslanguages: {0}.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46053Message">
+            <summary>
+              Looks up a localized string similar to The specified locale ID is not valid. Verify that the locale ID is correct and that a corresponding language resource has been installed..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46054Message">
+            <summary>
+              Looks up a localized string similar to The specified maximum size limit is greater than the maximum value allowed. The maximum size limit must be less than 16777215 TB..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46055Message">
+            <summary>
+              Looks up a localized string similar to Conversion failed when converting from a character string to uniqueidentifier..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46056Message">
+            <summary>
+              Looks up a localized string similar to The FILEPATH option must be specified for FILE audit target in a CREATE SERVER AUDIT statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46057Message">
+            <summary>
+              Looks up a localized string similar to Option &apos;{0}&apos; is not a valid index option in &apos;{1}&apos; statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46058Message">
+            <summary>
+              Looks up a localized string similar to The same large data placement option &apos;{0}&apos; has been specified twice..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46059Message">
+            <summary>
+              Looks up a localized string similar to There is an incorrect expression in the WHERE clause..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46060Message">
+            <summary>
+              Looks up a localized string similar to Fill factor {0} is not a valid percentage; fill factor must be between 1 and 100..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46061Message">
+            <summary>
+              Looks up a localized string similar to In an ALTER TABLE REBUILD or ALTER INDEX REBUILD statement, when a partition is specified in a DATA_COMPRESSION clause, PARTITION=ALL must be specified. The PARTITION=ALL clause is used to reinforce that all partitions of the table or index will be rebuilt, even if only a subset is specified in the DATA_COMPRESSION clause..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46062Message">
+            <summary>
+              Looks up a localized string similar to The NEWNAME option is allowed only with ALTER DATABASE MODIFY FILE syntax..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46063Message">
+            <summary>
+              Looks up a localized string similar to An empty string is not allowed here..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46065Message">
+            <summary>
+              Looks up a localized string similar to The file option FILENAME is required in this CREATE/ALTER DATABASE statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46066Message">
+            <summary>
+              Looks up a localized string similar to For the {0} option, four parameters must be specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46067Message">
+            <summary>
+              Looks up a localized string similar to Bounding-box coordinates apply only within a USING GEOMETRY_GRID clause..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46069Message">
+            <summary>
+              Looks up a localized string similar to All three options (PROCEDURE_NAME, EXECUTE AS, MAX_QUEUE_READERS) must be specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46070Message">
+            <summary>
+              Looks up a localized string similar to The use of the option {0} in the DROP INDEX statement is not valid..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46071Message">
+            <summary>
+              Looks up a localized string similar to Conflicting CREATE/UPDATE STATISTICS options &quot;SAMPLE&quot; and &quot;FULLSCAN&quot;.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46072Message">
+            <summary>
+              Looks up a localized string similar to The CHANGE_TRACKING_CONTEXT WITH clause cannot be used with a SELECT statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46073Message">
+            <summary>
+              Looks up a localized string similar to The value for the CELLS_PER_OBJECT spatial index option should be between 1 and 8192..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46074Message">
+            <summary>
+              Looks up a localized string similar to Index hints are only allowed in a FROM or OPTION clause..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46075Message">
+            <summary>
+              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement is not allowed inside another nested INSERT, UPDATE, DELETE, or MERGE statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46076Message">
+            <summary>
+              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement is not allowed in a SELECT statement that is not the immediate source of rows for an INSERT statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46077Message">
+            <summary>
+              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement is not allowed in the FROM clause of an UPDATE or DELETE statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46078Message">
+            <summary>
+              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement is not allowed in the USING clause of a MERGE statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46079Message">
+            <summary>
+              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement must have an OUTPUT clause..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46080Message">
+            <summary>
+              Looks up a localized string similar to The required parameter ROLE was not specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46081Message">
+            <summary>
+              Looks up a localized string similar to The index option {0} in the CREATE SPATIAL INDEX statement must appear before the general index options..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46082Message">
+            <summary>
+              Looks up a localized string similar to Either a format file or one of the three options (SINGLE_BLOB, SINGLE_CLOB, or SINGLE_NCLOB) must be specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46083Message">
+            <summary>
+              Looks up a localized string similar to The WHERE CURRENT OF clause is not allowed in a nested INSERT, UPDATE, DELETE, or MERGE statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46084Message">
+            <summary>
+              Looks up a localized string similar to The CUBE, ROLLUP, and GROUPING SETS constructs are not allowed in a GROUP BY ALL clause..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46085Message">
+            <summary>
+              Looks up a localized string similar to The WITH CUBE and WITH ROLLUP options are not permitted with a ROLLUP, CUBE, or GROUPING SETS specification..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46086Message">
+            <summary>
+              Looks up a localized string similar to DISTINCT is not allowed for windowed aggregate functions..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46087Message">
+            <summary>
+              Looks up a localized string similar to The integer value {0} for &quot;LISTENER_PORT&quot; is out of range. The value should be between 1024 and 32767..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46088Message">
+            <summary>
+              Looks up a localized string similar to Cannot use the OUTPUT option when passing a constant to a stored procedure..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46089Message">
+            <summary>
+              Looks up a localized string similar to Must pass parameter number {0} and subsequent parameters as &apos;@name = value&apos;. After the form &apos;@name = value&apos; has been used, all subsequent parameters must be passed in the form &apos;@name = value&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46090Message">
+            <summary>
+              Looks up a localized string similar to Syntax error: Duplicate specification of the action &quot;{0}&quot; in the trigger declaration.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46091Message">
+            <summary>
+              Looks up a localized string similar to The value {0} for index option &apos;maxdop&apos; is out of range. It should be between 0 and 32767..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46092Message">
+            <summary>
+              Looks up a localized string similar to &quot;{0}&quot;: Temporary views are not allowed..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46093Message">
+            <summary>
+              Looks up a localized string similar to &quot;{0}&quot;: Temporary functions are not allowed..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46094Message">
+            <summary>
+              Looks up a localized string similar to Percent values must be between 0 and 100..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46095Message">
+            <summary>
+              Looks up a localized string similar to The Identifier that starts with &apos;{0}&apos; is too long.  Maximum length is 128..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46096Message">
+            <summary>
+              Looks up a localized string similar to The parameter {0} cannot be provided for users that cannot authenticate in a database..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46097Message">
+            <summary>
+              Looks up a localized string similar to A {0} statement must be terminated by a semi-colon (;).
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46098Message">
+            <summary>
+              Looks up a localized string similar to Subqueries are not allowed in this context. Only scalar expressions are allowed..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46099Message">
+            <summary>
+              Looks up a localized string similar to RANGE in OVER clause is only supported with UNBOUNDED and CURRENT ROW frame delimiters..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46100Message">
+            <summary>
+              Looks up a localized string similar to OVER clause has illegal window frame specification..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46101Message">
+            <summary>
+              Looks up a localized string similar to The time value {0} for MAX_DURATION is out of range. It should be between 0 and 71582..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46102Message">
+            <summary>
+              Looks up a localized string similar to The time value {0} for MAX_DURATION is not allowed for ABORT_AFTER_WAIT = {1}..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46103Message">
+            <summary>
+              Looks up a localized string similar to Temporal tables require the lower boundary column name in SYSTEM_TIME PERIOD definition to match the GENERATED ALWAYS AS ROW START column name..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46104Message">
+            <summary>
+              Looks up a localized string similar to Temporal tables require the upper boundary column name in SYSTEM_TIME PERIOD definition to match the GENERATED ALWAYS AS ROW END column name..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46105Message">
+            <summary>
+              Looks up a localized string similar to GENERATED ALWAYS AS ROW START column must be defined for Temporal tables..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46106Message">
+            <summary>
+              Looks up a localized string similar to GENERATED ALWAYS AS ROW END column must be defined for Temporal tables..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46107Message">
+            <summary>
+              Looks up a localized string similar to Filtered indexes are not supported on memory optimized tables..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46108Message">
+            <summary>
+              Looks up a localized string similar to Nonclustered column store indexes are not supported on memory optimized tables..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46109Message">
+            <summary>
+              Looks up a localized string similar to GENERATED ALWAYS AS USER ID START column must be unique..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46110Message">
+            <summary>
+              Looks up a localized string similar to GENERATED ALWAYS AS USER ID END column must be unique..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46111Message">
+            <summary>
+              Looks up a localized string similar to GENERATED ALWAYS AS USER NAME START column must be unique..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46112Message">
+            <summary>
+              Looks up a localized string similar to GENERATED ALWAYS AS USER NAME END column must be unique..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46113Message">
+            <summary>
+              Looks up a localized string similar to Cannot create GENERATED ALWAYS column when SYSTEM_TIME period is not defined.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46114Message">
+            <summary>
+              Looks up a localized string similar to The specified COMPRESSION_DELAY option value {0} is invalid. The valid range for disk-based table is AUTO or between (0, 10080) minutes and for memory-optimized table is AUTO, 0 or between (60, 10080) minutes..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46115Message">
+            <summary>
+              Looks up a localized string similar to Cannot set configuration option to PRIMARY when FOR SECONDARY is not specified..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46116Message">
+            <summary>
+              Looks up a localized string similar to {0} is not a valid value for system versioning history retention period. The value must be a positive number larger than 0..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46117Message">
+            <summary>
+              Looks up a localized string similar to The script contains clause {0} which is not supported by the targeted version of SQL Server..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46118Message">
+            <summary>
+              Looks up a localized string similar to CSV format option is supported for char and widechar datafiletype options..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46119Message">
+            <summary>
+              Looks up a localized string similar to Format option cannot be specified together with SINGLE_BLOB, SINGLE_CLOB or SINGLE_NCLOB option..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46120Message">
+            <summary>
+              Looks up a localized string similar to {0} option is not supported for this type of login..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46121Message">
+            <summary>
+              Looks up a localized string similar to SID and type options are both required for this type of login..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46122Message">
+            <summary>
+              Looks up a localized string similar to RANK value cannot be provided as text.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46123Message">
+            <summary>
+              Looks up a localized string similar to {0} value must be provided as text.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46124Message">
+            <summary>
+              Looks up a localized string similar to Illegal sensitivity rank value provided.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46125Message">
+            <summary>
+              Looks up a localized string similar to Illegal sensitivity option {0} recognized. Legal options are: LABEL, LABEL_ID, INFORMATION_TYPE, INFORMATION_TYPE_ID, RANK.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46126Message">
+            <summary>
+              Looks up a localized string similar to The PATH option must be specified for URL audit target in a CREATE SERVER AUDIT statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46127Message">
+            <summary>
+              Looks up a localized string similar to The CTAS statement requires a distribution option..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46128Message">
+            <summary>
+              Looks up a localized string similar to REJECTED_ROW_LOCATION cannot be specified in a CREATE EXTERNAL TABLE AS SELECT statement..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46129Message">
+            <summary>
+              Looks up a localized string similar to The GROUP BY clause can only contain a single DISTRIBUTED_AGG query hint..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46130Message">
+            <summary>
+              Looks up a localized string similar to COPY statement failed because the value for option {0} is invalid..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46131Message">
+            <summary>
+              Looks up a localized string similar to COPY statement failed because {0} contains invalid number of characters..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46132Message">
+            <summary>
+              Looks up a localized string similar to Copy Command SAS Key is invalid.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46133Message">
+            <summary>
+              Looks up a localized string similar to {0} must be a multiple of 0.25..
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46134Message">
+            <summary>
+              Looks up a localized string similar to Time input should be in HH:MM format.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.UserDefined">
+            <summary>
+              Looks up a localized string similar to User-defined.
+            </summary>
         </member>
         <member name="T:antlr.InputBuffer">
             <summary>
@@ -11439,12 +12910,6 @@
             After timeout abort the statement itself.
             </summary>
         </member>
-        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.OptionsHelper`1">
-            <summary>
-            Helper to deal with option lists (like in DECLARE CURSOR, for example)
-            </summary>
-            <typeparam name="OptionType">Enum representing option</typeparam>
-        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AffinityKind">
             <summary>
             The types of endpoint affinity 
@@ -11584,6 +13049,11 @@
             <summary>
             The types of alter resource governor command
             </summary>   
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationOptionKind">
+            <summary>
+            The types of external authentication options.
+            </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationBufferPoolExtensionOptionKind">
             <summary>
@@ -14937,6 +16407,14 @@
             Specific to Shard Map Manager data sources.
             </remarks>
         </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourceOptionKind.ConnectionOptions">
+            <summary>
+            Additional option when connecting over ODBC to an external data source.
+            </summary>
+            <remarks>
+            Specific to Polybase external data sources
+            </remarks>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourceType">
             <summary>
             The enumeration specifies the external data source type for external tables
@@ -14961,6 +16439,27 @@
         <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourceType.BLOB_STORAGE">
             <summary>
              BLOB_STORAGE external data source type.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourceType.EXTERNAL_GENERICS">
+            <summary>
+             EXTERNAL_GENERICS external data source type.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourcePushdownOption">
+            <summary>
+            The enumeration specifies the external data source type for external tables
+            Currently, we support HADOOP, RDBMS, and SHARD_MAP_MANAGER.
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourcePushdownOption.ON">
+            <summary>
+            PUSDOWN = ON
+            </summary>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourcePushdownOption.OFF">
+            <summary>
+            PUSHDOWN = OFF
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalFileFormatOptionHelper">
@@ -15102,6 +16601,14 @@
             </summary>
             <remarks>
             Specific to Shard Map Manager based external tables.
+            </remarks>
+        </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalTableOptionKind.RejectedRowLocation">
+            <summary>
+            The directory within the External Data Source where rejected rows and the corresponding error file are written.
+            </summary>
+            <remarks>
+            Specific to Hadoop based external tables.
             </remarks>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalTableRejectType">
@@ -15505,7 +17012,7 @@
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ImportanceParameterType">
             <summary>
             The possible values for importance parameter in CREATE/ALTER WORKLOAD GROUP and CREATE SPATIAL INDEX statements
-            </summary>        
+            </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.IndexAffectingStatement">
             <summary>
@@ -16466,6 +17973,26 @@
         <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.SemanticFunctionType.SemanticSimilarityDetailsTable">
             <summary>
             SEMANTICSIMILARITYDETAILSTABLE keyword.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassification">
+            <summary>
+            Utility class to expose sensitivity classification enums and methods
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassification.GetOptionTypeByName(System.String)">
+            <summary>
+            Returns sensitivity option type by option name
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassification.OptionType">
+            <summary>
+            Sensitivity classification option type used in AddSensitivityClassificationStatement
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassification.Rank">
+            <summary>
+            Sensitivity classification rank values
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.SeparatorType">
@@ -18389,6 +19916,11 @@
             Parses an input string to get a constant or identifier or default literal(literal with value "DEFAULT"). This will return null, if there were any errors.
             </summary>
         </member>
+        <member name="F:Microsoft.SqlServer.TransactSql.ScriptDom.TSql130ParserBaseInternal.EncryptionWithAsterisks">
+            <summary>
+            String used to encrypt secure information with Asterisks.
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSql130ParserBaseInternal.#ctor(System.Boolean)">
             <summary>
             Real constructor (the one which is used)
@@ -18435,6 +19967,41 @@
             Determines if the create talbe statement is memory optimized.
             </summary>
             <param name="statement">The create table statement.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSql130ParserBaseInternal.CheckCtasStatementHasDistributionOption(Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement)">
+            <summary>
+            This method checks Ctas statements has distribution option, which is required.
+            If no distribution option mentioned, this method throws parser error saying "The CTAS statement requires a distribution option"
+            </summary>
+            <param name="statement">The create table statement.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSql130ParserBaseInternal.CheckExternalTableCtasStatementHasNotRejectedRowLocationOption(Microsoft.SqlServer.TransactSql.ScriptDom.CreateExternalTableStatement)">
+            <summary>
+            This method checks External Table Ctas statements has not Rejected Row Location option.
+            If Rejected Row Location option mentioned, this method throws parser error saying "REJECTED_ROW_LOCATION cannot be specified in a CREATE EXTERNAL TABLE AS SELECT statement."
+            </summary>
+            <param name="statement">The create table statement.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSql130ParserBaseInternal.CheckAndIncrementColumnCount(System.Int32@,antlr.IToken)">
+            <summary>
+            Checks whether the column limit is reached and if not it increments the column count.
+            </summary>
+            <param name="columnCount">Current column count</param>
+            <param name="token">Token to be passed in case of error.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSql130ParserBaseInternal.CheckCopyOptionDuplication(System.Int32@,Microsoft.SqlServer.TransactSql.ScriptDom.CopyOptionKind,antlr.IToken)">
+            <summary>
+            Checks, if option was already specified, and if it is the case, throws
+            </summary>
+            <param name="encountered">The encountered.</param>
+            <param name="newOption">The new option to be added.</param>
+            <param name="token">The token.</param>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TSql130ParserBaseInternal.CheckValidWlmTimeLiteral(Microsoft.SqlServer.TransactSql.ScriptDom.StringLiteral)">
+            <summary>
+            Checks, if TimeLiteral is valid and if not, throws
+            </summary>
+            <param name="timeStringToken">Time as string literal</param>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.TSql140Parser">
             <summary>
@@ -19091,7 +20658,7 @@
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadGroupParameterType">
             <summary>
             The types of workload resource paramters
-            </summary>            
+            </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.XmlDataTypeOption">
             <summary>
@@ -19583,602 +21150,6 @@
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.SqlScriptGeneratorResource.UnknownQuoteType">
             <summary>
               Looks up a localized string similar to Unknown quote type is encountered.
-            </summary>
-        </member>
-        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46001Message">
-            <summary>
-              Looks up a localized string similar to An internal parser error occurred..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46002Message">
-            <summary>
-              Looks up a localized string similar to {0} data type cannot have both National and Varying keywords..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46003Message">
-            <summary>
-              Looks up a localized string similar to {0} data type cannot have the National keyword..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46004Message">
-            <summary>
-              Looks up a localized string similar to {0} data type cannot have the Varying keyword..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46005Message">
-            <summary>
-              Looks up a localized string similar to Expected {0} but encountered {1} instead..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46006Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a WITH option for a procedure..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46007Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a WITH option for a trigger..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46008Message">
-            <summary>
-              Looks up a localized string similar to {0} data type cannot have exactly one parameter..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46009Message">
-            <summary>
-              Looks up a localized string similar to {0} data type cannot have two parameters..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46010Message">
-            <summary>
-              Looks up a localized string similar to Incorrect syntax near {0}..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46011Message">
-            <summary>
-              Looks up a localized string similar to Only Unique or Primary Key constraints can be created on computed columns, while Check, Foreign Key, and Not Null constraints require that computed columns be persisted..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46012Message">
-            <summary>
-              Looks up a localized string similar to More than one Default constraint is defined..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46013Message">
-            <summary>
-              Looks up a localized string similar to WITH VALUES can only be defined in an ALTER TABLE statement for a Default constraint..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46014Message">
-            <summary>
-              Looks up a localized string similar to A Default constraint can exist only at the column level in a CREATE or ALTER TABLE statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46015Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a valid option for an index that has the backward compatible syntax..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46016Message">
-            <summary>
-              Looks up a localized string similar to The column name is not valid. No table name was specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46018Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a valid option for CREATE STATISTICS..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46019Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a valid option for SAMPLE..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46020Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a valid option for UPDATE STATISTICS..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46021Message">
-            <summary>
-              Looks up a localized string similar to {0} does not allow a database name to be specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46022Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a recognized table or a view hint..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46023Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a recognized GROUP BY option..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46024Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a recognized COMPUTE function..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46025Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a WITH option for a view..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46026Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a WITH option for a CREATE FUNCTION or ALTER FUNCTION statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46027Message">
-            <summary>
-              Looks up a localized string similar to Exactly two part names are required in a DROP INDEX statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46028Message">
-            <summary>
-              Looks up a localized string similar to No more than four parts can be specified for this element name..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46029Message">
-            <summary>
-              Looks up a localized string similar to Unexpected end of file occurred..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46030Message">
-            <summary>
-              Looks up a localized string similar to Expected but did not find a closing quotation mark after the character string {0}..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46031Message">
-            <summary>
-              Looks up a localized string similar to Expected but did not find a closing square bracket after the identifier {0}..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46032Message">
-            <summary>
-              Looks up a localized string similar to Expected but did not find an end comment mark &apos;*/&apos;..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46033Message">
-            <summary>
-              Looks up a localized string similar to Expected but did not find a closing parenthesis after the identifier {0}..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46034Message">
-            <summary>
-              Looks up a localized string similar to Only one EXECUTE AS clause is allowed in this statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46035Message">
-            <summary>
-              Looks up a localized string similar to An ODBC join clause must encapsulate a qualified join or another ODBC join clause..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46036Message">
-            <summary>
-              Looks up a localized string similar to This usage of an ODBC clause is not supported. You must use curly brackets as delimiters..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46037Message">
-            <summary>
-              Looks up a localized string similar to The script contains syntax that is not supported by the version of SQL Server that is associated with the database project..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46038Message">
-            <summary>
-              Looks up a localized string similar to For DROP STATISTICS, you must provide both the object (table or view) name and the statistics name, in the form &quot;objectName.statisticsName&quot;..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46039Message">
-            <summary>
-              Looks up a localized string similar to You cannot use the OUTPUT option in a CREATE FUNCTION statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46040Message">
-            <summary>
-              Looks up a localized string similar to An action of type &apos;INSERT&apos; is not allowed in &apos;WHEN SOURCE NOT MATCHED&apos; or &apos;MATCHED&apos; clauses of a MERGE statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46041Message">
-            <summary>
-              Looks up a localized string similar to An action of type &apos;{0}&apos; is not allowed in the &apos;WHEN NOT MATCHED&apos; clause of a MERGE statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46042Message">
-            <summary>
-              Looks up a localized string similar to More than one column ROWGUIDCOL constraint is specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46043Message">
-            <summary>
-              Looks up a localized string similar to More than one column IDENTITY constraint is specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46044Message">
-            <summary>
-              Looks up a localized string similar to Cannot have a logon trigger with a scope that is anything other than &apos;ALL SERVER&apos;..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46045Message">
-            <summary>
-              Looks up a localized string similar to The integer value {0} is out of range..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46047Message">
-            <summary>
-              Looks up a localized string similar to The ORDER BY clause is not valid in views, inline functions, derived tables, sub-queries, and common table expressions, unless TOP or FOR XML or OFFSET is also specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46048Message">
-            <summary>
-              Looks up a localized string similar to The TOP N WITH TIES clause is not allowed without a corresponding ORDER BY clause..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46049Message">
-            <summary>
-              Looks up a localized string similar to Option {0} is specified more than once..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46050Message">
-            <summary>
-              Looks up a localized string similar to The ALTER DATABASE change tracking option &apos;{0}&apos; was specified more than once. Each option can be specified only once..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46051Message">
-            <summary>
-              Looks up a localized string similar to FILESTREAM can only be declared for VARBINARY(MAX) columns..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46052Message">
-            <summary>
-              Looks up a localized string similar to The following string is not defined as a language alias in syslanguages: {0}.
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46053Message">
-            <summary>
-              Looks up a localized string similar to The specified locale ID is not valid. Verify that the locale ID is correct and that a corresponding language resource has been installed..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46054Message">
-            <summary>
-              Looks up a localized string similar to The specified maximum size limit is greater than the maximum value allowed. The maximum size limit must be less than 16777215 TB..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46055Message">
-            <summary>
-              Looks up a localized string similar to Conversion failed when converting from a character string to uniqueidentifier..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46056Message">
-            <summary>
-              Looks up a localized string similar to The FILEPATH option must be specified for FILE audit target in a CREATE SERVER AUDIT statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46057Message">
-            <summary>
-              Looks up a localized string similar to Option &apos;{0}&apos; is not a valid index option in &apos;{1}&apos; statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46058Message">
-            <summary>
-              Looks up a localized string similar to The same large data placement option &apos;{0}&apos; has been specified twice..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46059Message">
-            <summary>
-              Looks up a localized string similar to There is an incorrect expression in the WHERE clause..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46060Message">
-            <summary>
-              Looks up a localized string similar to Fill factor {0} is not a valid percentage; fill factor must be between 1 and 100..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46061Message">
-            <summary>
-              Looks up a localized string similar to In an ALTER TABLE REBUILD or ALTER INDEX REBUILD statement, when a partition is specified in a DATA_COMPRESSION clause, PARTITION=ALL must be specified. The PARTITION=ALL clause is used to reinforce that all partitions of the table or index will be rebuilt, even if only a subset is specified in the DATA_COMPRESSION clause..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46062Message">
-            <summary>
-              Looks up a localized string similar to The NEWNAME option is allowed only with ALTER DATABASE MODIFY FILE syntax..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46063Message">
-            <summary>
-              Looks up a localized string similar to An empty string is not allowed here..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46065Message">
-            <summary>
-              Looks up a localized string similar to The file option FILENAME is required in this CREATE/ALTER DATABASE statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46066Message">
-            <summary>
-              Looks up a localized string similar to For the {0} option, four parameters must be specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46067Message">
-            <summary>
-              Looks up a localized string similar to Bounding-box coordinates apply only within a USING GEOMETRY_GRID clause..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46069Message">
-            <summary>
-              Looks up a localized string similar to All three options (PROCEDURE_NAME, EXECUTE AS, MAX_QUEUE_READERS) must be specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46070Message">
-            <summary>
-              Looks up a localized string similar to The use of the option {0} in the DROP INDEX statement is not valid..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46071Message">
-            <summary>
-              Looks up a localized string similar to Conflicting CREATE/UPDATE STATISTICS options &quot;SAMPLE&quot; and &quot;FULLSCAN&quot;.
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46072Message">
-            <summary>
-              Looks up a localized string similar to The CHANGE_TRACKING_CONTEXT WITH clause cannot be used with a SELECT statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46073Message">
-            <summary>
-              Looks up a localized string similar to The value for the CELLS_PER_OBJECT spatial index option should be between 1 and 8192..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46074Message">
-            <summary>
-              Looks up a localized string similar to Index hints are only allowed in a FROM or OPTION clause..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46075Message">
-            <summary>
-              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement is not allowed inside another nested INSERT, UPDATE, DELETE, or MERGE statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46076Message">
-            <summary>
-              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement is not allowed in a SELECT statement that is not the immediate source of rows for an INSERT statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46077Message">
-            <summary>
-              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement is not allowed in the FROM clause of an UPDATE or DELETE statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46078Message">
-            <summary>
-              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement is not allowed in the USING clause of a MERGE statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46079Message">
-            <summary>
-              Looks up a localized string similar to A nested INSERT, UPDATE, DELETE, or MERGE statement must have an OUTPUT clause..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46080Message">
-            <summary>
-              Looks up a localized string similar to The required parameter ROLE was not specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46081Message">
-            <summary>
-              Looks up a localized string similar to The index option {0} in the CREATE SPATIAL INDEX statement must appear before the general index options..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46082Message">
-            <summary>
-              Looks up a localized string similar to Either a format file or one of the three options (SINGLE_BLOB, SINGLE_CLOB, or SINGLE_NCLOB) must be specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46083Message">
-            <summary>
-              Looks up a localized string similar to The WHERE CURRENT OF clause is not allowed in a nested INSERT, UPDATE, DELETE, or MERGE statement..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46084Message">
-            <summary>
-              Looks up a localized string similar to The CUBE, ROLLUP, and GROUPING SETS constructs are not allowed in a GROUP BY ALL clause..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46085Message">
-            <summary>
-              Looks up a localized string similar to The WITH CUBE and WITH ROLLUP options are not permitted with a ROLLUP, CUBE, or GROUPING SETS specification..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46086Message">
-            <summary>
-              Looks up a localized string similar to DISTINCT is not allowed for windowed aggregate functions..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46087Message">
-            <summary>
-              Looks up a localized string similar to The integer value {0} for &quot;LISTENER_PORT&quot; is out of range. The value should be between 1024 and 32767..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46088Message">
-            <summary>
-              Looks up a localized string similar to Cannot use the OUTPUT option when passing a constant to a stored procedure..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46089Message">
-            <summary>
-              Looks up a localized string similar to Must pass parameter number {0} and subsequent parameters as &apos;@name = value&apos;. After the form &apos;@name = value&apos; has been used, all subsequent parameters must be passed in the form &apos;@name = value&apos;..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46090Message">
-            <summary>
-              Looks up a localized string similar to Syntax error: Duplicate specification of the action &quot;{0}&quot; in the trigger declaration.
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46091Message">
-            <summary>
-              Looks up a localized string similar to The value {0} for index option &apos;maxdop&apos; is out of range. It should be between 0 and 32767..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46092Message">
-            <summary>
-              Looks up a localized string similar to &quot;{0}&quot;: Temporary views are not allowed..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46093Message">
-            <summary>
-              Looks up a localized string similar to &quot;{0}&quot;: Temporary functions are not allowed..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46094Message">
-            <summary>
-              Looks up a localized string similar to Percent values must be between 0 and 100..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46095Message">
-            <summary>
-              Looks up a localized string similar to The Identifier that starts with &apos;{0}&apos; is too long.  Maximum length is 128..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46096Message">
-            <summary>
-              Looks up a localized string similar to The parameter {0} cannot be provided for users that cannot authenticate in a database..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46097Message">
-            <summary>
-              Looks up a localized string similar to A {0} statement must be terminated by a semi-colon (;).
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46098Message">
-            <summary>
-              Looks up a localized string similar to Subqueries are not allowed in this context. Only scalar expressions are allowed..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46099Message">
-            <summary>
-              Looks up a localized string similar to RANGE in OVER clause is only supported with UNBOUNDED and CURRENT ROW frame delimiters..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46100Message">
-            <summary>
-              Looks up a localized string similar to OVER clause has illegal window frame specification..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46101Message">
-            <summary>
-              Looks up a localized string similar to The time value {0} for MAX_DURATION is out of range. It should be between 0 and 71582..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46102Message">
-            <summary>
-              Looks up a localized string similar to The time value {0} for MAX_DURATION is not allowed for ABORT_AFTER_WAIT = {1}..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46103Message">
-            <summary>
-              Looks up a localized string similar to Temporal tables require the lower boundary column name in SYSTEM_TIME PERIOD definition to match the GENERATED ALWAYS AS ROW START column name..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46104Message">
-            <summary>
-              Looks up a localized string similar to Temporal tables require the upper boundary column name in SYSTEM_TIME PERIOD definition to match the GENERATED ALWAYS AS ROW END column name..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46105Message">
-            <summary>
-              Looks up a localized string similar to GENERATED ALWAYS AS ROW START column must be defined for Temporal tables..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46106Message">
-            <summary>
-              Looks up a localized string similar to GENERATED ALWAYS AS ROW END column must be defined for Temporal tables..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46107Message">
-            <summary>
-              Looks up a localized string similar to Filtered indexes are not supported on memory optimized tables..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46108Message">
-            <summary>
-              Looks up a localized string similar to Nonclustered column store indexes are not supported on memory optimized tables..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46109Message">
-            <summary>
-              Looks up a localized string similar to GENERATED ALWAYS AS USER ID START column must be unique..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46110Message">
-            <summary>
-              Looks up a localized string similar to GENERATED ALWAYS AS USER ID END column must be unique..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46111Message">
-            <summary>
-              Looks up a localized string similar to GENERATED ALWAYS AS USER NAME START column must be unique..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46112Message">
-            <summary>
-              Looks up a localized string similar to GENERATED ALWAYS AS USER NAME END column must be unique..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46113Message">
-            <summary>
-              Looks up a localized string similar to Cannot create GENERATED ALWAYS column when SYSTEM_TIME period is not defined.
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46114Message">
-            <summary>
-              Looks up a localized string similar to The specified COMPRESSION_DELAY option value {0} is invalid. The valid range for disk-based table is AUTO or between (0, 10080) minutes and for memory-optimized table is AUTO, 0 or between (60, 10080) minutes..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46115Message">
-            <summary>
-              Looks up a localized string similar to Cannot set configuration option to PRIMARY when FOR SECONDARY is not specified..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46116Message">
-            <summary>
-              Looks up a localized string similar to {0} is not a valid value for system versioning history retention period. The value must be a positive number larger than 0..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46117Message">
-            <summary>
-              Looks up a localized string similar to The script contains clause {0} which is not supported by the targeted version of SQL Server..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46118Message">
-            <summary>
-              Looks up a localized string similar to CSV format option is supported for char and widechar datafiletype options..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.SQL46119Message">
-            <summary>
-              Looks up a localized string similar to Format option cannot be specified together with SINGLE_BLOB, SINGLE_CLOB or SINGLE_NCLOB option..
-            </summary>
-        </member>
-        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TSqlParserResource.UserDefined">
-            <summary>
-              Looks up a localized string similar to User-defined.
             </summary>
         </member>
         <member name="T:AssemblyRef">
@@ -20760,6 +21731,11 @@
             True if With Check Option is defined.
             </summary>
         </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ViewStatementBody.IsMaterialized">
+            <summary>
+            Whether the view is SQL DW materialized or not.
+            </summary>
+        </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterViewStatement.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
             <summary>
             Accepts visitor
@@ -20768,6 +21744,16 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterViewStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
             <summary>
             Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AlterViewStatement.IsRebuild">
+            <summary>
+            True if REBUILD is defined for SQL DW materialized views.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AlterViewStatement.IsDisable">
+            <summary>
+            True if DISABLE is defined for SQL DW materialized views.
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CreateViewStatement">
@@ -20798,6 +21784,86 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CreateOrAlterViewStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
             <summary>
             Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ViewForAppendOption">
+            <summary>
+            Represents the view FOR_APPEND option for SQL DW materialized views.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewForAppendOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewForAppendOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionOption">
+            <summary>
+            Represents the view DISTRIBUTION option for SQL DW materialized views.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionOption.Value">
+            <summary>
+            The view distribution policy for materialized views.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionPolicy">
+            <summary>
+            Base class for materialized view distribution policies.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewDistributionPolicy.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ViewRoundRobinDistributionPolicy">
+            <summary>
+            Representation of the ROUND_ROBIN option for a materialized view distribution policy.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewRoundRobinDistributionPolicy.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewRoundRobinDistributionPolicy.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ViewHashDistributionPolicy">
+            <summary>
+            Representation of the HASH option for a materialized view distribution policy.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewHashDistributionPolicy.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ViewHashDistributionPolicy.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ViewHashDistributionPolicy.DistributionColumn">
+            <summary>
+            The column reference in the HASH option for a view distribution policy.
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.TriggerObject">
@@ -25732,6 +26798,26 @@
             Key path.
             </summary>
         </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyEnclaveComputationsParameter">
+            <summary>
+            Parameter representing enclave computation signature
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyEnclaveComputationsParameter.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyEnclaveComputationsParameter.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ColumnMasterKeyEnclaveComputationsParameter.Signature">
+            <summary>
+            Signature
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.DropColumnMasterKeyStatement">
             <summary>
             Represents a DROP COLUMN MASTER KEY statement
@@ -25962,6 +27048,11 @@
             External table options. (Valid and required elements vary by the referenced data source type.)
             </summary>
         </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalTableStatement.SelectStatement">
+            <summary>
+            Represents the query part of a CTAS statement.
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalTableOption">
             <summary>
             A single external table option.
@@ -26152,6 +27243,11 @@
             The external data source location name.
             </summary>
         </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourceStatement.PushdownOption">
+            <summary>
+            The external data source pushdown option.
+            </summary>
+        </member>
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalDataSourceStatement.ExternalDataSourceOptions">
             <summary>
             The external data source optional property collection.
@@ -26220,6 +27316,11 @@
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterExternalDataSourceStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
             <summary>
             Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AlterExternalDataSourceStatement.PreviousPushDownOption">
+            <summary>
+            previous pushdwn option of the data source
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.DropExternalDataSourceStatement">
@@ -27301,6 +28402,26 @@
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.LowPriorityLockWaitTableSwitchOption.Options">
             <summary>
             The low priority lock wait options.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.TruncateTargetTableSwitchOption">
+            <summary>
+            Represents the truncate target table option for alter table switch statement.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TruncateTargetTableSwitchOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.TruncateTargetTableSwitchOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TruncateTargetTableSwitchOption.TruncateTarget">
+            <summary>
+            Flag that indicates whether to truncate the target partition or table before performing the switch.
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.DropClusteredConstraintOption">
@@ -31770,6 +32891,26 @@
             Units (days|hours|minutes) for retention period.
             </summary>
         </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AcceleratedDatabaseRecoveryDatabaseOption">
+            <summary>
+            ACCELERATED_DATABASE_RECOVERY option in ALTER DATABASE statement, SET case
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AcceleratedDatabaseRecoveryDatabaseOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AcceleratedDatabaseRecoveryDatabaseOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AcceleratedDatabaseRecoveryDatabaseOption.OptionState">
+            <summary>
+            Option state.
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.QueryStoreDatabaseOption">
             <summary>
             Query Store (QDS) option in ALTER DATABASE statement, SET case
@@ -32603,6 +33744,16 @@
             The collection of table options.
             </summary>
         </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement.SelectStatement">
+            <summary>
+            Represents the query part of a CTAS statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement.CtasColumns">
+            <summary>
+            The columns for the view. This is optionally supported with CTAS statements.
+            </summary>
+        </member>
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CreateTableStatement.FileStreamOn">
             <summary>
             Optional specification of the filestream. Can be either Identifier or String literal.
@@ -32788,6 +33939,11 @@
             Indicates if this a column store index.
             </summary>
         </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TableClusteredIndexType.OrderedColumns">
+            <summary>
+            The columns which ordered columnstore indexes should be ordered on.
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.TableNonClusteredIndexType">
             <summary>
             Representation of the Non-Clustered Index type or HEAP for a table index.
@@ -32861,6 +34017,226 @@
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.TablePartitionOptionSpecifications.BoundaryValues">
             <summary>
             Boundary values for the partition
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.LocationOption">
+            <summary>
+            Represents the LOCATION option for SQL DW Tables.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.LocationOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.LocationOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.LocationOption.LocationValue">
+            <summary>
+            The value of location option
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement">
+            <summary>
+            Represents a Rename TABLE statement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement.RenameEntityType">
+            <summary>
+            The type of the entity being renamed. This can be Object.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement.SeparatorType">
+            <summary>
+            Shows the separator.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement.OldName">
+            <summary>
+            Indicates the old table name of this statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.RenameEntityStatement.NewName">
+            <summary>
+            Indicates the new table name of this statement.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement">
+            <summary>
+            Represents COPY statement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement.From">
+            <summary>
+            Data source for COPY. Can be string (Literal)
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement.Into">
+            <summary>
+            Table to insert data into
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement.Options">
+            <summary>
+            Possible options
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatement.OptimizerHints">
+            <summary>
+            Optional optimizer hints.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatementOptionBase">
+            <summary>
+            A single copy statement option.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyStatementOptionBase.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyOption">
+            <summary>
+            Represents COPY statement options
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyOption.Kind">
+            <summary>
+            Type of option
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyOption.Value">
+            <summary>
+            Type of the value of option
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCredentialOption">
+            <summary>
+            Represents COPY statement CREDENTIAL options
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCredentialOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCredentialOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCredentialOption.Identity">
+            <summary>
+            Credential identity
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyCredentialOption.Secret">
+            <summary>
+            Credential secret
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.SingleValueTypeCopyOption">
+            <summary>
+            Represents literals for COPY options
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.SingleValueTypeCopyOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.SingleValueTypeCopyOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.SingleValueTypeCopyOption.SingleValue">
+            <summary>
+            Represents identifier, integer or string literal
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ListTypeCopyOption">
+            <summary>
+            Represents list of same kind of external file options
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ListTypeCopyOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ListTypeCopyOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ListTypeCopyOption.Options">
+            <summary>
+            Represents list of same kind of external file options
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption">
+            <summary>
+            Represents column options of copy command
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption.ColumnName">
+            <summary>
+            Represents target table's column name
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption.DefaultValue">
+            <summary>
+            Represents default value of target table's column
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CopyColumnOption.FieldNumber">
+            <summary>
+            Represents column number in the external file mapping to the corresponding column in the target table
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.DataCompressionOption">
@@ -33106,6 +34482,11 @@
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.UniqueConstraintDefinition.IsPrimaryKey">
             <summary>
             Represents if the constraint is not just unique but also primary key.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.UniqueConstraintDefinition.IsEnforced">
+            <summary>
+            Represents if the constraint is an enforced constraint.
             </summary>
         </member>
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.UniqueConstraintDefinition.Columns">
@@ -36043,6 +37424,11 @@
             Expression itself.
             </summary>
         </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ExpressionGroupingSpecification.DistributedAggregation">
+            <summary>
+            Specifies if we have a \'distributed aggregation\' option on this grouping column.
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CompositeGroupingSpecification">
             <summary>
             Composes a list of sub-specifications.
@@ -37638,6 +39024,26 @@
             Windows create login options
             </summary>
         </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalCreateLoginSource">
+            <summary>
+            External case in CREATE LOGIN statement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalCreateLoginSource.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalCreateLoginSource.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ExternalCreateLoginSource.Options">
+            <summary>
+            External create login options
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CertificateCreateLoginSource">
             <summary>
             Certificate case in CREATE LOGIN statement
@@ -38948,6 +40354,81 @@
             The collection of table options.
             </summary>
         </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationStatement">
+            <summary>
+            Represents the base sensitivity classification statement.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationStatement.Columns">
+            <summary>
+            List of the columns to set on or drop from the sensitivity classification.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationOption">
+            <summary>
+            Single option in ADD SENSITIVITY CLASSIFICATION statement.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationOption.Type">
+            <summary>
+            The sensitivity classification option kind.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.SensitivityClassificationOption.Value">
+            <summary>
+            Option value.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AddSensitivityClassificationStatement">
+            <summary>
+            Adds sensitivity classification to specified columns.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AddSensitivityClassificationStatement.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AddSensitivityClassificationStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AddSensitivityClassificationStatement.Options">
+            <summary>
+            Sensitivity options (Label, Label_Id, ...).
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.DropSensitivityClassificationStatement">
+            <summary>
+            Drops sensitivity classification from specified columns.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.DropSensitivityClassificationStatement.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.DropSensitivityClassificationStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AuditSpecificationStatement">
             <summary>
             Represents audit specification statement.
@@ -39421,6 +40902,26 @@
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.MaxSizeAuditTargetOption.Unit">
             <summary>
             Measurement units for size in case it is specified. Only MB/GB/TB are valid.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.RetentionDaysAuditTargetOption">
+            <summary>
+            RetentionDays option in case of URL audit target.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.RetentionDaysAuditTargetOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.RetentionDaysAuditTargetOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.RetentionDaysAuditTargetOption.Days">
+            <summary>
+            Represents number of retention days.
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.MaxRolloverFilesAuditTargetOption">
@@ -39954,6 +41455,231 @@
             </summary>
         </member>
         <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.DropWorkloadGroupStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierStatement">
+            <summary>
+            Represents Create Workload Classifier statement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierStatement.ClassifierName">
+            <summary>
+            The name of the classifier.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierStatement.Options">
+            <summary>
+            Workload classifier options.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierOption">
+            <summary>
+            A single workload classifier option.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.WorkloadClassifierOption.OptionType">
+            <summary>
+            The type of the parameter.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWorkloadGroupOption">
+            <summary>
+            Represents the workload group option for workload classifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWorkloadGroupOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWorkloadGroupOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWorkloadGroupOption.WorkloadGroupName">
+            <summary>
+            Name of the workload group associated with this classifier.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierMemberNameOption">
+            <summary>
+            Represents the member name option for workload classifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierMemberNameOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierMemberNameOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierMemberNameOption.MemberName">
+            <summary>
+            Name of the role or the user associated with this classifier.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmLabelOption">
+            <summary>
+            Represents the query label option for workload classifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmLabelOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmLabelOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmLabelOption.WlmLabel">
+            <summary>
+            The query label associated with this classifier.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierImportanceOption">
+            <summary>
+            Represents the importance option for workload classifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierImportanceOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierImportanceOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierImportanceOption.Importance">
+            <summary>
+            Importance associated with this classifier.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmContextOption">
+            <summary>
+            Represents the wlm context option for workload classifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmContextOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmContextOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierWlmContextOption.WlmContext">
+            <summary>
+            The wlm context associated with this classifier.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierStartTimeOption">
+            <summary>
+            Represents the start time option for workload classifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierStartTimeOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierStartTimeOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierStartTimeOption.Time">
+            <summary>
+            The start time for when this classifier applies.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierEndTimeOption">
+            <summary>
+            Represents the start time option for workload classifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierEndTimeOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierEndTimeOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.ClassifierEndTimeOption.Time">
+            <summary>
+            The end time for when this classifier applies.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.WlmTimeLiteral">
+            <summary>
+            Represents a Literal of time type used in Workload Management.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.WlmTimeLiteral.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.WlmTimeLiteral.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.WlmTimeLiteral.TimeString">
+            <summary>
+            The time literal as a string in the HH:MM 24-hour format
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.CreateWorkloadClassifierStatement">
+            <summary>
+            Represents the Create Workload Classifier statement.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CreateWorkloadClassifierStatement.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.CreateWorkloadClassifierStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.DropWorkloadClassifierStatement">
+            <summary>
+            Represents Drop Workload Classifier statement
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.DropWorkloadClassifierStatement.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.DropWorkloadClassifierStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
             <summary>
             Accepts visitor for Children
             </summary>
@@ -40873,6 +42599,71 @@
             Accepts visitor for Children
             </summary>
         </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationSetExternalAuthenticationStatement">
+            <summary>
+            Represents ALTER SERVER CONFIGURATION SET EXTERNAL AUTHENTICATION statement.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationSetExternalAuthenticationStatement.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationSetExternalAuthenticationStatement.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationSetExternalAuthenticationStatement.Options">
+            <summary>
+            Options specified in this statement
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationOption">
+            <summary>
+            Represents a single ALTER SERVER CONFIGURATION SET EXTERNAL AUTHENTICATION option.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationOption.OptionKind">
+            <summary>
+            The kind of option specified.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationOption.OptionValue">
+            <summary>
+            Represents the value specified for this option.
+            </summary>
+        </member>
+        <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationContainerOption">
+            <summary>
+            Represents a single ALTER SERVER CONFIGURATION SET EXTERNAL AUTHENTICATION top level setting that can have a list of suboptions.
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationContainerOption.Accept(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor
+            </summary>
+        </member>
+        <member name="M:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationContainerOption.AcceptChildren(Microsoft.SqlServer.TransactSql.ScriptDom.TSqlFragmentVisitor)">
+            <summary>
+            Accepts visitor for Children
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationExternalAuthenticationContainerOption.Suboptions">
+            <summary>
+            The suboption specified.
+            </summary>
+        </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.AlterServerConfigurationSetBufferPoolExtensionStatement">
             <summary>
             Represents ALTER SERVER CONFIGURATION SET BUFFER POOL EXTENSION statement.
@@ -41701,6 +43492,11 @@
         <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CreateColumnStoreIndexStatement.OnFileGroupOrPartitionScheme">
             <summary>
             The filegroup or partition scheme. Might be null.
+            </summary>
+        </member>
+        <member name="P:Microsoft.SqlServer.TransactSql.ScriptDom.CreateColumnStoreIndexStatement.OrderedColumns">
+            <summary>
+            The columns which ordered columnstore indexes should be ordered on.
             </summary>
         </member>
         <member name="T:Microsoft.SqlServer.TransactSql.ScriptDom.WindowFrameClause">
