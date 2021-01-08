@@ -1,3 +1,6 @@
+open System.Text.RegularExpressions
+
+
 #r "System.dll"
 #r "../../lib/Microsoft.SqlServer.TransactSql.ScriptDom.dll"
 
@@ -97,7 +100,8 @@ type CodeGenCtx(sb:Text.StringBuilder) =
       | "Microsoft.SqlServer.TransactSql.ScriptDom" -> Some(typ)
       | _ -> None 
 
-    if typ.IsGenericType then
+    if typ.IsEnum then None
+    elif typ.IsGenericType then
       let genTp = typ.GetGenericTypeDefinition()
       match typ.GetGenericArguments() with
       | [|gentypA|] -> ofTyp gentypA
@@ -240,8 +244,14 @@ type CodeGenCtx(sb:Text.StringBuilder) =
     for (KeyValue(k,v)) in tree.children do
       this.printTree v sb (depth + 1)
 
+  
   member this.getDestTypeName (typ:Type) = 
-    if typ.IsEnum then "ScriptDom." + typ.Name
+    if typ.IsEnum then 
+      let name = typ.FullName.Replace("+", ".")
+      if name.StartsWith("Microsoft.SqlServer.TransactSql.") then
+        name.Substring("Microsoft.SqlServer.TransactSql.".Length)
+      else 
+        name
     else
       match typ.Name with 
       | "Boolean" -> "bool"
@@ -288,7 +298,12 @@ type CodeGenCtx(sb:Text.StringBuilder) =
 
       for i in [0..props.Length - 1] do
         let prop = props.[i]
-        w "%s:%s" (prop.Name) (x.getDestPropName prop.PropertyType)
+        let propName =
+          match prop.Name with
+          | "Type" -> "``Type``"
+          | s -> s
+
+        w "%s:%s" propName (x.getDestPropName prop.PropertyType)
         if i <> props.Length - 1 then w " * "
 
   member x.decapitalizePropName(propName:string) =
