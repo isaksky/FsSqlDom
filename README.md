@@ -24,6 +24,10 @@ Usage of discriminated unions allows to lean on exhaustivity check to make sure 
 
 Depending the use case, and if you aren't concerned by exhaustive handling of all nodes of the AST, using the underlying parser library with F# object expressions results in simpler code.
 
+## How the library is made?
+
+Check docs/tools/build_lib.fsx, this code can serve the same purpose for any other ANTLR generated parser library targetting dotnet.
+
 # Installation
 
 Install from nuget:
