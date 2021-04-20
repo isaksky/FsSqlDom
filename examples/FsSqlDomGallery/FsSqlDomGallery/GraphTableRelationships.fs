@@ -119,7 +119,7 @@ let getScalarColRefs (sexpr:ScalarExpression) : (string list) list =
     { new ScriptDom.TSqlFragmentVisitor() with
             override x.ExplicitVisit(cr:ScriptDom.ColumnReferenceExpression) =
               cr.MultiPartIdentifier 
-              |> MultiPartIdentifier.FromCs 
+              |> fun x -> MultiPartIdentifier.FromCs(x, null)
               |> fun x ->
                 colRefs.Add (ExprUtils.GetName x)
               })
@@ -388,7 +388,7 @@ let analyzeAndVisualize(connstr:string, logger: Action<string>) =
         | Some(fromC) ->
             let ctx = JoinAnalyzer(ctx)
             for tRef in fromC.TableReferences do
-              let table = tRef |> TableReference.FromCs
+              let table = tRef |> fun x -> TableReference.FromCs(x, null)
               try processJoins ctx table 0
               with ex -> failwithf "Ignoring error %s" ex.Message
             for x in ctx.condConnections do ignore <| relationships.Add x

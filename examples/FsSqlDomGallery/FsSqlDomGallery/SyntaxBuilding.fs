@@ -240,7 +240,7 @@ let get_cs_build_str (expr: TSqlFragment) (reuse_vars: bool) (fsharp_syntax: boo
         |> Some
       | :? TSqlFragment as frag ->
         if reuse_vars then
-          let fs_frag = FsSqlDom.Dom.TSqlFragment.FromCs frag
+          let fs_frag = FsSqlDom.Dom.TSqlFragment.FromCs(frag, null)
           match existing_vars.TryGetValue(fs_frag) with
           | false, _ ->
             let inner = CodeNode(prop_name = pname)

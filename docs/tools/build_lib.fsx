@@ -138,7 +138,7 @@ type CodeGenCtx(sb:Text.StringBuilder) =
             typ.Name, typ.Name
           else typ.BaseType.Name, typ.Name
         if doesTypeHaveChildren typ then
-          sprintf "|> Seq.map (%s.FromCs) " (typ.Name)
+          sprintf "|> Seq.map (fun x -> %s.FromCs(x, fragmentMapping)) " (typ.Name)
         else
           match getProps typ with
           | [||] ->
@@ -173,9 +173,9 @@ type CodeGenCtx(sb:Text.StringBuilder) =
       match prop.PropertyType.Namespace with
       | "Microsoft.SqlServer.TransactSql.ScriptDom" when not prop.PropertyType.IsEnum && not prop.PropertyType.IsValueType ->
         if doesTypeHaveChildren (prop.PropertyType) then
-          sprintf "(src.%s |> Option.ofObj |> Option.map (%s.FromCs))" (prop.Name) tname
+          sprintf "(src.%s |> Option.ofObj |> Option.map (fun x -> %s.FromCs(x, fragmentMapping)))" (prop.Name) tname
         else
-          sprintf "(src.%s |> Option.ofObj |> Option.map (%s.FromCs))" (prop.Name) baseName
+          sprintf "(src.%s |> Option.ofObj |> Option.map (fun x -> %s.FromCs(x, fragmentMapping)))" (prop.Name) baseName
       | _ ->
         if prop.PropertyType.IsValueType then
           sprintf "(src.%s)" (prop.Name)
@@ -276,16 +276,16 @@ type CodeGenCtx(sb:Text.StringBuilder) =
 
   member  this.renderPropsTS (thier:TypeHier) (asBase:bool) =
     if not asBase && thier.children.Count > 0 then
-        w "((%s.FromCs(src)))" thier.typ.Name
+        w "((%s.FromCs(src, fragmentMapping)))" thier.typ.Name
       else
         match getProps thier.typ with
         | [||] -> w ""
         | props ->
           w "("
-          for i in [0..props.Length - 1] do
-            let prop = props.[i]
-            w "%s" (this.getPropertyAccess_FromCS prop)
-            if i <> props.Length - 1 then w ", "
+          let propFragments = ResizeArray<string>()
+          for prop in props do
+            propFragments.Add <| (this.getPropertyAccess_FromCS prop)
+          w "%s" (propFragments |> String.concat ", ")
           w ")"
 
   member x.renderDUcase (typ:Type) (asName:string option) =
@@ -296,15 +296,15 @@ type CodeGenCtx(sb:Text.StringBuilder) =
     | props ->
       w "  | %s of " tname
 
-      for i in [0..props.Length - 1] do
-        let prop = props.[i]
+      let propFragments = ResizeArray<string>()
+      for prop in props do
         let propName =
           match prop.Name with
           | "Type" -> "``Type``"
           | s -> s
 
-        w "%s:%s" propName (x.getDestPropName prop.PropertyType)
-        if i <> props.Length - 1 then w " * "
+        propFragments.Add <| sprintf "%s:%s" propName (x.getDestPropName prop.PropertyType)
+      w "%s" (propFragments |> String.concat " * ")
 
   member x.decapitalizePropName(propName:string) =
     "a" + propName
@@ -384,45 +384,48 @@ type CodeGenCtx(sb:Text.StringBuilder) =
             w "  | %s of %s" (ctyp.typ.Name) (ctyp.typ.Name)
           else
             x.renderDUcase ctyp.typ None
-      
+
           w "\n"
 
         x.renderToCSMethod tree tree.typ
 
-        w "  static member FromCs(src:ScriptDom.%s) : %s =\n" (tree.typ.Name) (tree.typ.Name)
-        w "    match src with\n"
+        w "  static member FromCs(src:ScriptDom.%s, fragmentMapping:FragmentMapping) : %s =\n" (tree.typ.Name) (tree.typ.Name)
+        w "    let ret =\n"
+        w "      match src with\n"
         for ctyp in ctyps do
-          w "    | :? ScriptDom.%s as src ->\n" ctyp.typ.Name
+          w "      | :? ScriptDom.%s as src ->\n" ctyp.typ.Name
           if ctyp.RenderStrat() = RenderChildren then
-            w "      match src with\n"
+            w "        match src with\n"
             let cctyps = ctyp.SortedChildren()
             for cctyp in cctyps do
-              w "      | :? ScriptDom.%s as src->\n" cctyp.typ.Name
-              w "        %s.%s((%s.%s" tree.typ.Name ctyp.typ.Name ctyp.typ.Name cctyp.typ.Name
+              w "        | :? ScriptDom.%s as src->\n" cctyp.typ.Name
+              w "          %s.%s((%s.%s" tree.typ.Name ctyp.typ.Name ctyp.typ.Name cctyp.typ.Name
               x.renderPropsTS cctyp false
-              w "))\n"
+              w "  ))\n"
 
             if not <| ctyp.typ.IsAbstract then
-              w "      | _ -> (* :? ScriptDom.%s as src *)\n" ctyp.typ.Name
-              w "        %s.%s((%s.Base" tree.typ.Name ctyp.typ.Name ctyp.typ.Name 
+              w "        | _ -> (* :? ScriptDom.%s as src *)\n" ctyp.typ.Name
+              w "          %s.%s((%s.Base" tree.typ.Name ctyp.typ.Name ctyp.typ.Name 
               x.renderPropsTS ctyp true
               w "))\n"
           else
-            w "      %s.%s" (tree.typ.Name) (ctyp.typ.Name)
+            w "        %s.%s" (tree.typ.Name) (ctyp.typ.Name)
             match getProps (ctyp.typ) with
             | [||] -> w "\n"
             | cprops ->
               w "("
-              for i in [0..cprops.Length - 1] do
-                let cprop = cprops.[i]
-                w "%s" (x.getPropertyAccess_FromCS cprop)
-                if i <> cprops.Length - 1 then w ", "
+              let args = ResizeArray<string>()
+              for cprop in cprops do
+                args.Add(x.getPropertyAccess_FromCS cprop)
+              w "%s" (args |> String.concat ",")
               w ")\n"
         if not <| tree.typ.IsAbstract then
-          w "    | _ -> (* :? ScriptDom.%s as src *)\n" tree.typ.Name
-          w "      %s.Base(" tree.typ.Name
+          w "      | _ -> (* :? ScriptDom.%s as src *)\n" tree.typ.Name
+          w "        %s.Base(" tree.typ.Name
           x.renderPropsTS tree true
-          w ")\n"
+          w "  )\n"
+        w "    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src\n"
+        w "    ret\n"
       else ()
 
       written.Add(tree) |> ignore
@@ -445,7 +448,7 @@ type CodeGenCtx(sb:Text.StringBuilder) =
       //renderProps tree.typ
       //if not (typ.IsAbstract) then 
       x.renderToCSMethod tree typ
-      w "  static member FromCs(src:ScriptDom.%s) : %s =\n" (typ.Name) (typ.Name)
+      w "  static member FromCs(src:ScriptDom.%s, fragmentMapping:FragmentMapping) : %s =\n" (typ.Name) (typ.Name)
 
       match getProps typ with
       | [||] ->
@@ -488,6 +491,8 @@ open Microsoft.SqlServer.TransactSql
 
 #nowarn "25"   // Turn off bogus missing pattern match cases warning
 #nowarn "1182" // Turn off unused variables warning
+
+type FragmentMapping = System.Collections.Generic.IDictionary<obj, ScriptDom.TSqlFragment>
 
 """
   let sb = Text.StringBuilder(filePrelude)
