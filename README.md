@@ -20,6 +20,10 @@ Check out the intro [blog post](https://gist.github.com/isaksky/f8c4881bf93c7e57
 
 Usage of discriminated unions allows to lean on exhaustivity check to make sure a new parser version or some other shape of statements your code hasn't handled explicitly will remain consistent/safe, this can't be unforced with open class hierarchy of the base parser library.
 
+## Why not use the library?
+
+Depending the use case, and if you aren't concerned by exhaustive handling of all nodes of the AST, using the underlying parser library with F# object expressions results in simpler code.
+
 # Installation
 
 Install from nuget:
