@@ -449,18 +449,21 @@ type CodeGenCtx(sb:Text.StringBuilder) =
       //if not (typ.IsAbstract) then 
       x.renderToCSMethod tree typ
       w "  static member FromCs(src:ScriptDom.%s, fragmentMapping:FragmentMapping) : %s =\n" (typ.Name) (typ.Name)
-
+      w "    let ret =\n"
       match getProps typ with
       | [||] ->
-        w "    %s.%s %s\n"  (typ.Name) (typ.Name) upcastStr
+        w "      %s.%s %s\n"  (typ.Name) (typ.Name) upcastStr
       | props ->
-        w "    %s.%s(" (typ.Name) (typ.Name)
+        w "      %s.%s(" (typ.Name) (typ.Name)
 
         for i in [0..props.Length - 1] do
           let prop = props.[i]
           w "%s" (x.getPropertyAccess_FromCS prop)
           if i <> props.Length - 1 then w ", "
         w ")%s\n" upcastStr
+      if typ.IsSubclassOf(typeof<ScriptDom.TSqlFragment>) then
+        w "    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src\n"
+      w "    ret\n"
     ()
 
   member this.processTree (tree:TypeHier) =

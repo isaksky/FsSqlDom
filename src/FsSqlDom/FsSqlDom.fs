@@ -11366,7 +11366,10 @@ and [<RequireQualifiedAccess>] StringLiteral = (* Abstract? = false *)
       ret.Value <- aValue |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.StringLiteral, fragmentMapping:FragmentMapping) : StringLiteral =
-    StringLiteral.StringLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.IsLargeObject), (src.IsNational), (src.LiteralType), (Option.ofObj (src.Value)))
+    let ret =
+      StringLiteral.StringLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.IsLargeObject), (src.IsNational), (src.LiteralType), (Option.ofObj (src.Value)))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AlterAvailabilityGroupFailoverOption = (* Abstract? = false *)
   | AlterAvailabilityGroupFailoverOption of OptionKind:ScriptDom.FailoverActionOptionKind * Value:Literal option  
   member this.ToCs() : ScriptDom.AlterAvailabilityGroupFailoverOption =
@@ -11377,7 +11380,10 @@ and [<RequireQualifiedAccess>] AlterAvailabilityGroupFailoverOption = (* Abstrac
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AlterAvailabilityGroupFailoverOption, fragmentMapping:FragmentMapping) : AlterAvailabilityGroupFailoverOption =
-    AlterAvailabilityGroupFailoverOption.AlterAvailabilityGroupFailoverOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      AlterAvailabilityGroupFailoverOption.AlterAvailabilityGroupFailoverOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FullTextIndexColumn = (* Abstract? = false *)
   | FullTextIndexColumn of LanguageTerm:IdentifierOrValueExpression option * Name:Identifier option * StatisticalSemantics:bool * TypeColumn:Identifier option  
   member this.ToCs() : ScriptDom.FullTextIndexColumn =
@@ -11390,7 +11396,10 @@ and [<RequireQualifiedAccess>] FullTextIndexColumn = (* Abstract? = false *)
       ret.TypeColumn <- aTypeColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FullTextIndexColumn, fragmentMapping:FragmentMapping) : FullTextIndexColumn =
-    FullTextIndexColumn.FullTextIndexColumn((src.LanguageTerm |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.StatisticalSemantics), (src.TypeColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      FullTextIndexColumn.FullTextIndexColumn((src.LanguageTerm |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.StatisticalSemantics), (src.TypeColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SearchPropertyListFullTextIndexOption = (* Abstract? = false *)
   | SearchPropertyListFullTextIndexOption of IsOff:bool * OptionKind:ScriptDom.FullTextIndexOptionKind * PropertyListName:Identifier option  
   member this.ToCs() : ScriptDom.SearchPropertyListFullTextIndexOption =
@@ -11402,7 +11411,10 @@ and [<RequireQualifiedAccess>] SearchPropertyListFullTextIndexOption = (* Abstra
       ret.PropertyListName <- aPropertyListName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SearchPropertyListFullTextIndexOption, fragmentMapping:FragmentMapping) : SearchPropertyListFullTextIndexOption =
-    SearchPropertyListFullTextIndexOption.SearchPropertyListFullTextIndexOption((src.IsOff), (src.OptionKind), (src.PropertyListName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      SearchPropertyListFullTextIndexOption.SearchPropertyListFullTextIndexOption((src.IsOff), (src.OptionKind), (src.PropertyListName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] StopListFullTextIndexOption = (* Abstract? = false *)
   | StopListFullTextIndexOption of IsOff:bool * OptionKind:ScriptDom.FullTextIndexOptionKind * StopListName:Identifier option  
   member this.ToCs() : ScriptDom.StopListFullTextIndexOption =
@@ -11414,7 +11426,10 @@ and [<RequireQualifiedAccess>] StopListFullTextIndexOption = (* Abstract? = fals
       ret.StopListName <- aStopListName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.StopListFullTextIndexOption, fragmentMapping:FragmentMapping) : StopListFullTextIndexOption =
-    StopListFullTextIndexOption.StopListFullTextIndexOption((src.IsOff), (src.OptionKind), (src.StopListName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      StopListFullTextIndexOption.StopListFullTextIndexOption((src.IsOff), (src.OptionKind), (src.StopListName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] IdentifierOrValueExpression = (* Abstract? = false *)
   | IdentifierOrValueExpression of Identifier:Identifier option * Value:String option * ValueExpression:ValueExpression option  
   member this.ToCs() : ScriptDom.IdentifierOrValueExpression =
@@ -11426,7 +11441,10 @@ and [<RequireQualifiedAccess>] IdentifierOrValueExpression = (* Abstract? = fals
       ret.ValueExpression <- aValueExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.IdentifierOrValueExpression, fragmentMapping:FragmentMapping) : IdentifierOrValueExpression =
-    IdentifierOrValueExpression.IdentifierOrValueExpression((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (Option.ofObj (src.Value)), (src.ValueExpression |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      IdentifierOrValueExpression.IdentifierOrValueExpression((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (Option.ofObj (src.Value)), (src.ValueExpression |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DatabaseAuditAction = (* Abstract? = false *)
   | DatabaseAuditAction of ActionKind:ScriptDom.DatabaseAuditActionKind  
   member this.ToCs() : ScriptDom.DatabaseAuditAction =
@@ -11436,7 +11454,10 @@ and [<RequireQualifiedAccess>] DatabaseAuditAction = (* Abstract? = false *)
       ret.ActionKind <- aActionKind
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DatabaseAuditAction, fragmentMapping:FragmentMapping) : DatabaseAuditAction =
-    DatabaseAuditAction.DatabaseAuditAction((src.ActionKind))
+    let ret =
+      DatabaseAuditAction.DatabaseAuditAction((src.ActionKind))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SecurityPrincipal = (* Abstract? = false *)
   | SecurityPrincipal of Identifier:Identifier option * PrincipalType:ScriptDom.PrincipalType  
   member this.ToCs() : ScriptDom.SecurityPrincipal =
@@ -11447,7 +11468,10 @@ and [<RequireQualifiedAccess>] SecurityPrincipal = (* Abstract? = false *)
       ret.PrincipalType <- aPrincipalType
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SecurityPrincipal, fragmentMapping:FragmentMapping) : SecurityPrincipal =
-    SecurityPrincipal.SecurityPrincipal((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PrincipalType))
+    let ret =
+      SecurityPrincipal.SecurityPrincipal((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PrincipalType))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SecurityTargetObject = (* Abstract? = false *)
   | SecurityTargetObject of Columns:(Identifier) list * ObjectKind:ScriptDom.SecurityObjectKind * ObjectName:SecurityTargetObjectName option  
   member this.ToCs() : ScriptDom.SecurityTargetObject =
@@ -11459,7 +11483,10 @@ and [<RequireQualifiedAccess>] SecurityTargetObject = (* Abstract? = false *)
       ret.ObjectName <- aObjectName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SecurityTargetObject, fragmentMapping:FragmentMapping) : SecurityTargetObject =
-    SecurityTargetObject.SecurityTargetObject((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ObjectKind), (src.ObjectName |> Option.ofObj |> Option.map (fun x -> SecurityTargetObjectName.FromCs(x, fragmentMapping))))
+    let ret =
+      SecurityTargetObject.SecurityTargetObject((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ObjectKind), (src.ObjectName |> Option.ofObj |> Option.map (fun x -> SecurityTargetObjectName.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CryptoMechanism = (* Abstract? = false *)
   | CryptoMechanism of CryptoMechanismType:ScriptDom.CryptoMechanismType * Identifier:Identifier option * PasswordOrSignature:Literal option  
   member this.ToCs() : ScriptDom.CryptoMechanism =
@@ -11471,7 +11498,10 @@ and [<RequireQualifiedAccess>] CryptoMechanism = (* Abstract? = false *)
       ret.PasswordOrSignature <- aPasswordOrSignature |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.CryptoMechanism, fragmentMapping:FragmentMapping) : CryptoMechanism =
-    CryptoMechanism.CryptoMechanism((src.CryptoMechanismType), (src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PasswordOrSignature |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      CryptoMechanism.CryptoMechanism((src.CryptoMechanismType), (src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PasswordOrSignature |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] EventSessionObjectName = (* Abstract? = false *)
   | EventSessionObjectName of MultiPartIdentifier:MultiPartIdentifier option  
   member this.ToCs() : ScriptDom.EventSessionObjectName =
@@ -11481,7 +11511,10 @@ and [<RequireQualifiedAccess>] EventSessionObjectName = (* Abstract? = false *)
       ret.MultiPartIdentifier <- aMultiPartIdentifier |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.EventSessionObjectName, fragmentMapping:FragmentMapping) : EventSessionObjectName =
-    EventSessionObjectName.EventSessionObjectName((src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))
+    let ret =
+      EventSessionObjectName.EventSessionObjectName((src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SourceDeclaration = (* Abstract? = false *)
   | SourceDeclaration of Value:EventSessionObjectName option  
   member this.ToCs() : ScriptDom.SourceDeclaration =
@@ -11491,7 +11524,10 @@ and [<RequireQualifiedAccess>] SourceDeclaration = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SourceDeclaration, fragmentMapping:FragmentMapping) : SourceDeclaration =
-    SourceDeclaration.SourceDeclaration((src.Value |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))))
+    let ret =
+      SourceDeclaration.SourceDeclaration((src.Value |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ScalarSubquery = (* Abstract? = false *)
   | ScalarSubquery of Collation:Identifier option * QueryExpression:QueryExpression option  
   member this.ToCs() : ScriptDom.ScalarSubquery =
@@ -11502,7 +11538,10 @@ and [<RequireQualifiedAccess>] ScalarSubquery = (* Abstract? = false *)
       ret.QueryExpression <- aQueryExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ScalarSubquery, fragmentMapping:FragmentMapping) : ScalarSubquery =
-    ScalarSubquery.ScalarSubquery((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      ScalarSubquery.ScalarSubquery((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ColumnReferenceExpression = (* Abstract? = false *)
   | ColumnReferenceExpression of Collation:Identifier option * ColumnType:ScriptDom.ColumnType * MultiPartIdentifier:MultiPartIdentifier option  
   member this.ToCs() : ScriptDom.ColumnReferenceExpression =
@@ -11514,7 +11553,10 @@ and [<RequireQualifiedAccess>] ColumnReferenceExpression = (* Abstract? = false 
       ret.MultiPartIdentifier <- aMultiPartIdentifier |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ColumnReferenceExpression, fragmentMapping:FragmentMapping) : ColumnReferenceExpression =
-    ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))
+    let ret =
+      ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] GraphMatchNodeExpression = (* Abstract? = false *)
   | GraphMatchNodeExpression of Node:Identifier option * UsesLastNode:bool  
   member this.ToCs() : ScriptDom.GraphMatchNodeExpression =
@@ -11525,7 +11567,10 @@ and [<RequireQualifiedAccess>] GraphMatchNodeExpression = (* Abstract? = false *
       ret.UsesLastNode <- aUsesLastNode
       ret (* 333 *)
   static member FromCs(src:ScriptDom.GraphMatchNodeExpression, fragmentMapping:FragmentMapping) : GraphMatchNodeExpression =
-    GraphMatchNodeExpression.GraphMatchNodeExpression((src.Node |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.UsesLastNode))
+    let ret =
+      GraphMatchNodeExpression.GraphMatchNodeExpression((src.Node |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.UsesLastNode))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] GraphRecursiveMatchQuantifier = (* Abstract? = false *)
   | GraphRecursiveMatchQuantifier of IsPlusSign:bool * LowerLimit:Literal option * UpperLimit:Literal option  
   member this.ToCs() : ScriptDom.GraphRecursiveMatchQuantifier =
@@ -11537,7 +11582,10 @@ and [<RequireQualifiedAccess>] GraphRecursiveMatchQuantifier = (* Abstract? = fa
       ret.UpperLimit <- aUpperLimit |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.GraphRecursiveMatchQuantifier, fragmentMapping:FragmentMapping) : GraphRecursiveMatchQuantifier =
-    GraphRecursiveMatchQuantifier.GraphRecursiveMatchQuantifier((src.IsPlusSign), (src.LowerLimit |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.UpperLimit |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      GraphRecursiveMatchQuantifier.GraphRecursiveMatchQuantifier((src.IsPlusSign), (src.LowerLimit |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.UpperLimit |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ColumnWithSortOrder = (* Abstract? = false *)
   | ColumnWithSortOrder of Column:ColumnReferenceExpression option * SortOrder:ScriptDom.SortOrder  
   member this.ToCs() : ScriptDom.ColumnWithSortOrder =
@@ -11548,7 +11596,10 @@ and [<RequireQualifiedAccess>] ColumnWithSortOrder = (* Abstract? = false *)
       ret.SortOrder <- aSortOrder
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ColumnWithSortOrder, fragmentMapping:FragmentMapping) : ColumnWithSortOrder =
-    ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))
+    let ret =
+      ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DefaultConstraintDefinition = (* Abstract? = false *)
   | DefaultConstraintDefinition of Column:Identifier option * ConstraintIdentifier:Identifier option * Expression:ScalarExpression option * WithValues:bool  
   member this.ToCs() : ScriptDom.DefaultConstraintDefinition =
@@ -11561,7 +11612,10 @@ and [<RequireQualifiedAccess>] DefaultConstraintDefinition = (* Abstract? = fals
       ret.WithValues <- aWithValues
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DefaultConstraintDefinition, fragmentMapping:FragmentMapping) : DefaultConstraintDefinition =
-    DefaultConstraintDefinition.DefaultConstraintDefinition((src.Column |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WithValues))
+    let ret =
+      DefaultConstraintDefinition.DefaultConstraintDefinition((src.Column |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WithValues))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ColumnEncryptionDefinition = (* Abstract? = false *)
   | ColumnEncryptionDefinition of Parameters:(ColumnEncryptionDefinitionParameter) list  
   member this.ToCs() : ScriptDom.ColumnEncryptionDefinition =
@@ -11571,14 +11625,19 @@ and [<RequireQualifiedAccess>] ColumnEncryptionDefinition = (* Abstract? = false
       for e in aParameters do ret.Parameters.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ColumnEncryptionDefinition, fragmentMapping:FragmentMapping) : ColumnEncryptionDefinition =
-    ColumnEncryptionDefinition.ColumnEncryptionDefinition((src.Parameters |> Seq.map (fun x -> ColumnEncryptionDefinitionParameter.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      ColumnEncryptionDefinition.ColumnEncryptionDefinition((src.Parameters |> Seq.map (fun x -> ColumnEncryptionDefinitionParameter.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] GeneratedAlwaysType = (* Abstract? = false *)
   | GeneratedAlwaysType   
   member this.ToCs() : ScriptDom.GeneratedAlwaysType =
     match this with
     | GeneratedAlwaysType -> ScriptDom.GeneratedAlwaysType() (* 327 *)
   static member FromCs(src:ScriptDom.GeneratedAlwaysType, fragmentMapping:FragmentMapping) : GeneratedAlwaysType =
-    GeneratedAlwaysType.GeneratedAlwaysType 
+    let ret =
+      GeneratedAlwaysType.GeneratedAlwaysType 
+    ret
 and [<RequireQualifiedAccess>] IdentityOptions = (* Abstract? = false *)
   | IdentityOptions of IdentityIncrement:ScalarExpression option * IdentitySeed:ScalarExpression option * IsIdentityNotForReplication:bool  
   member this.ToCs() : ScriptDom.IdentityOptions =
@@ -11590,7 +11649,10 @@ and [<RequireQualifiedAccess>] IdentityOptions = (* Abstract? = false *)
       ret.IsIdentityNotForReplication <- aIsIdentityNotForReplication
       ret (* 333 *)
   static member FromCs(src:ScriptDom.IdentityOptions, fragmentMapping:FragmentMapping) : IdentityOptions =
-    IdentityOptions.IdentityOptions((src.IdentityIncrement |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.IdentitySeed |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.IsIdentityNotForReplication))
+    let ret =
+      IdentityOptions.IdentityOptions((src.IdentityIncrement |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.IdentitySeed |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.IsIdentityNotForReplication))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] IndexDefinition = (* Abstract? = false *)
   | IndexDefinition of Columns:(ColumnWithSortOrder) list * FileStreamOn:IdentifierOrValueExpression option * FilterPredicate:BooleanExpression option * IndexOptions:(IndexOption) list * IndexType:IndexType option * Name:Identifier option * OnFileGroupOrPartitionScheme:FileGroupOrPartitionScheme option * Unique:bool  
   member this.ToCs() : ScriptDom.IndexDefinition =
@@ -11607,7 +11669,10 @@ and [<RequireQualifiedAccess>] IndexDefinition = (* Abstract? = false *)
       ret.Unique <- aUnique
       ret (* 333 *)
   static member FromCs(src:ScriptDom.IndexDefinition, fragmentMapping:FragmentMapping) : IndexDefinition =
-    IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))
+    let ret =
+      IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ColumnStorageOptions = (* Abstract? = false *)
   | ColumnStorageOptions of IsFileStream:bool * SparseOption:ScriptDom.SparseColumnOption  
   member this.ToCs() : ScriptDom.ColumnStorageOptions =
@@ -11618,7 +11683,10 @@ and [<RequireQualifiedAccess>] ColumnStorageOptions = (* Abstract? = false *)
       ret.SparseOption <- aSparseOption
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ColumnStorageOptions, fragmentMapping:FragmentMapping) : ColumnStorageOptions =
-    ColumnStorageOptions.ColumnStorageOptions((src.IsFileStream), (src.SparseOption))
+    let ret =
+      ColumnStorageOptions.ColumnStorageOptions((src.IsFileStream), (src.SparseOption))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] BinaryLiteral = (* Abstract? = false *)
   | BinaryLiteral of Collation:Identifier option * IsLargeObject:bool * LiteralType:ScriptDom.LiteralType * Value:String option  
   member this.ToCs() : ScriptDom.BinaryLiteral =
@@ -11631,7 +11699,10 @@ and [<RequireQualifiedAccess>] BinaryLiteral = (* Abstract? = false *)
       ret.Value <- aValue |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.BinaryLiteral, fragmentMapping:FragmentMapping) : BinaryLiteral =
-    BinaryLiteral.BinaryLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.IsLargeObject), (src.LiteralType), (Option.ofObj (src.Value)))
+    let ret =
+      BinaryLiteral.BinaryLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.IsLargeObject), (src.LiteralType), (Option.ofObj (src.Value)))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ComputeFunction = (* Abstract? = false *)
   | ComputeFunction of ComputeFunctionType:ScriptDom.ComputeFunctionType * Expression:ScalarExpression option  
   member this.ToCs() : ScriptDom.ComputeFunction =
@@ -11642,7 +11713,10 @@ and [<RequireQualifiedAccess>] ComputeFunction = (* Abstract? = false *)
       ret.Expression <- aExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ComputeFunction, fragmentMapping:FragmentMapping) : ComputeFunction =
-    ComputeFunction.ComputeFunction((src.ComputeFunctionType), (src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      ComputeFunction.ComputeFunction((src.ComputeFunctionType), (src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] GraphConnectionBetweenNodes = (* Abstract? = false *)
   | GraphConnectionBetweenNodes of FromNode:SchemaObjectName option * ToNode:SchemaObjectName option  
   member this.ToCs() : ScriptDom.GraphConnectionBetweenNodes =
@@ -11653,7 +11727,10 @@ and [<RequireQualifiedAccess>] GraphConnectionBetweenNodes = (* Abstract? = fals
       ret.ToNode <- aToNode |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.GraphConnectionBetweenNodes, fragmentMapping:FragmentMapping) : GraphConnectionBetweenNodes =
-    GraphConnectionBetweenNodes.GraphConnectionBetweenNodes((src.FromNode |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.ToNode |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+    let ret =
+      GraphConnectionBetweenNodes.GraphConnectionBetweenNodes((src.FromNode |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.ToNode |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] IndexType = (* Abstract? = false *)
   | IndexType of IndexTypeKind:(ScriptDom.IndexTypeKind) option  
   member this.ToCs() : ScriptDom.IndexType =
@@ -11663,7 +11740,10 @@ and [<RequireQualifiedAccess>] IndexType = (* Abstract? = false *)
       ret.IndexTypeKind <- Option.toNullable aIndexTypeKind
       ret (* 333 *)
   static member FromCs(src:ScriptDom.IndexType, fragmentMapping:FragmentMapping) : IndexType =
-    IndexType.IndexType((Option.ofNullable (src.IndexTypeKind)))
+    let ret =
+      IndexType.IndexType((Option.ofNullable (src.IndexTypeKind)))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FileGroupOrPartitionScheme = (* Abstract? = false *)
   | FileGroupOrPartitionScheme of Name:IdentifierOrValueExpression option * PartitionSchemeColumns:(Identifier) list  
   member this.ToCs() : ScriptDom.FileGroupOrPartitionScheme =
@@ -11674,7 +11754,10 @@ and [<RequireQualifiedAccess>] FileGroupOrPartitionScheme = (* Abstract? = false
       for e in aPartitionSchemeColumns do ret.PartitionSchemeColumns.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FileGroupOrPartitionScheme, fragmentMapping:FragmentMapping) : FileGroupOrPartitionScheme =
-    FileGroupOrPartitionScheme.FileGroupOrPartitionScheme((src.Name |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.PartitionSchemeColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      FileGroupOrPartitionScheme.FileGroupOrPartitionScheme((src.Name |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.PartitionSchemeColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] IntegerLiteral = (* Abstract? = false *)
   | IntegerLiteral of Collation:Identifier option * LiteralType:ScriptDom.LiteralType * Value:String option  
   member this.ToCs() : ScriptDom.IntegerLiteral =
@@ -11686,7 +11769,10 @@ and [<RequireQualifiedAccess>] IntegerLiteral = (* Abstract? = false *)
       ret.Value <- aValue |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.IntegerLiteral, fragmentMapping:FragmentMapping) : IntegerLiteral =
-    IntegerLiteral.IntegerLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.LiteralType), (Option.ofObj (src.Value)))
+    let ret =
+      IntegerLiteral.IntegerLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.LiteralType), (Option.ofObj (src.Value)))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CursorOption = (* Abstract? = false *)
   | CursorOption of OptionKind:ScriptDom.CursorOptionKind  
   member this.ToCs() : ScriptDom.CursorOption =
@@ -11696,7 +11782,10 @@ and [<RequireQualifiedAccess>] CursorOption = (* Abstract? = false *)
       ret.OptionKind <- aOptionKind
       ret (* 333 *)
   static member FromCs(src:ScriptDom.CursorOption, fragmentMapping:FragmentMapping) : CursorOption =
-    CursorOption.CursorOption((src.OptionKind))
+    let ret =
+      CursorOption.CursorOption((src.OptionKind))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] OutputClause = (* Abstract? = false *)
   | OutputClause of SelectColumns:(SelectElement) list  
   member this.ToCs() : ScriptDom.OutputClause =
@@ -11706,7 +11795,10 @@ and [<RequireQualifiedAccess>] OutputClause = (* Abstract? = false *)
       for e in aSelectColumns do ret.SelectColumns.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.OutputClause, fragmentMapping:FragmentMapping) : OutputClause =
-    OutputClause.OutputClause((src.SelectColumns |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      OutputClause.OutputClause((src.SelectColumns |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] OutputIntoClause = (* Abstract? = false *)
   | OutputIntoClause of IntoTable:TableReference option * IntoTableColumns:(ColumnReferenceExpression) list * SelectColumns:(SelectElement) list  
   member this.ToCs() : ScriptDom.OutputIntoClause =
@@ -11718,7 +11810,10 @@ and [<RequireQualifiedAccess>] OutputIntoClause = (* Abstract? = false *)
       for e in aSelectColumns do ret.SelectColumns.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.OutputIntoClause, fragmentMapping:FragmentMapping) : OutputIntoClause =
-    OutputIntoClause.OutputIntoClause((src.IntoTable |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.IntoTableColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.SelectColumns |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      OutputIntoClause.OutputIntoClause((src.IntoTable |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.IntoTableColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.SelectColumns |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TopRowFilter = (* Abstract? = false *)
   | TopRowFilter of Expression:ScalarExpression option * Percent:bool * WithTies:bool  
   member this.ToCs() : ScriptDom.TopRowFilter =
@@ -11730,7 +11825,10 @@ and [<RequireQualifiedAccess>] TopRowFilter = (* Abstract? = false *)
       ret.WithTies <- aWithTies
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TopRowFilter, fragmentMapping:FragmentMapping) : TopRowFilter =
-    TopRowFilter.TopRowFilter((src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Percent), (src.WithTies))
+    let ret =
+      TopRowFilter.TopRowFilter((src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Percent), (src.WithTies))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] MergeActionClause = (* Abstract? = false *)
   | MergeActionClause of Action:MergeAction option * Condition:ScriptDom.MergeCondition * SearchCondition:BooleanExpression option  
   member this.ToCs() : ScriptDom.MergeActionClause =
@@ -11742,7 +11840,10 @@ and [<RequireQualifiedAccess>] MergeActionClause = (* Abstract? = false *)
       ret.SearchCondition <- aSearchCondition |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.MergeActionClause, fragmentMapping:FragmentMapping) : MergeActionClause =
-    MergeActionClause.MergeActionClause((src.Action |> Option.ofObj |> Option.map (fun x -> MergeAction.FromCs(x, fragmentMapping))), (src.Condition), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      MergeActionClause.MergeActionClause((src.Action |> Option.ofObj |> Option.map (fun x -> MergeAction.FromCs(x, fragmentMapping))), (src.Condition), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FromClause = (* Abstract? = false *)
   | FromClause of TableReferences:(TableReference) list  
   member this.ToCs() : ScriptDom.FromClause =
@@ -11752,7 +11853,10 @@ and [<RequireQualifiedAccess>] FromClause = (* Abstract? = false *)
       for e in aTableReferences do ret.TableReferences.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FromClause, fragmentMapping:FragmentMapping) : FromClause =
-    FromClause.FromClause((src.TableReferences |> Seq.map (fun x -> TableReference.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      FromClause.FromClause((src.TableReferences |> Seq.map (fun x -> TableReference.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] WhereClause = (* Abstract? = false *)
   | WhereClause of Cursor:CursorId option * SearchCondition:BooleanExpression option  
   member this.ToCs() : ScriptDom.WhereClause =
@@ -11763,7 +11867,10 @@ and [<RequireQualifiedAccess>] WhereClause = (* Abstract? = false *)
       ret.SearchCondition <- aSearchCondition |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.WhereClause, fragmentMapping:FragmentMapping) : WhereClause =
-    WhereClause.WhereClause((src.Cursor |> Option.ofObj |> Option.map (fun x -> CursorId.FromCs(x, fragmentMapping))), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      WhereClause.WhereClause((src.Cursor |> Option.ofObj |> Option.map (fun x -> CursorId.FromCs(x, fragmentMapping))), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] IdentifierOrScalarExpression = (* Abstract? = false *)
   | IdentifierOrScalarExpression of Identifier:Identifier option * ScalarExpression:ScalarExpression option  
   member this.ToCs() : ScriptDom.IdentifierOrScalarExpression =
@@ -11774,21 +11881,28 @@ and [<RequireQualifiedAccess>] IdentifierOrScalarExpression = (* Abstract? = fal
       ret.ScalarExpression <- aScalarExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.IdentifierOrScalarExpression, fragmentMapping:FragmentMapping) : IdentifierOrScalarExpression =
-    IdentifierOrScalarExpression.IdentifierOrScalarExpression((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ScalarExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      IdentifierOrScalarExpression.IdentifierOrScalarExpression((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ScalarExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CatalogCollation = (* Abstract? = false *)
   | CatalogCollation   
   member this.ToCs() : ScriptDom.CatalogCollation =
     match this with
     | CatalogCollation -> ScriptDom.CatalogCollation() (* 327 *)
   static member FromCs(src:ScriptDom.CatalogCollation, fragmentMapping:FragmentMapping) : CatalogCollation =
-    CatalogCollation.CatalogCollation 
+    let ret =
+      CatalogCollation.CatalogCollation 
+    ret
 and [<RequireQualifiedAccess>] NonTransactedFileStreamAccess = (* Abstract? = false *)
   | NonTransactedFileStreamAccess   
   member this.ToCs() : ScriptDom.NonTransactedFileStreamAccess =
     match this with
     | NonTransactedFileStreamAccess -> ScriptDom.NonTransactedFileStreamAccess() (* 327 *)
   static member FromCs(src:ScriptDom.NonTransactedFileStreamAccess, fragmentMapping:FragmentMapping) : NonTransactedFileStreamAccess =
-    NonTransactedFileStreamAccess.NonTransactedFileStreamAccess 
+    let ret =
+      NonTransactedFileStreamAccess.NonTransactedFileStreamAccess 
+    ret
 and [<RequireQualifiedAccess>] TableDefinition = (* Abstract? = false *)
   | TableDefinition of ColumnDefinitions:(ColumnDefinition) list * Indexes:(IndexDefinition) list * SystemTimePeriod:SystemTimePeriodDefinition option * TableConstraints:(ConstraintDefinition) list  
   member this.ToCs() : ScriptDom.TableDefinition =
@@ -11801,7 +11915,10 @@ and [<RequireQualifiedAccess>] TableDefinition = (* Abstract? = false *)
       for e in aTableConstraints do ret.TableConstraints.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TableDefinition, fragmentMapping:FragmentMapping) : TableDefinition =
-    TableDefinition.TableDefinition((src.ColumnDefinitions |> Seq.map (fun src -> ColumnDefinition.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Indexes |> Seq.map (fun src -> IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))) |> List.ofSeq), (src.SystemTimePeriod |> Option.ofObj |> Option.map (fun x -> SystemTimePeriodDefinition.FromCs(x, fragmentMapping))), (src.TableConstraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      TableDefinition.TableDefinition((src.ColumnDefinitions |> Seq.map (fun src -> ColumnDefinition.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Indexes |> Seq.map (fun src -> IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))) |> List.ofSeq), (src.SystemTimePeriod |> Option.ofObj |> Option.map (fun x -> SystemTimePeriodDefinition.FromCs(x, fragmentMapping))), (src.TableConstraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] NullableConstraintDefinition = (* Abstract? = false *)
   | NullableConstraintDefinition of ConstraintIdentifier:Identifier option * Nullable:bool  
   member this.ToCs() : ScriptDom.NullableConstraintDefinition =
@@ -11812,7 +11929,10 @@ and [<RequireQualifiedAccess>] NullableConstraintDefinition = (* Abstract? = fal
       ret.Nullable <- aNullable
       ret (* 333 *)
   static member FromCs(src:ScriptDom.NullableConstraintDefinition, fragmentMapping:FragmentMapping) : NullableConstraintDefinition =
-    NullableConstraintDefinition.NullableConstraintDefinition((src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Nullable))
+    let ret =
+      NullableConstraintDefinition.NullableConstraintDefinition((src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Nullable))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ChildObjectName = (* Abstract? = false *)
   | ChildObjectName of BaseIdentifier:Identifier option * ChildIdentifier:Identifier option * Count:Int32 * DatabaseIdentifier:Identifier option * Identifiers:(Identifier) list * SchemaIdentifier:Identifier option * ServerIdentifier:Identifier option  
   member this.ToCs() : ScriptDom.ChildObjectName =
@@ -11828,7 +11948,10 @@ and [<RequireQualifiedAccess>] ChildObjectName = (* Abstract? = false *)
        // Skipping prop ServerIdentifier - it is Readonly
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ChildObjectName, fragmentMapping:FragmentMapping) : ChildObjectName =
-    ChildObjectName.ChildObjectName((src.BaseIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ChildIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Count), (src.DatabaseIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Identifiers |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.SchemaIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ServerIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      ChildObjectName.ChildObjectName((src.BaseIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ChildIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Count), (src.DatabaseIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Identifiers |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.SchemaIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ServerIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] IPv4 = (* Abstract? = false *)
   | IPv4 of OctetFour:Literal option * OctetOne:Literal option * OctetThree:Literal option * OctetTwo:Literal option  
   member this.ToCs() : ScriptDom.IPv4 =
@@ -11841,7 +11964,10 @@ and [<RequireQualifiedAccess>] IPv4 = (* Abstract? = false *)
       ret.OctetTwo <- aOctetTwo |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.IPv4, fragmentMapping:FragmentMapping) : IPv4 =
-    IPv4.IPv4((src.OctetFour |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OctetOne |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OctetThree |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OctetTwo |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      IPv4.IPv4((src.OctetFour |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OctetOne |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OctetThree |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OctetTwo |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] EventDeclarationSetParameter = (* Abstract? = false *)
   | EventDeclarationSetParameter of EventField:Identifier option * EventValue:ScalarExpression option  
   member this.ToCs() : ScriptDom.EventDeclarationSetParameter =
@@ -11852,7 +11978,10 @@ and [<RequireQualifiedAccess>] EventDeclarationSetParameter = (* Abstract? = fal
       ret.EventValue <- aEventValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.EventDeclarationSetParameter, fragmentMapping:FragmentMapping) : EventDeclarationSetParameter =
-    EventDeclarationSetParameter.EventDeclarationSetParameter((src.EventField |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      EventDeclarationSetParameter.EventDeclarationSetParameter((src.EventField |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ExecuteParameter = (* Abstract? = false *)
   | ExecuteParameter of IsOutput:bool * ParameterValue:ScalarExpression option * Variable:VariableReference option  
   member this.ToCs() : ScriptDom.ExecuteParameter =
@@ -11864,7 +11993,10 @@ and [<RequireQualifiedAccess>] ExecuteParameter = (* Abstract? = false *)
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ExecuteParameter, fragmentMapping:FragmentMapping) : ExecuteParameter =
-    ExecuteParameter.ExecuteParameter((src.IsOutput), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    let ret =
+      ExecuteParameter.ExecuteParameter((src.IsOutput), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AdHocDataSource = (* Abstract? = false *)
   | AdHocDataSource of InitString:StringLiteral option * ProviderName:StringLiteral option  
   member this.ToCs() : ScriptDom.AdHocDataSource =
@@ -11875,7 +12007,10 @@ and [<RequireQualifiedAccess>] AdHocDataSource = (* Abstract? = false *)
       ret.ProviderName <- aProviderName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AdHocDataSource, fragmentMapping:FragmentMapping) : AdHocDataSource =
-    AdHocDataSource.AdHocDataSource((src.InitString |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.ProviderName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
+    let ret =
+      AdHocDataSource.AdHocDataSource((src.InitString |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.ProviderName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ProcedureReferenceName = (* Abstract? = false *)
   | ProcedureReferenceName of ProcedureReference:ProcedureReference option * ProcedureVariable:VariableReference option  
   member this.ToCs() : ScriptDom.ProcedureReferenceName =
@@ -11886,7 +12021,10 @@ and [<RequireQualifiedAccess>] ProcedureReferenceName = (* Abstract? = false *)
       ret.ProcedureVariable <- aProcedureVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ProcedureReferenceName, fragmentMapping:FragmentMapping) : ProcedureReferenceName =
-    ProcedureReferenceName.ProcedureReferenceName((src.ProcedureReference |> Option.ofObj |> Option.map (fun x -> ProcedureReference.FromCs(x, fragmentMapping))), (src.ProcedureVariable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    let ret =
+      ProcedureReferenceName.ProcedureReferenceName((src.ProcedureReference |> Option.ofObj |> Option.map (fun x -> ProcedureReference.FromCs(x, fragmentMapping))), (src.ProcedureVariable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] VariableReference = (* Abstract? = false *)
   | VariableReference of Collation:Identifier option * Name:String option  
   member this.ToCs() : ScriptDom.VariableReference =
@@ -11897,7 +12035,10 @@ and [<RequireQualifiedAccess>] VariableReference = (* Abstract? = false *)
       ret.Name <- aName |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.VariableReference, fragmentMapping:FragmentMapping) : VariableReference =
-    VariableReference.VariableReference((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (Option.ofObj (src.Name)))
+    let ret =
+      VariableReference.VariableReference((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (Option.ofObj (src.Name)))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ExecuteContext = (* Abstract? = false *)
   | ExecuteContext of Kind:ScriptDom.ExecuteAsOption * Principal:ScalarExpression option  
   member this.ToCs() : ScriptDom.ExecuteContext =
@@ -11908,7 +12049,10 @@ and [<RequireQualifiedAccess>] ExecuteContext = (* Abstract? = false *)
       ret.Principal <- aPrincipal |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ExecuteContext, fragmentMapping:FragmentMapping) : ExecuteContext =
-    ExecuteContext.ExecuteContext((src.Kind), (src.Principal |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      ExecuteContext.ExecuteContext((src.Kind), (src.Principal |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ExternalResourcePoolAffinitySpecification = (* Abstract? = false *)
   | ExternalResourcePoolAffinitySpecification of AffinityType:ScriptDom.ExternalResourcePoolAffinityType * IsAuto:bool * ParameterValue:Literal option * PoolAffinityRanges:(LiteralRange) list  
   member this.ToCs() : ScriptDom.ExternalResourcePoolAffinitySpecification =
@@ -11921,7 +12065,10 @@ and [<RequireQualifiedAccess>] ExternalResourcePoolAffinitySpecification = (* Ab
       for e in aPoolAffinityRanges do ret.PoolAffinityRanges.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ExternalResourcePoolAffinitySpecification, fragmentMapping:FragmentMapping) : ExternalResourcePoolAffinitySpecification =
-    ExternalResourcePoolAffinitySpecification.ExternalResourcePoolAffinitySpecification((src.AffinityType), (src.IsAuto), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.PoolAffinityRanges |> Seq.map (fun x -> LiteralRange.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      ExternalResourcePoolAffinitySpecification.ExternalResourcePoolAffinitySpecification((src.AffinityType), (src.IsAuto), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.PoolAffinityRanges |> Seq.map (fun x -> LiteralRange.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FileDeclaration = (* Abstract? = false *)
   | FileDeclaration of IsPrimary:bool * Options:(FileDeclarationOption) list  
   member this.ToCs() : ScriptDom.FileDeclaration =
@@ -11932,7 +12079,10 @@ and [<RequireQualifiedAccess>] FileDeclaration = (* Abstract? = false *)
       for e in aOptions do ret.Options.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FileDeclaration, fragmentMapping:FragmentMapping) : FileDeclaration =
-    FileDeclaration.FileDeclaration((src.IsPrimary), (src.Options |> Seq.map (fun x -> FileDeclarationOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      FileDeclaration.FileDeclaration((src.IsPrimary), (src.Options |> Seq.map (fun x -> FileDeclarationOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] JsonForClauseOption = (* Abstract? = false *)
   | JsonForClauseOption of OptionKind:ScriptDom.JsonForClauseOptions * Value:Literal option  
   member this.ToCs() : ScriptDom.JsonForClauseOption =
@@ -11943,7 +12093,10 @@ and [<RequireQualifiedAccess>] JsonForClauseOption = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.JsonForClauseOption, fragmentMapping:FragmentMapping) : JsonForClauseOption =
-    JsonForClauseOption.JsonForClauseOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      JsonForClauseOption.JsonForClauseOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] XmlForClauseOption = (* Abstract? = false *)
   | XmlForClauseOption of OptionKind:ScriptDom.XmlForClauseOptions * Value:Literal option  
   member this.ToCs() : ScriptDom.XmlForClauseOption =
@@ -11954,7 +12107,10 @@ and [<RequireQualifiedAccess>] XmlForClauseOption = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.XmlForClauseOption, fragmentMapping:FragmentMapping) : XmlForClauseOption =
-    XmlForClauseOption.XmlForClauseOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      XmlForClauseOption.XmlForClauseOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ExecuteAsClause = (* Abstract? = false *)
   | ExecuteAsClause of ExecuteAsOption:ScriptDom.ExecuteAsOption * Literal:Literal option  
   member this.ToCs() : ScriptDom.ExecuteAsClause =
@@ -11965,7 +12121,10 @@ and [<RequireQualifiedAccess>] ExecuteAsClause = (* Abstract? = false *)
       ret.Literal <- aLiteral |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ExecuteAsClause, fragmentMapping:FragmentMapping) : ExecuteAsClause =
-    ExecuteAsClause.ExecuteAsClause((src.ExecuteAsOption), (src.Literal |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      ExecuteAsClause.ExecuteAsClause((src.ExecuteAsOption), (src.Literal |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DeclareTableVariableBody = (* Abstract? = false *)
   | DeclareTableVariableBody of AsDefined:bool * Definition:TableDefinition option * VariableName:Identifier option  
   member this.ToCs() : ScriptDom.DeclareTableVariableBody =
@@ -11977,7 +12136,10 @@ and [<RequireQualifiedAccess>] DeclareTableVariableBody = (* Abstract? = false *
       ret.VariableName <- aVariableName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DeclareTableVariableBody, fragmentMapping:FragmentMapping) : DeclareTableVariableBody =
-    DeclareTableVariableBody.DeclareTableVariableBody((src.AsDefined), (src.Definition |> Option.ofObj |> Option.map (fun x -> TableDefinition.FromCs(x, fragmentMapping))), (src.VariableName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      DeclareTableVariableBody.DeclareTableVariableBody((src.AsDefined), (src.Definition |> Option.ofObj |> Option.map (fun x -> TableDefinition.FromCs(x, fragmentMapping))), (src.VariableName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CompressionPartitionRange = (* Abstract? = false *)
   | CompressionPartitionRange of From:ScalarExpression option * To:ScalarExpression option  
   member this.ToCs() : ScriptDom.CompressionPartitionRange =
@@ -11988,7 +12150,10 @@ and [<RequireQualifiedAccess>] CompressionPartitionRange = (* Abstract? = false 
       ret.To <- aTo |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.CompressionPartitionRange, fragmentMapping:FragmentMapping) : CompressionPartitionRange =
-    CompressionPartitionRange.CompressionPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      CompressionPartitionRange.CompressionPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] OnlineIndexLowPriorityLockWaitOption = (* Abstract? = false *)
   | OnlineIndexLowPriorityLockWaitOption of Options:(LowPriorityLockWaitOption) list  
   member this.ToCs() : ScriptDom.OnlineIndexLowPriorityLockWaitOption =
@@ -11998,21 +12163,28 @@ and [<RequireQualifiedAccess>] OnlineIndexLowPriorityLockWaitOption = (* Abstrac
       for e in aOptions do ret.Options.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.OnlineIndexLowPriorityLockWaitOption, fragmentMapping:FragmentMapping) : OnlineIndexLowPriorityLockWaitOption =
-    OnlineIndexLowPriorityLockWaitOption.OnlineIndexLowPriorityLockWaitOption((src.Options |> Seq.map (fun x -> LowPriorityLockWaitOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      OnlineIndexLowPriorityLockWaitOption.OnlineIndexLowPriorityLockWaitOption((src.Options |> Seq.map (fun x -> LowPriorityLockWaitOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TimeUnit = (* Abstract? = false *)
   | TimeUnit   
   member this.ToCs() : ScriptDom.TimeUnit =
     match this with
     | TimeUnit -> ScriptDom.TimeUnit() (* 327 *)
   static member FromCs(src:ScriptDom.TimeUnit, fragmentMapping:FragmentMapping) : TimeUnit =
-    TimeUnit.TimeUnit 
+    let ret =
+      TimeUnit.TimeUnit 
+    ret
 and [<RequireQualifiedAccess>] IndexTypeKind = (* Abstract? = false *)
   | IndexTypeKind   
   member this.ToCs() : ScriptDom.IndexTypeKind =
     match this with
     | IndexTypeKind -> ScriptDom.IndexTypeKind() (* 327 *)
   static member FromCs(src:ScriptDom.IndexTypeKind, fragmentMapping:FragmentMapping) : IndexTypeKind =
-    IndexTypeKind.IndexTypeKind 
+    let ret =
+      IndexTypeKind.IndexTypeKind 
+    ret
 and [<RequireQualifiedAccess>] ExecuteSpecification = (* Abstract? = false *)
   | ExecuteSpecification of ExecutableEntity:ExecutableEntity option * ExecuteContext:ExecuteContext option * LinkedServer:Identifier option * Variable:VariableReference option  
   member this.ToCs() : ScriptDom.ExecuteSpecification =
@@ -12025,7 +12197,10 @@ and [<RequireQualifiedAccess>] ExecuteSpecification = (* Abstract? = false *)
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ExecuteSpecification, fragmentMapping:FragmentMapping) : ExecuteSpecification =
-    ExecuteSpecification.ExecuteSpecification((src.ExecutableEntity |> Option.ofObj |> Option.map (fun x -> ExecutableEntity.FromCs(x, fragmentMapping))), (src.ExecuteContext |> Option.ofObj |> Option.map (fun x -> ExecuteContext.FromCs(x, fragmentMapping))), (src.LinkedServer |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    let ret =
+      ExecuteSpecification.ExecuteSpecification((src.ExecutableEntity |> Option.ofObj |> Option.map (fun x -> ExecutableEntity.FromCs(x, fragmentMapping))), (src.ExecuteContext |> Option.ofObj |> Option.map (fun x -> ExecuteContext.FromCs(x, fragmentMapping))), (src.LinkedServer |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] RowValue = (* Abstract? = false *)
   | RowValue of ColumnValues:(ScalarExpression) list  
   member this.ToCs() : ScriptDom.RowValue =
@@ -12035,7 +12210,10 @@ and [<RequireQualifiedAccess>] RowValue = (* Abstract? = false *)
       for e in aColumnValues do ret.ColumnValues.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.RowValue, fragmentMapping:FragmentMapping) : RowValue =
-    RowValue.RowValue((src.ColumnValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      RowValue.RowValue((src.ColumnValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ValuesInsertSource = (* Abstract? = false *)
   | ValuesInsertSource of IsDefaultValues:bool * RowValues:(RowValue) list  
   member this.ToCs() : ScriptDom.ValuesInsertSource =
@@ -12046,7 +12224,10 @@ and [<RequireQualifiedAccess>] ValuesInsertSource = (* Abstract? = false *)
       for e in aRowValues do ret.RowValues.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ValuesInsertSource, fragmentMapping:FragmentMapping) : ValuesInsertSource =
-    ValuesInsertSource.ValuesInsertSource((src.IsDefaultValues), (src.RowValues |> Seq.map (fun src -> RowValue.RowValue((src.ColumnValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq))
+    let ret =
+      ValuesInsertSource.ValuesInsertSource((src.IsDefaultValues), (src.RowValues |> Seq.map (fun src -> RowValue.RowValue((src.ColumnValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DeviceInfo = (* Abstract? = false *)
   | DeviceInfo of DeviceType:ScriptDom.DeviceType * LogicalDevice:IdentifierOrValueExpression option * PhysicalDevice:ValueExpression option  
   member this.ToCs() : ScriptDom.DeviceInfo =
@@ -12058,7 +12239,10 @@ and [<RequireQualifiedAccess>] DeviceInfo = (* Abstract? = false *)
       ret.PhysicalDevice <- aPhysicalDevice |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DeviceInfo, fragmentMapping:FragmentMapping) : DeviceInfo =
-    DeviceInfo.DeviceInfo((src.DeviceType), (src.LogicalDevice |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.PhysicalDevice |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      DeviceInfo.DeviceInfo((src.DeviceType), (src.LogicalDevice |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.PhysicalDevice |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] VariableValuePair = (* Abstract? = false *)
   | VariableValuePair of IsForUnknown:bool * Value:ScalarExpression option * Variable:VariableReference option  
   member this.ToCs() : ScriptDom.VariableValuePair =
@@ -12070,7 +12254,10 @@ and [<RequireQualifiedAccess>] VariableValuePair = (* Abstract? = false *)
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.VariableValuePair, fragmentMapping:FragmentMapping) : VariableValuePair =
-    VariableValuePair.VariableValuePair((src.IsForUnknown), (src.Value |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    let ret =
+      VariableValuePair.VariableValuePair((src.IsForUnknown), (src.Value |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ExpressionWithSortOrder = (* Abstract? = false *)
   | ExpressionWithSortOrder of Expression:ScalarExpression option * SortOrder:ScriptDom.SortOrder  
   member this.ToCs() : ScriptDom.ExpressionWithSortOrder =
@@ -12081,7 +12268,10 @@ and [<RequireQualifiedAccess>] ExpressionWithSortOrder = (* Abstract? = false *)
       ret.SortOrder <- aSortOrder
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ExpressionWithSortOrder, fragmentMapping:FragmentMapping) : ExpressionWithSortOrder =
-    ExpressionWithSortOrder.ExpressionWithSortOrder((src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SortOrder))
+    let ret =
+      ExpressionWithSortOrder.ExpressionWithSortOrder((src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SortOrder))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] OrderByClause = (* Abstract? = false *)
   | OrderByClause of OrderByElements:(ExpressionWithSortOrder) list  
   member this.ToCs() : ScriptDom.OrderByClause =
@@ -12091,7 +12281,10 @@ and [<RequireQualifiedAccess>] OrderByClause = (* Abstract? = false *)
       for e in aOrderByElements do ret.OrderByElements.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.OrderByClause, fragmentMapping:FragmentMapping) : OrderByClause =
-    OrderByClause.OrderByClause((src.OrderByElements |> Seq.map (fun src -> ExpressionWithSortOrder.ExpressionWithSortOrder((src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq))
+    let ret =
+      OrderByClause.OrderByClause((src.OrderByElements |> Seq.map (fun src -> ExpressionWithSortOrder.ExpressionWithSortOrder((src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] WindowFrameClause = (* Abstract? = false *)
   | WindowFrameClause of Bottom:WindowDelimiter option * Top:WindowDelimiter option * WindowFrameType:ScriptDom.WindowFrameType  
   member this.ToCs() : ScriptDom.WindowFrameClause =
@@ -12103,7 +12296,10 @@ and [<RequireQualifiedAccess>] WindowFrameClause = (* Abstract? = false *)
       ret.WindowFrameType <- aWindowFrameType
       ret (* 333 *)
   static member FromCs(src:ScriptDom.WindowFrameClause, fragmentMapping:FragmentMapping) : WindowFrameClause =
-    WindowFrameClause.WindowFrameClause((src.Bottom |> Option.ofObj |> Option.map (fun x -> WindowDelimiter.FromCs(x, fragmentMapping))), (src.Top |> Option.ofObj |> Option.map (fun x -> WindowDelimiter.FromCs(x, fragmentMapping))), (src.WindowFrameType))
+    let ret =
+      WindowFrameClause.WindowFrameClause((src.Bottom |> Option.ofObj |> Option.map (fun x -> WindowDelimiter.FromCs(x, fragmentMapping))), (src.Top |> Option.ofObj |> Option.map (fun x -> WindowDelimiter.FromCs(x, fragmentMapping))), (src.WindowFrameType))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ProcedureReference = (* Abstract? = false *)
   | ProcedureReference of Name:SchemaObjectName option * Number:Literal option  
   member this.ToCs() : ScriptDom.ProcedureReference =
@@ -12114,7 +12310,10 @@ and [<RequireQualifiedAccess>] ProcedureReference = (* Abstract? = false *)
       ret.Number <- aNumber |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ProcedureReference, fragmentMapping:FragmentMapping) : ProcedureReference =
-    ProcedureReference.ProcedureReference((src.Name |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Number |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      ProcedureReference.ProcedureReference((src.Name |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Number |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] OffsetClause = (* Abstract? = false *)
   | OffsetClause of FetchExpression:ScalarExpression option * OffsetExpression:ScalarExpression option  
   member this.ToCs() : ScriptDom.OffsetClause =
@@ -12125,7 +12324,10 @@ and [<RequireQualifiedAccess>] OffsetClause = (* Abstract? = false *)
       ret.OffsetExpression <- aOffsetExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.OffsetClause, fragmentMapping:FragmentMapping) : OffsetClause =
-    OffsetClause.OffsetClause((src.FetchExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.OffsetExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      OffsetClause.OffsetClause((src.FetchExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.OffsetExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] GroupByClause = (* Abstract? = false *)
   | GroupByClause of All:bool * GroupByOption:ScriptDom.GroupByOption * GroupingSpecifications:(GroupingSpecification) list  
   member this.ToCs() : ScriptDom.GroupByClause =
@@ -12137,7 +12339,10 @@ and [<RequireQualifiedAccess>] GroupByClause = (* Abstract? = false *)
       for e in aGroupingSpecifications do ret.GroupingSpecifications.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.GroupByClause, fragmentMapping:FragmentMapping) : GroupByClause =
-    GroupByClause.GroupByClause((src.All), (src.GroupByOption), (src.GroupingSpecifications |> Seq.map (fun x -> GroupingSpecification.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      GroupByClause.GroupByClause((src.All), (src.GroupByOption), (src.GroupingSpecifications |> Seq.map (fun x -> GroupingSpecification.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] HavingClause = (* Abstract? = false *)
   | HavingClause of SearchCondition:BooleanExpression option  
   member this.ToCs() : ScriptDom.HavingClause =
@@ -12147,7 +12352,10 @@ and [<RequireQualifiedAccess>] HavingClause = (* Abstract? = false *)
       ret.SearchCondition <- aSearchCondition |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.HavingClause, fragmentMapping:FragmentMapping) : HavingClause =
-    HavingClause.HavingClause((src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      HavingClause.HavingClause((src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ResourcePoolAffinitySpecification = (* Abstract? = false *)
   | ResourcePoolAffinitySpecification of AffinityType:ScriptDom.ResourcePoolAffinityType * IsAuto:bool * ParameterValue:Literal option * PoolAffinityRanges:(LiteralRange) list  
   member this.ToCs() : ScriptDom.ResourcePoolAffinitySpecification =
@@ -12160,7 +12368,10 @@ and [<RequireQualifiedAccess>] ResourcePoolAffinitySpecification = (* Abstract? 
       for e in aPoolAffinityRanges do ret.PoolAffinityRanges.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ResourcePoolAffinitySpecification, fragmentMapping:FragmentMapping) : ResourcePoolAffinitySpecification =
-    ResourcePoolAffinitySpecification.ResourcePoolAffinitySpecification((src.AffinityType), (src.IsAuto), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.PoolAffinityRanges |> Seq.map (fun x -> LiteralRange.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      ResourcePoolAffinitySpecification.ResourcePoolAffinitySpecification((src.AffinityType), (src.IsAuto), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.PoolAffinityRanges |> Seq.map (fun x -> LiteralRange.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FileStreamDatabaseOption = (* Abstract? = false *)
   | FileStreamDatabaseOption of DirectoryName:Literal option * NonTransactedAccess:(ScriptDom.NonTransactedFileStreamAccess) option * OptionKind:ScriptDom.DatabaseOptionKind  
   member this.ToCs() : ScriptDom.FileStreamDatabaseOption =
@@ -12172,7 +12383,10 @@ and [<RequireQualifiedAccess>] FileStreamDatabaseOption = (* Abstract? = false *
       ret.OptionKind <- aOptionKind
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FileStreamDatabaseOption, fragmentMapping:FragmentMapping) : FileStreamDatabaseOption =
-    FileStreamDatabaseOption.FileStreamDatabaseOption((src.DirectoryName |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (Option.ofNullable (src.NonTransactedAccess)), (src.OptionKind))
+    let ret =
+      FileStreamDatabaseOption.FileStreamDatabaseOption((src.DirectoryName |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (Option.ofNullable (src.NonTransactedAccess)), (src.OptionKind))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ResultColumnDefinition = (* Abstract? = false *)
   | ResultColumnDefinition of ColumnDefinition:ColumnDefinitionBase option * Nullable:NullableConstraintDefinition option  
   member this.ToCs() : ScriptDom.ResultColumnDefinition =
@@ -12183,7 +12397,10 @@ and [<RequireQualifiedAccess>] ResultColumnDefinition = (* Abstract? = false *)
       ret.Nullable <- aNullable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ResultColumnDefinition, fragmentMapping:FragmentMapping) : ResultColumnDefinition =
-    ResultColumnDefinition.ResultColumnDefinition((src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Nullable |> Option.ofObj |> Option.map (fun x -> NullableConstraintDefinition.FromCs(x, fragmentMapping))))
+    let ret =
+      ResultColumnDefinition.ResultColumnDefinition((src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Nullable |> Option.ofObj |> Option.map (fun x -> NullableConstraintDefinition.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SearchedWhenClause = (* Abstract? = false *)
   | SearchedWhenClause of ThenExpression:ScalarExpression option * WhenExpression:BooleanExpression option  
   member this.ToCs() : ScriptDom.SearchedWhenClause =
@@ -12194,7 +12411,10 @@ and [<RequireQualifiedAccess>] SearchedWhenClause = (* Abstract? = false *)
       ret.WhenExpression <- aWhenExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SearchedWhenClause, fragmentMapping:FragmentMapping) : SearchedWhenClause =
-    SearchedWhenClause.SearchedWhenClause((src.ThenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WhenExpression |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      SearchedWhenClause.SearchedWhenClause((src.ThenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WhenExpression |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SimpleWhenClause = (* Abstract? = false *)
   | SimpleWhenClause of ThenExpression:ScalarExpression option * WhenExpression:ScalarExpression option  
   member this.ToCs() : ScriptDom.SimpleWhenClause =
@@ -12205,7 +12425,10 @@ and [<RequireQualifiedAccess>] SimpleWhenClause = (* Abstract? = false *)
       ret.WhenExpression <- aWhenExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SimpleWhenClause, fragmentMapping:FragmentMapping) : SimpleWhenClause =
-    SimpleWhenClause.SimpleWhenClause((src.ThenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WhenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      SimpleWhenClause.SimpleWhenClause((src.ThenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WhenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] OverClause = (* Abstract? = false *)
   | OverClause of OrderByClause:OrderByClause option * Partitions:(ScalarExpression) list * WindowFrameClause:WindowFrameClause option  
   member this.ToCs() : ScriptDom.OverClause =
@@ -12217,7 +12440,10 @@ and [<RequireQualifiedAccess>] OverClause = (* Abstract? = false *)
       ret.WindowFrameClause <- aWindowFrameClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.OverClause, fragmentMapping:FragmentMapping) : OverClause =
-    OverClause.OverClause((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))))
+    let ret =
+      OverClause.OverClause((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] WithinGroupClause = (* Abstract? = false *)
   | WithinGroupClause of HasGraphPath:bool * OrderByClause:OrderByClause option  
   member this.ToCs() : ScriptDom.WithinGroupClause =
@@ -12228,7 +12454,10 @@ and [<RequireQualifiedAccess>] WithinGroupClause = (* Abstract? = false *)
       ret.OrderByClause <- aOrderByClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.WithinGroupClause, fragmentMapping:FragmentMapping) : WithinGroupClause =
-    WithinGroupClause.WithinGroupClause((src.HasGraphPath), (src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))))
+    let ret =
+      WithinGroupClause.WithinGroupClause((src.HasGraphPath), (src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] Privilege80 = (* Abstract? = false *)
   | Privilege80 of Columns:(Identifier) list * PrivilegeType80:ScriptDom.PrivilegeType80  
   member this.ToCs() : ScriptDom.Privilege80 =
@@ -12239,7 +12468,10 @@ and [<RequireQualifiedAccess>] Privilege80 = (* Abstract? = false *)
       ret.PrivilegeType80 <- aPrivilegeType80
       ret (* 333 *)
   static member FromCs(src:ScriptDom.Privilege80, fragmentMapping:FragmentMapping) : Privilege80 =
-    Privilege80.Privilege80((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.PrivilegeType80))
+    let ret =
+      Privilege80.Privilege80((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.PrivilegeType80))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FunctionCall = (* Abstract? = false *)
   | FunctionCall of CallTarget:CallTarget option * Collation:Identifier option * FunctionName:Identifier option * OverClause:OverClause option * Parameters:(ScalarExpression) list * UniqueRowFilter:ScriptDom.UniqueRowFilter * WithinGroupClause:WithinGroupClause option  
   member this.ToCs() : ScriptDom.FunctionCall =
@@ -12255,7 +12487,10 @@ and [<RequireQualifiedAccess>] FunctionCall = (* Abstract? = false *)
       ret.WithinGroupClause <- aWithinGroupClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FunctionCall, fragmentMapping:FragmentMapping) : FunctionCall =
-    FunctionCall.FunctionCall((src.CallTarget |> Option.ofObj |> Option.map (fun x -> CallTarget.FromCs(x, fragmentMapping))), (src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.FunctionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OverClause |> Option.ofObj |> Option.map (fun x -> OverClause.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.UniqueRowFilter), (src.WithinGroupClause |> Option.ofObj |> Option.map (fun x -> WithinGroupClause.FromCs(x, fragmentMapping))))
+    let ret =
+      FunctionCall.FunctionCall((src.CallTarget |> Option.ofObj |> Option.map (fun x -> CallTarget.FromCs(x, fragmentMapping))), (src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.FunctionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OverClause |> Option.ofObj |> Option.map (fun x -> OverClause.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.UniqueRowFilter), (src.WithinGroupClause |> Option.ofObj |> Option.map (fun x -> WithinGroupClause.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SecurityTargetObjectName = (* Abstract? = false *)
   | SecurityTargetObjectName of MultiPartIdentifier:MultiPartIdentifier option  
   member this.ToCs() : ScriptDom.SecurityTargetObjectName =
@@ -12265,7 +12500,10 @@ and [<RequireQualifiedAccess>] SecurityTargetObjectName = (* Abstract? = false *
       ret.MultiPartIdentifier <- aMultiPartIdentifier |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SecurityTargetObjectName, fragmentMapping:FragmentMapping) : SecurityTargetObjectName =
-    SecurityTargetObjectName.SecurityTargetObjectName((src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))
+    let ret =
+      SecurityTargetObjectName.SecurityTargetObjectName((src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] BoundingBoxParameter = (* Abstract? = false *)
   | BoundingBoxParameter of Parameter:ScriptDom.BoundingBoxParameterType * Value:ScalarExpression option  
   member this.ToCs() : ScriptDom.BoundingBoxParameter =
@@ -12276,7 +12514,10 @@ and [<RequireQualifiedAccess>] BoundingBoxParameter = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.BoundingBoxParameter, fragmentMapping:FragmentMapping) : BoundingBoxParameter =
-    BoundingBoxParameter.BoundingBoxParameter((src.Parameter), (src.Value |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      BoundingBoxParameter.BoundingBoxParameter((src.Parameter), (src.Value |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] GridParameter = (* Abstract? = false *)
   | GridParameter of Parameter:ScriptDom.GridParameterType * Value:ScriptDom.ImportanceParameterType  
   member this.ToCs() : ScriptDom.GridParameter =
@@ -12287,7 +12528,10 @@ and [<RequireQualifiedAccess>] GridParameter = (* Abstract? = false *)
       ret.Value <- aValue
       ret (* 333 *)
   static member FromCs(src:ScriptDom.GridParameter, fragmentMapping:FragmentMapping) : GridParameter =
-    GridParameter.GridParameter((src.Parameter), (src.Value))
+    let ret =
+      GridParameter.GridParameter((src.Parameter), (src.Value))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] StatisticsPartitionRange = (* Abstract? = false *)
   | StatisticsPartitionRange of From:IntegerLiteral option * To:IntegerLiteral option  
   member this.ToCs() : ScriptDom.StatisticsPartitionRange =
@@ -12298,7 +12542,10 @@ and [<RequireQualifiedAccess>] StatisticsPartitionRange = (* Abstract? = false *
       ret.To <- aTo |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.StatisticsPartitionRange, fragmentMapping:FragmentMapping) : StatisticsPartitionRange =
-    StatisticsPartitionRange.StatisticsPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))))
+    let ret =
+      StatisticsPartitionRange.StatisticsPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TSqlBatch = (* Abstract? = false *)
   | TSqlBatch of Statements:(TSqlStatement) list  
   member this.ToCs() : ScriptDom.TSqlBatch =
@@ -12308,7 +12555,10 @@ and [<RequireQualifiedAccess>] TSqlBatch = (* Abstract? = false *)
       for e in aStatements do ret.Statements.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TSqlBatch, fragmentMapping:FragmentMapping) : TSqlBatch =
-    TSqlBatch.TSqlBatch((src.Statements |> Seq.map (fun x -> TSqlStatement.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      TSqlBatch.TSqlBatch((src.Statements |> Seq.map (fun x -> TSqlStatement.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] EndpointAffinity = (* Abstract? = false *)
   | EndpointAffinity of Kind:ScriptDom.AffinityKind * Value:Literal option  
   member this.ToCs() : ScriptDom.EndpointAffinity =
@@ -12319,7 +12569,10 @@ and [<RequireQualifiedAccess>] EndpointAffinity = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.EndpointAffinity, fragmentMapping:FragmentMapping) : EndpointAffinity =
-    EndpointAffinity.EndpointAffinity((src.Kind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      EndpointAffinity.EndpointAffinity((src.Kind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ServiceContract = (* Abstract? = false *)
   | ServiceContract of Action:ScriptDom.AlterAction * Name:Identifier option  
   member this.ToCs() : ScriptDom.ServiceContract =
@@ -12330,7 +12583,10 @@ and [<RequireQualifiedAccess>] ServiceContract = (* Abstract? = false *)
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ServiceContract, fragmentMapping:FragmentMapping) : ServiceContract =
-    ServiceContract.ServiceContract((src.Action), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      ServiceContract.ServiceContract((src.Action), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DatabaseConfigurationClearOption = (* Abstract? = false *)
   | DatabaseConfigurationClearOption of OptionKind:ScriptDom.DatabaseConfigClearOptionKind * PlanHandle:BinaryLiteral option  
   member this.ToCs() : ScriptDom.DatabaseConfigurationClearOption =
@@ -12341,7 +12597,10 @@ and [<RequireQualifiedAccess>] DatabaseConfigurationClearOption = (* Abstract? =
       ret.PlanHandle <- aPlanHandle |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DatabaseConfigurationClearOption, fragmentMapping:FragmentMapping) : DatabaseConfigurationClearOption =
-    DatabaseConfigurationClearOption.DatabaseConfigurationClearOption((src.OptionKind), (src.PlanHandle |> Option.ofObj |> Option.map (fun x -> BinaryLiteral.FromCs(x, fragmentMapping))))
+    let ret =
+      DatabaseConfigurationClearOption.DatabaseConfigurationClearOption((src.OptionKind), (src.PlanHandle |> Option.ofObj |> Option.map (fun x -> BinaryLiteral.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AlterDatabaseTermination = (* Abstract? = false *)
   | AlterDatabaseTermination of ImmediateRollback:bool * NoWait:bool * RollbackAfter:Literal option  
   member this.ToCs() : ScriptDom.AlterDatabaseTermination =
@@ -12353,7 +12612,10 @@ and [<RequireQualifiedAccess>] AlterDatabaseTermination = (* Abstract? = false *
       ret.RollbackAfter <- aRollbackAfter |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AlterDatabaseTermination, fragmentMapping:FragmentMapping) : AlterDatabaseTermination =
-    AlterDatabaseTermination.AlterDatabaseTermination((src.ImmediateRollback), (src.NoWait), (src.RollbackAfter |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      AlterDatabaseTermination.AlterDatabaseTermination((src.ImmediateRollback), (src.NoWait), (src.RollbackAfter |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FullTextStopListAction = (* Abstract? = false *)
   | FullTextStopListAction of IsAdd:bool * IsAll:bool * LanguageTerm:IdentifierOrValueExpression option * StopWord:Literal option  
   member this.ToCs() : ScriptDom.FullTextStopListAction =
@@ -12366,7 +12628,10 @@ and [<RequireQualifiedAccess>] FullTextStopListAction = (* Abstract? = false *)
       ret.StopWord <- aStopWord |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FullTextStopListAction, fragmentMapping:FragmentMapping) : FullTextStopListAction =
-    FullTextStopListAction.FullTextStopListAction((src.IsAdd), (src.IsAll), (src.LanguageTerm |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.StopWord |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      FullTextStopListAction.FullTextStopListAction((src.IsAdd), (src.IsAll), (src.LanguageTerm |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.StopWord |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AlterServerConfigurationFailoverClusterPropertyOption = (* Abstract? = false *)
   | AlterServerConfigurationFailoverClusterPropertyOption of OptionKind:ScriptDom.AlterServerConfigurationFailoverClusterPropertyOptionKind * OptionValue:OptionValue option  
   member this.ToCs() : ScriptDom.AlterServerConfigurationFailoverClusterPropertyOption =
@@ -12377,7 +12642,10 @@ and [<RequireQualifiedAccess>] AlterServerConfigurationFailoverClusterPropertyOp
       ret.OptionValue <- aOptionValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AlterServerConfigurationFailoverClusterPropertyOption, fragmentMapping:FragmentMapping) : AlterServerConfigurationFailoverClusterPropertyOption =
-    AlterServerConfigurationFailoverClusterPropertyOption.AlterServerConfigurationFailoverClusterPropertyOption((src.OptionKind), (src.OptionValue |> Option.ofObj |> Option.map (fun x -> OptionValue.FromCs(x, fragmentMapping))))
+    let ret =
+      AlterServerConfigurationFailoverClusterPropertyOption.AlterServerConfigurationFailoverClusterPropertyOption((src.OptionKind), (src.OptionValue |> Option.ofObj |> Option.map (fun x -> OptionValue.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AlterServerConfigurationHadrClusterOption = (* Abstract? = false *)
   | AlterServerConfigurationHadrClusterOption of IsLocal:bool * OptionKind:ScriptDom.AlterServerConfigurationHadrClusterOptionKind * OptionValue:OptionValue option  
   member this.ToCs() : ScriptDom.AlterServerConfigurationHadrClusterOption =
@@ -12389,7 +12657,10 @@ and [<RequireQualifiedAccess>] AlterServerConfigurationHadrClusterOption = (* Ab
       ret.OptionValue <- aOptionValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AlterServerConfigurationHadrClusterOption, fragmentMapping:FragmentMapping) : AlterServerConfigurationHadrClusterOption =
-    AlterServerConfigurationHadrClusterOption.AlterServerConfigurationHadrClusterOption((src.IsLocal), (src.OptionKind), (src.OptionValue |> Option.ofObj |> Option.map (fun x -> OptionValue.FromCs(x, fragmentMapping))))
+    let ret =
+      AlterServerConfigurationHadrClusterOption.AlterServerConfigurationHadrClusterOption((src.IsLocal), (src.OptionKind), (src.OptionValue |> Option.ofObj |> Option.map (fun x -> OptionValue.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AlterServerConfigurationSoftNumaOption = (* Abstract? = false *)
   | AlterServerConfigurationSoftNumaOption of OptionKind:ScriptDom.AlterServerConfigurationSoftNumaOptionKind * OptionValue:OptionValue option  
   member this.ToCs() : ScriptDom.AlterServerConfigurationSoftNumaOption =
@@ -12400,7 +12671,10 @@ and [<RequireQualifiedAccess>] AlterServerConfigurationSoftNumaOption = (* Abstr
       ret.OptionValue <- aOptionValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AlterServerConfigurationSoftNumaOption, fragmentMapping:FragmentMapping) : AlterServerConfigurationSoftNumaOption =
-    AlterServerConfigurationSoftNumaOption.AlterServerConfigurationSoftNumaOption((src.OptionKind), (src.OptionValue |> Option.ofObj |> Option.map (fun x -> OptionValue.FromCs(x, fragmentMapping))))
+    let ret =
+      AlterServerConfigurationSoftNumaOption.AlterServerConfigurationSoftNumaOption((src.OptionKind), (src.OptionValue |> Option.ofObj |> Option.map (fun x -> OptionValue.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ProcessAffinityRange = (* Abstract? = false *)
   | ProcessAffinityRange of From:Literal option * To:Literal option  
   member this.ToCs() : ScriptDom.ProcessAffinityRange =
@@ -12411,7 +12685,10 @@ and [<RequireQualifiedAccess>] ProcessAffinityRange = (* Abstract? = false *)
       ret.To <- aTo |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ProcessAffinityRange, fragmentMapping:FragmentMapping) : ProcessAffinityRange =
-    ProcessAffinityRange.ProcessAffinityRange((src.From |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      ProcessAffinityRange.ProcessAffinityRange((src.From |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AlterTableDropTableElement = (* Abstract? = false *)
   | AlterTableDropTableElement of DropClusteredConstraintOptions:(DropClusteredConstraintOption) list * IsIfExists:bool * Name:Identifier option * TableElementType:ScriptDom.TableElementType  
   member this.ToCs() : ScriptDom.AlterTableDropTableElement =
@@ -12424,7 +12701,10 @@ and [<RequireQualifiedAccess>] AlterTableDropTableElement = (* Abstract? = false
       ret.TableElementType <- aTableElementType
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AlterTableDropTableElement, fragmentMapping:FragmentMapping) : AlterTableDropTableElement =
-    AlterTableDropTableElement.AlterTableDropTableElement((src.DropClusteredConstraintOptions |> Seq.map (fun x -> DropClusteredConstraintOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IsIfExists), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.TableElementType))
+    let ret =
+      AlterTableDropTableElement.AlterTableDropTableElement((src.DropClusteredConstraintOptions |> Seq.map (fun x -> DropClusteredConstraintOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IsIfExists), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.TableElementType))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] PartitionSpecifier = (* Abstract? = false *)
   | PartitionSpecifier of All:bool * Number:ScalarExpression option  
   member this.ToCs() : ScriptDom.PartitionSpecifier =
@@ -12435,7 +12715,10 @@ and [<RequireQualifiedAccess>] PartitionSpecifier = (* Abstract? = false *)
       ret.Number <- aNumber |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.PartitionSpecifier, fragmentMapping:FragmentMapping) : PartitionSpecifier =
-    PartitionSpecifier.PartitionSpecifier((src.All), (src.Number |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      PartitionSpecifier.PartitionSpecifier((src.All), (src.Number |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ApplicationRoleOption = (* Abstract? = false *)
   | ApplicationRoleOption of OptionKind:ScriptDom.ApplicationRoleOptionKind * Value:IdentifierOrValueExpression option  
   member this.ToCs() : ScriptDom.ApplicationRoleOption =
@@ -12446,7 +12729,10 @@ and [<RequireQualifiedAccess>] ApplicationRoleOption = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ApplicationRoleOption, fragmentMapping:FragmentMapping) : ApplicationRoleOption =
-    ApplicationRoleOption.ApplicationRoleOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      ApplicationRoleOption.ApplicationRoleOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AddFileSpec = (* Abstract? = false *)
   | AddFileSpec of File:ScalarExpression option * FileName:Literal option  
   member this.ToCs() : ScriptDom.AddFileSpec =
@@ -12457,7 +12743,10 @@ and [<RequireQualifiedAccess>] AddFileSpec = (* Abstract? = false *)
       ret.FileName <- aFileName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AddFileSpec, fragmentMapping:FragmentMapping) : AddFileSpec =
-    AddFileSpec.AddFileSpec((src.File |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.FileName |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      AddFileSpec.AddFileSpec((src.File |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.FileName |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AuditSpecificationPart = (* Abstract? = false *)
   | AuditSpecificationPart of Details:AuditSpecificationDetail option * IsDrop:bool  
   member this.ToCs() : ScriptDom.AuditSpecificationPart =
@@ -12468,7 +12757,10 @@ and [<RequireQualifiedAccess>] AuditSpecificationPart = (* Abstract? = false *)
       ret.IsDrop <- aIsDrop
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AuditSpecificationPart, fragmentMapping:FragmentMapping) : AuditSpecificationPart =
-    AuditSpecificationPart.AuditSpecificationPart((src.Details |> Option.ofObj |> Option.map (fun x -> AuditSpecificationDetail.FromCs(x, fragmentMapping))), (src.IsDrop))
+    let ret =
+      AuditSpecificationPart.AuditSpecificationPart((src.Details |> Option.ofObj |> Option.map (fun x -> AuditSpecificationDetail.FromCs(x, fragmentMapping))), (src.IsDrop))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AvailabilityReplica = (* Abstract? = false *)
   | AvailabilityReplica of Options:(AvailabilityReplicaOption) list * ServerName:StringLiteral option  
   member this.ToCs() : ScriptDom.AvailabilityReplica =
@@ -12479,7 +12771,10 @@ and [<RequireQualifiedAccess>] AvailabilityReplica = (* Abstract? = false *)
       ret.ServerName <- aServerName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AvailabilityReplica, fragmentMapping:FragmentMapping) : AvailabilityReplica =
-    AvailabilityReplica.AvailabilityReplica((src.Options |> Seq.map (fun x -> AvailabilityReplicaOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ServerName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
+    let ret =
+      AvailabilityReplica.AvailabilityReplica((src.Options |> Seq.map (fun x -> AvailabilityReplicaOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ServerName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] MirrorToClause = (* Abstract? = false *)
   | MirrorToClause of Devices:(DeviceInfo) list  
   member this.ToCs() : ScriptDom.MirrorToClause =
@@ -12489,7 +12784,10 @@ and [<RequireQualifiedAccess>] MirrorToClause = (* Abstract? = false *)
       for e in aDevices do ret.Devices.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.MirrorToClause, fragmentMapping:FragmentMapping) : MirrorToClause =
-    MirrorToClause.MirrorToClause((src.Devices |> Seq.map (fun src -> DeviceInfo.DeviceInfo((src.DeviceType), (src.LogicalDevice |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.PhysicalDevice |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    let ret =
+      MirrorToClause.MirrorToClause((src.Devices |> Seq.map (fun src -> DeviceInfo.DeviceInfo((src.DeviceType), (src.LogicalDevice |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.PhysicalDevice |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] BackupRestoreFileInfo = (* Abstract? = false *)
   | BackupRestoreFileInfo of ItemKind:ScriptDom.BackupRestoreItemKind * Items:(ValueExpression) list  
   member this.ToCs() : ScriptDom.BackupRestoreFileInfo =
@@ -12500,7 +12798,10 @@ and [<RequireQualifiedAccess>] BackupRestoreFileInfo = (* Abstract? = false *)
       for e in aItems do ret.Items.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.BackupRestoreFileInfo, fragmentMapping:FragmentMapping) : BackupRestoreFileInfo =
-    BackupRestoreFileInfo.BackupRestoreFileInfo((src.ItemKind), (src.Items |> Seq.map (fun x -> ValueExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      BackupRestoreFileInfo.BackupRestoreFileInfo((src.ItemKind), (src.Items |> Seq.map (fun x -> ValueExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] BrokerPriorityParameter = (* Abstract? = false *)
   | BrokerPriorityParameter of IsDefaultOrAny:ScriptDom.BrokerPriorityParameterSpecialType * ParameterType:ScriptDom.BrokerPriorityParameterType * ParameterValue:IdentifierOrValueExpression option  
   member this.ToCs() : ScriptDom.BrokerPriorityParameter =
@@ -12512,7 +12813,10 @@ and [<RequireQualifiedAccess>] BrokerPriorityParameter = (* Abstract? = false *)
       ret.ParameterValue <- aParameterValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.BrokerPriorityParameter, fragmentMapping:FragmentMapping) : BrokerPriorityParameter =
-    BrokerPriorityParameter.BrokerPriorityParameter((src.IsDefaultOrAny), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      BrokerPriorityParameter.BrokerPriorityParameter((src.IsDefaultOrAny), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] InsertBulkColumnDefinition = (* Abstract? = false *)
   | InsertBulkColumnDefinition of Column:ColumnDefinitionBase option * NullNotNull:ScriptDom.NullNotNull  
   member this.ToCs() : ScriptDom.InsertBulkColumnDefinition =
@@ -12523,7 +12827,10 @@ and [<RequireQualifiedAccess>] InsertBulkColumnDefinition = (* Abstract? = false
       ret.NullNotNull <- aNullNotNull
       ret (* 333 *)
   static member FromCs(src:ScriptDom.InsertBulkColumnDefinition, fragmentMapping:FragmentMapping) : InsertBulkColumnDefinition =
-    InsertBulkColumnDefinition.InsertBulkColumnDefinition((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.NullNotNull))
+    let ret =
+      InsertBulkColumnDefinition.InsertBulkColumnDefinition((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.NullNotNull))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CertificateOption = (* Abstract? = false *)
   | CertificateOption of Kind:ScriptDom.CertificateOptionKinds * Value:Literal option  
   member this.ToCs() : ScriptDom.CertificateOption =
@@ -12534,7 +12841,10 @@ and [<RequireQualifiedAccess>] CertificateOption = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.CertificateOption, fragmentMapping:FragmentMapping) : CertificateOption =
-    CertificateOption.CertificateOption((src.Kind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      CertificateOption.CertificateOption((src.Kind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ColumnEncryptionKeyValue = (* Abstract? = false *)
   | ColumnEncryptionKeyValue of Parameters:(ColumnEncryptionKeyValueParameter) list  
   member this.ToCs() : ScriptDom.ColumnEncryptionKeyValue =
@@ -12544,7 +12854,10 @@ and [<RequireQualifiedAccess>] ColumnEncryptionKeyValue = (* Abstract? = false *
       for e in aParameters do ret.Parameters.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ColumnEncryptionKeyValue, fragmentMapping:FragmentMapping) : ColumnEncryptionKeyValue =
-    ColumnEncryptionKeyValue.ColumnEncryptionKeyValue((src.Parameters |> Seq.map (fun x -> ColumnEncryptionKeyValueParameter.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      ColumnEncryptionKeyValue.ColumnEncryptionKeyValue((src.Parameters |> Seq.map (fun x -> ColumnEncryptionKeyValueParameter.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CopyOption = (* Abstract? = false *)
   | CopyOption of Kind:ScriptDom.CopyOptionKind * Value:CopyStatementOptionBase option  
   member this.ToCs() : ScriptDom.CopyOption =
@@ -12555,7 +12868,10 @@ and [<RequireQualifiedAccess>] CopyOption = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.CopyOption, fragmentMapping:FragmentMapping) : CopyOption =
-    CopyOption.CopyOption((src.Kind), (src.Value |> Option.ofObj |> Option.map (fun x -> CopyStatementOptionBase.FromCs(x, fragmentMapping))))
+    let ret =
+      CopyOption.CopyOption((src.Kind), (src.Value |> Option.ofObj |> Option.map (fun x -> CopyStatementOptionBase.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AssemblyName = (* Abstract? = false *)
   | AssemblyName of ClassName:Identifier option * Name:Identifier option  
   member this.ToCs() : ScriptDom.AssemblyName =
@@ -12566,7 +12882,10 @@ and [<RequireQualifiedAccess>] AssemblyName = (* Abstract? = false *)
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AssemblyName, fragmentMapping:FragmentMapping) : AssemblyName =
-    AssemblyName.AssemblyName((src.ClassName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      AssemblyName.AssemblyName((src.ClassName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ProcedureParameter = (* Abstract? = false *)
   | ProcedureParameter of DataType:DataTypeReference option * IsVarying:bool * Modifier:ScriptDom.ParameterModifier * Nullable:NullableConstraintDefinition option * Value:ScalarExpression option * VariableName:Identifier option  
   member this.ToCs() : ScriptDom.ProcedureParameter =
@@ -12581,7 +12900,10 @@ and [<RequireQualifiedAccess>] ProcedureParameter = (* Abstract? = false *)
       ret.VariableName <- aVariableName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ProcedureParameter, fragmentMapping:FragmentMapping) : ProcedureParameter =
-    ProcedureParameter.ProcedureParameter((src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.IsVarying), (src.Modifier), (src.Nullable |> Option.ofObj |> Option.map (fun x -> NullableConstraintDefinition.FromCs(x, fragmentMapping))), (src.Value |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.VariableName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      ProcedureParameter.ProcedureParameter((src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.IsVarying), (src.Modifier), (src.Nullable |> Option.ofObj |> Option.map (fun x -> NullableConstraintDefinition.FromCs(x, fragmentMapping))), (src.Value |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.VariableName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ContractMessage = (* Abstract? = false *)
   | ContractMessage of Name:Identifier option * SentBy:ScriptDom.MessageSender  
   member this.ToCs() : ScriptDom.ContractMessage =
@@ -12592,7 +12914,10 @@ and [<RequireQualifiedAccess>] ContractMessage = (* Abstract? = false *)
       ret.SentBy <- aSentBy
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ContractMessage, fragmentMapping:FragmentMapping) : ContractMessage =
-    ContractMessage.ContractMessage((src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.SentBy))
+    let ret =
+      ContractMessage.ContractMessage((src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.SentBy))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ContainmentDatabaseOption = (* Abstract? = false *)
   | ContainmentDatabaseOption of OptionKind:ScriptDom.DatabaseOptionKind * Value:ScriptDom.ContainmentOptionKind  
   member this.ToCs() : ScriptDom.ContainmentDatabaseOption =
@@ -12603,7 +12928,10 @@ and [<RequireQualifiedAccess>] ContainmentDatabaseOption = (* Abstract? = false 
       ret.Value <- aValue
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ContainmentDatabaseOption, fragmentMapping:FragmentMapping) : ContainmentDatabaseOption =
-    ContainmentDatabaseOption.ContainmentDatabaseOption((src.OptionKind), (src.Value))
+    let ret =
+      ContainmentDatabaseOption.ContainmentDatabaseOption((src.OptionKind), (src.Value))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FileGroupDefinition = (* Abstract? = false *)
   | FileGroupDefinition of ContainsFileStream:bool * ContainsMemoryOptimizedData:bool * FileDeclarations:(FileDeclaration) list * IsDefault:bool * Name:Identifier option  
   member this.ToCs() : ScriptDom.FileGroupDefinition =
@@ -12617,7 +12945,10 @@ and [<RequireQualifiedAccess>] FileGroupDefinition = (* Abstract? = false *)
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FileGroupDefinition, fragmentMapping:FragmentMapping) : FileGroupDefinition =
-    FileGroupDefinition.FileGroupDefinition((src.ContainsFileStream), (src.ContainsMemoryOptimizedData), (src.FileDeclarations |> Seq.map (fun src -> FileDeclaration.FileDeclaration((src.IsPrimary), (src.Options |> Seq.map (fun x -> FileDeclarationOption.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq), (src.IsDefault), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      FileGroupDefinition.FileGroupDefinition((src.ContainsFileStream), (src.ContainsMemoryOptimizedData), (src.FileDeclarations |> Seq.map (fun src -> FileDeclaration.FileDeclaration((src.IsPrimary), (src.Options |> Seq.map (fun x -> FileDeclarationOption.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq), (src.IsDefault), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] EventNotificationObjectScope = (* Abstract? = false *)
   | EventNotificationObjectScope of QueueName:SchemaObjectName option * Target:ScriptDom.EventNotificationTarget  
   member this.ToCs() : ScriptDom.EventNotificationObjectScope =
@@ -12628,7 +12959,10 @@ and [<RequireQualifiedAccess>] EventNotificationObjectScope = (* Abstract? = fal
       ret.Target <- aTarget
       ret (* 333 *)
   static member FromCs(src:ScriptDom.EventNotificationObjectScope, fragmentMapping:FragmentMapping) : EventNotificationObjectScope =
-    EventNotificationObjectScope.EventNotificationObjectScope((src.QueueName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Target))
+    let ret =
+      EventNotificationObjectScope.EventNotificationObjectScope((src.QueueName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Target))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FullTextCatalogAndFileGroup = (* Abstract? = false *)
   | FullTextCatalogAndFileGroup of CatalogName:Identifier option * FileGroupIsFirst:bool * FileGroupName:Identifier option  
   member this.ToCs() : ScriptDom.FullTextCatalogAndFileGroup =
@@ -12640,7 +12974,10 @@ and [<RequireQualifiedAccess>] FullTextCatalogAndFileGroup = (* Abstract? = fals
       ret.FileGroupName <- aFileGroupName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FullTextCatalogAndFileGroup, fragmentMapping:FragmentMapping) : FullTextCatalogAndFileGroup =
-    FullTextCatalogAndFileGroup.FullTextCatalogAndFileGroup((src.CatalogName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.FileGroupIsFirst), (src.FileGroupName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      FullTextCatalogAndFileGroup.FullTextCatalogAndFileGroup((src.CatalogName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.FileGroupIsFirst), (src.FileGroupName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] PartitionParameterType = (* Abstract? = false *)
   | PartitionParameterType of Collation:Identifier option * DataType:DataTypeReference option  
   member this.ToCs() : ScriptDom.PartitionParameterType =
@@ -12651,7 +12988,10 @@ and [<RequireQualifiedAccess>] PartitionParameterType = (* Abstract? = false *)
       ret.DataType <- aDataType |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.PartitionParameterType, fragmentMapping:FragmentMapping) : PartitionParameterType =
-    PartitionParameterType.PartitionParameterType((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))))
+    let ret =
+      PartitionParameterType.PartitionParameterType((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FederationScheme = (* Abstract? = false *)
   | FederationScheme of ColumnName:Identifier option * DistributionName:Identifier option  
   member this.ToCs() : ScriptDom.FederationScheme =
@@ -12662,7 +13002,10 @@ and [<RequireQualifiedAccess>] FederationScheme = (* Abstract? = false *)
       ret.DistributionName <- aDistributionName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FederationScheme, fragmentMapping:FragmentMapping) : FederationScheme =
-    FederationScheme.FederationScheme((src.ColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DistributionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      FederationScheme.FederationScheme((src.ColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DistributionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CursorId = (* Abstract? = false *)
   | CursorId of IsGlobal:bool * Name:IdentifierOrValueExpression option  
   member this.ToCs() : ScriptDom.CursorId =
@@ -12673,7 +13016,10 @@ and [<RequireQualifiedAccess>] CursorId = (* Abstract? = false *)
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.CursorId, fragmentMapping:FragmentMapping) : CursorId =
-    CursorId.CursorId((src.IsGlobal), (src.Name |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      CursorId.CursorId((src.IsGlobal), (src.Name |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] FetchType = (* Abstract? = false *)
   | FetchType of Orientation:ScriptDom.FetchOrientation * RowOffset:ScalarExpression option  
   member this.ToCs() : ScriptDom.FetchType =
@@ -12684,7 +13030,10 @@ and [<RequireQualifiedAccess>] FetchType = (* Abstract? = false *)
       ret.RowOffset <- aRowOffset |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FetchType, fragmentMapping:FragmentMapping) : FetchType =
-    FetchType.FetchType((src.Orientation), (src.RowOffset |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      FetchType.FetchType((src.Orientation), (src.RowOffset |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DbccNamedLiteral = (* Abstract? = false *)
   | DbccNamedLiteral of Name:String option * Value:ScalarExpression option  
   member this.ToCs() : ScriptDom.DbccNamedLiteral =
@@ -12695,7 +13044,10 @@ and [<RequireQualifiedAccess>] DbccNamedLiteral = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DbccNamedLiteral, fragmentMapping:FragmentMapping) : DbccNamedLiteral =
-    DbccNamedLiteral.DbccNamedLiteral((Option.ofObj (src.Name)), (src.Value |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      DbccNamedLiteral.DbccNamedLiteral((Option.ofObj (src.Name)), (src.Value |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DbccOption = (* Abstract? = false *)
   | DbccOption of OptionKind:ScriptDom.DbccOptionKind  
   member this.ToCs() : ScriptDom.DbccOption =
@@ -12705,7 +13057,10 @@ and [<RequireQualifiedAccess>] DbccOption = (* Abstract? = false *)
       ret.OptionKind <- aOptionKind
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DbccOption, fragmentMapping:FragmentMapping) : DbccOption =
-    DbccOption.DbccOption((src.OptionKind))
+    let ret =
+      DbccOption.DbccOption((src.OptionKind))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CursorDefinition = (* Abstract? = false *)
   | CursorDefinition of Options:(CursorOption) list * Select:SelectStatement option  
   member this.ToCs() : ScriptDom.CursorDefinition =
@@ -12716,7 +13071,10 @@ and [<RequireQualifiedAccess>] CursorDefinition = (* Abstract? = false *)
       ret.Select <- aSelect |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.CursorDefinition, fragmentMapping:FragmentMapping) : CursorDefinition =
-    CursorDefinition.CursorDefinition((src.Options |> Seq.map (fun src -> CursorOption.CursorOption((src.OptionKind))) |> List.ofSeq), (src.Select |> Option.ofObj |> Option.map (fun x -> SelectStatement.FromCs(x, fragmentMapping))))
+    let ret =
+      CursorDefinition.CursorDefinition((src.Options |> Seq.map (fun src -> CursorOption.CursorOption((src.OptionKind))) |> List.ofSeq), (src.Select |> Option.ofObj |> Option.map (fun x -> SelectStatement.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DiskStatementOption = (* Abstract? = false *)
   | DiskStatementOption of OptionKind:ScriptDom.DiskStatementOptionKind * Value:IdentifierOrValueExpression option  
   member this.ToCs() : ScriptDom.DiskStatementOption =
@@ -12727,7 +13085,10 @@ and [<RequireQualifiedAccess>] DiskStatementOption = (* Abstract? = false *)
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DiskStatementOption, fragmentMapping:FragmentMapping) : DiskStatementOption =
-    DiskStatementOption.DiskStatementOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      DiskStatementOption.DiskStatementOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TriggerObject = (* Abstract? = false *)
   | TriggerObject of Name:SchemaObjectName option * TriggerScope:ScriptDom.TriggerScope  
   member this.ToCs() : ScriptDom.TriggerObject =
@@ -12738,7 +13099,10 @@ and [<RequireQualifiedAccess>] TriggerObject = (* Abstract? = false *)
       ret.TriggerScope <- aTriggerScope
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TriggerObject, fragmentMapping:FragmentMapping) : TriggerObject =
-    TriggerObject.TriggerObject((src.Name |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.TriggerScope))
+    let ret =
+      TriggerObject.TriggerObject((src.Name |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.TriggerScope))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] EventDeclaration = (* Abstract? = false *)
   | EventDeclaration of EventDeclarationActionParameters:(EventSessionObjectName) list * EventDeclarationPredicateParameter:BooleanExpression option * EventDeclarationSetParameters:(EventDeclarationSetParameter) list * ObjectName:EventSessionObjectName option  
   member this.ToCs() : ScriptDom.EventDeclaration =
@@ -12751,7 +13115,10 @@ and [<RequireQualifiedAccess>] EventDeclaration = (* Abstract? = false *)
       ret.ObjectName <- aObjectName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.EventDeclaration, fragmentMapping:FragmentMapping) : EventDeclaration =
-    EventDeclaration.EventDeclaration((src.EventDeclarationActionParameters |> Seq.map (fun src -> EventSessionObjectName.EventSessionObjectName((src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.EventDeclarationPredicateParameter |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.EventDeclarationSetParameters |> Seq.map (fun src -> EventDeclarationSetParameter.EventDeclarationSetParameter((src.EventField |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.ObjectName |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))))
+    let ret =
+      EventDeclaration.EventDeclaration((src.EventDeclarationActionParameters |> Seq.map (fun src -> EventSessionObjectName.EventSessionObjectName((src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.EventDeclarationPredicateParameter |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.EventDeclarationSetParameters |> Seq.map (fun src -> EventDeclarationSetParameter.EventDeclarationSetParameter((src.EventField |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.ObjectName |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TargetDeclaration = (* Abstract? = false *)
   | TargetDeclaration of ObjectName:EventSessionObjectName option * TargetDeclarationParameters:(EventDeclarationSetParameter) list  
   member this.ToCs() : ScriptDom.TargetDeclaration =
@@ -12762,7 +13129,10 @@ and [<RequireQualifiedAccess>] TargetDeclaration = (* Abstract? = false *)
       for e in aTargetDeclarationParameters do ret.TargetDeclarationParameters.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TargetDeclaration, fragmentMapping:FragmentMapping) : TargetDeclaration =
-    TargetDeclaration.TargetDeclaration((src.ObjectName |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))), (src.TargetDeclarationParameters |> Seq.map (fun src -> EventDeclarationSetParameter.EventDeclarationSetParameter((src.EventField |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    let ret =
+      TargetDeclaration.TargetDeclaration((src.ObjectName |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))), (src.TargetDeclarationParameters |> Seq.map (fun src -> EventDeclarationSetParameter.EventDeclarationSetParameter((src.EventField |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ExternalResourcePoolParameter = (* Abstract? = false *)
   | ExternalResourcePoolParameter of AffinitySpecification:ExternalResourcePoolAffinitySpecification option * ParameterType:ScriptDom.ExternalResourcePoolParameterType * ParameterValue:Literal option  
   member this.ToCs() : ScriptDom.ExternalResourcePoolParameter =
@@ -12774,7 +13144,10 @@ and [<RequireQualifiedAccess>] ExternalResourcePoolParameter = (* Abstract? = fa
       ret.ParameterValue <- aParameterValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ExternalResourcePoolParameter, fragmentMapping:FragmentMapping) : ExternalResourcePoolParameter =
-    ExternalResourcePoolParameter.ExternalResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ExternalResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      ExternalResourcePoolParameter.ExternalResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ExternalResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ExternalTableColumnDefinition = (* Abstract? = false *)
   | ExternalTableColumnDefinition of ColumnDefinition:ColumnDefinitionBase option * NullableConstraint:NullableConstraintDefinition option  
   member this.ToCs() : ScriptDom.ExternalTableColumnDefinition =
@@ -12785,7 +13158,10 @@ and [<RequireQualifiedAccess>] ExternalTableColumnDefinition = (* Abstract? = fa
       ret.NullableConstraint <- aNullableConstraint |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ExternalTableColumnDefinition, fragmentMapping:FragmentMapping) : ExternalTableColumnDefinition =
-    ExternalTableColumnDefinition.ExternalTableColumnDefinition((src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.NullableConstraint |> Option.ofObj |> Option.map (fun x -> NullableConstraintDefinition.FromCs(x, fragmentMapping))))
+    let ret =
+      ExternalTableColumnDefinition.ExternalTableColumnDefinition((src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.NullableConstraint |> Option.ofObj |> Option.map (fun x -> NullableConstraintDefinition.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SelectiveXmlIndexPromotedPath = (* Abstract? = false *)
   | SelectiveXmlIndexPromotedPath of IsSingleton:bool * MaxLength:IntegerLiteral option * Name:Identifier option * Path:Literal option * SQLDataType:DataTypeReference option * XQueryDataType:Literal option  
   member this.ToCs() : ScriptDom.SelectiveXmlIndexPromotedPath =
@@ -12800,7 +13176,10 @@ and [<RequireQualifiedAccess>] SelectiveXmlIndexPromotedPath = (* Abstract? = fa
       ret.XQueryDataType <- aXQueryDataType |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SelectiveXmlIndexPromotedPath, fragmentMapping:FragmentMapping) : SelectiveXmlIndexPromotedPath =
-    SelectiveXmlIndexPromotedPath.SelectiveXmlIndexPromotedPath((src.IsSingleton), (src.MaxLength |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.SQLDataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.XQueryDataType |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      SelectiveXmlIndexPromotedPath.SelectiveXmlIndexPromotedPath((src.IsSingleton), (src.MaxLength |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.SQLDataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.XQueryDataType |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] XmlNamespaces = (* Abstract? = false *)
   | XmlNamespaces of XmlNamespacesElements:(XmlNamespacesElement) list  
   member this.ToCs() : ScriptDom.XmlNamespaces =
@@ -12810,7 +13189,10 @@ and [<RequireQualifiedAccess>] XmlNamespaces = (* Abstract? = false *)
       for e in aXmlNamespacesElements do ret.XmlNamespacesElements.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.XmlNamespaces, fragmentMapping:FragmentMapping) : XmlNamespaces =
-    XmlNamespaces.XmlNamespaces((src.XmlNamespacesElements |> Seq.map (fun x -> XmlNamespacesElement.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      XmlNamespaces.XmlNamespaces((src.XmlNamespacesElements |> Seq.map (fun x -> XmlNamespacesElement.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] MethodSpecifier = (* Abstract? = false *)
   | MethodSpecifier of AssemblyName:Identifier option * ClassName:Identifier option * MethodName:Identifier option  
   member this.ToCs() : ScriptDom.MethodSpecifier =
@@ -12822,7 +13204,10 @@ and [<RequireQualifiedAccess>] MethodSpecifier = (* Abstract? = false *)
       ret.MethodName <- aMethodName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.MethodSpecifier, fragmentMapping:FragmentMapping) : MethodSpecifier =
-    MethodSpecifier.MethodSpecifier((src.AssemblyName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ClassName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.MethodName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      MethodSpecifier.MethodSpecifier((src.AssemblyName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ClassName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.MethodName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] OrderBulkInsertOption = (* Abstract? = false *)
   | OrderBulkInsertOption of Columns:(ColumnWithSortOrder) list * IsUnique:bool * OptionKind:ScriptDom.BulkInsertOptionKind  
   member this.ToCs() : ScriptDom.OrderBulkInsertOption =
@@ -12834,14 +13219,19 @@ and [<RequireQualifiedAccess>] OrderBulkInsertOption = (* Abstract? = false *)
       ret.OptionKind <- aOptionKind
       ret (* 333 *)
   static member FromCs(src:ScriptDom.OrderBulkInsertOption, fragmentMapping:FragmentMapping) : OrderBulkInsertOption =
-    OrderBulkInsertOption.OrderBulkInsertOption((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.IsUnique), (src.OptionKind))
+    let ret =
+      OrderBulkInsertOption.OrderBulkInsertOption((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.IsUnique), (src.OptionKind))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SeparatorType = (* Abstract? = false *)
   | SeparatorType   
   member this.ToCs() : ScriptDom.SeparatorType =
     match this with
     | SeparatorType -> ScriptDom.SeparatorType() (* 327 *)
   static member FromCs(src:ScriptDom.SeparatorType, fragmentMapping:FragmentMapping) : SeparatorType =
-    SeparatorType.SeparatorType 
+    let ret =
+      SeparatorType.SeparatorType 
+    ret
 and [<RequireQualifiedAccess>] ResourcePoolParameter = (* Abstract? = false *)
   | ResourcePoolParameter of AffinitySpecification:ResourcePoolAffinitySpecification option * ParameterType:ScriptDom.ResourcePoolParameterType * ParameterValue:Literal option  
   member this.ToCs() : ScriptDom.ResourcePoolParameter =
@@ -12853,7 +13243,10 @@ and [<RequireQualifiedAccess>] ResourcePoolParameter = (* Abstract? = false *)
       ret.ParameterValue <- aParameterValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ResourcePoolParameter, fragmentMapping:FragmentMapping) : ResourcePoolParameter =
-    ResourcePoolParameter.ResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      ResourcePoolParameter.ResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] RouteOption = (* Abstract? = false *)
   | RouteOption of Literal:Literal option * OptionKind:ScriptDom.RouteOptionKind  
   member this.ToCs() : ScriptDom.RouteOption =
@@ -12864,7 +13257,10 @@ and [<RequireQualifiedAccess>] RouteOption = (* Abstract? = false *)
       ret.OptionKind <- aOptionKind
       ret (* 333 *)
   static member FromCs(src:ScriptDom.RouteOption, fragmentMapping:FragmentMapping) : RouteOption =
-    RouteOption.RouteOption((src.Literal |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OptionKind))
+    let ret =
+      RouteOption.RouteOption((src.Literal |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OptionKind))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SecurityPolicyOption = (* Abstract? = false *)
   | SecurityPolicyOption of OptionKind:ScriptDom.SecurityPolicyOptionKind * OptionState:ScriptDom.OptionState  
   member this.ToCs() : ScriptDom.SecurityPolicyOption =
@@ -12875,7 +13271,10 @@ and [<RequireQualifiedAccess>] SecurityPolicyOption = (* Abstract? = false *)
       ret.OptionState <- aOptionState
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SecurityPolicyOption, fragmentMapping:FragmentMapping) : SecurityPolicyOption =
-    SecurityPolicyOption.SecurityPolicyOption((src.OptionKind), (src.OptionState))
+    let ret =
+      SecurityPolicyOption.SecurityPolicyOption((src.OptionKind), (src.OptionState))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SecurityPredicateAction = (* Abstract? = false *)
   | SecurityPredicateAction of ActionType:ScriptDom.SecurityPredicateActionType * FunctionCall:FunctionCall option * SecurityPredicateOperation:ScriptDom.SecurityPredicateOperation * SecurityPredicateType:ScriptDom.SecurityPredicateType * TargetObjectName:SchemaObjectName option  
   member this.ToCs() : ScriptDom.SecurityPredicateAction =
@@ -12889,7 +13288,10 @@ and [<RequireQualifiedAccess>] SecurityPredicateAction = (* Abstract? = false *)
       ret.TargetObjectName <- aTargetObjectName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SecurityPredicateAction, fragmentMapping:FragmentMapping) : SecurityPredicateAction =
-    SecurityPredicateAction.SecurityPredicateAction((src.ActionType), (src.FunctionCall |> Option.ofObj |> Option.map (fun x -> FunctionCall.FromCs(x, fragmentMapping))), (src.SecurityPredicateOperation), (src.SecurityPredicateType), (src.TargetObjectName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+    let ret =
+      SecurityPredicateAction.SecurityPredicateAction((src.ActionType), (src.FunctionCall |> Option.ofObj |> Option.map (fun x -> FunctionCall.FromCs(x, fragmentMapping))), (src.SecurityPredicateOperation), (src.SecurityPredicateType), (src.TargetObjectName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] Permission = (* Abstract? = false *)
   | Permission of Columns:(Identifier) list * Identifiers:(Identifier) list  
   member this.ToCs() : ScriptDom.Permission =
@@ -12900,7 +13302,10 @@ and [<RequireQualifiedAccess>] Permission = (* Abstract? = false *)
       for e in aIdentifiers do ret.Identifiers.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.Permission, fragmentMapping:FragmentMapping) : Permission =
-    Permission.Permission((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Identifiers |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      Permission.Permission((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Identifiers |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SecurityUserClause80 = (* Abstract? = false *)
   | SecurityUserClause80 of UserType80:ScriptDom.UserType80 * Users:(Identifier) list  
   member this.ToCs() : ScriptDom.SecurityUserClause80 =
@@ -12911,7 +13316,10 @@ and [<RequireQualifiedAccess>] SecurityUserClause80 = (* Abstract? = false *)
       for e in aUsers do ret.Users.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SecurityUserClause80, fragmentMapping:FragmentMapping) : SecurityUserClause80 =
-    SecurityUserClause80.SecurityUserClause80((src.UserType80), (src.Users |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      SecurityUserClause80.SecurityUserClause80((src.UserType80), (src.Users |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SensitivityClassificationOption = (* Abstract? = false *)
   | SensitivityClassificationOption of Type:ScriptDom.SensitivityClassification.OptionType * Value:Literal option  
   member this.ToCs() : ScriptDom.SensitivityClassificationOption =
@@ -12922,7 +13330,10 @@ and [<RequireQualifiedAccess>] SensitivityClassificationOption = (* Abstract? = 
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SensitivityClassificationOption, fragmentMapping:FragmentMapping) : SensitivityClassificationOption =
-    SensitivityClassificationOption.SensitivityClassificationOption((src.Type), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    let ret =
+      SensitivityClassificationOption.SensitivityClassificationOption((src.Type), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] AuditTarget = (* Abstract? = false *)
   | AuditTarget of TargetKind:ScriptDom.AuditTargetKind * TargetOptions:(AuditTargetOption) list  
   member this.ToCs() : ScriptDom.AuditTarget =
@@ -12933,7 +13344,10 @@ and [<RequireQualifiedAccess>] AuditTarget = (* Abstract? = false *)
       for e in aTargetOptions do ret.TargetOptions.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.AuditTarget, fragmentMapping:FragmentMapping) : AuditTarget =
-    AuditTarget.AuditTarget((src.TargetKind), (src.TargetOptions |> Seq.map (fun x -> AuditTargetOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    let ret =
+      AuditTarget.AuditTarget((src.TargetKind), (src.TargetOptions |> Seq.map (fun x -> AuditTargetOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] WithCtesAndXmlNamespaces = (* Abstract? = false *)
   | WithCtesAndXmlNamespaces of ChangeTrackingContext:ValueExpression option * CommonTableExpressions:(CommonTableExpression) list * XmlNamespaces:XmlNamespaces option  
   member this.ToCs() : ScriptDom.WithCtesAndXmlNamespaces =
@@ -12945,7 +13359,10 @@ and [<RequireQualifiedAccess>] WithCtesAndXmlNamespaces = (* Abstract? = false *
       ret.XmlNamespaces <- aXmlNamespaces |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.WithCtesAndXmlNamespaces, fragmentMapping:FragmentMapping) : WithCtesAndXmlNamespaces =
-    WithCtesAndXmlNamespaces.WithCtesAndXmlNamespaces((src.ChangeTrackingContext |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.CommonTableExpressions |> Seq.map (fun src -> CommonTableExpression.CommonTableExpression((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ExpressionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.XmlNamespaces |> Option.ofObj |> Option.map (fun x -> XmlNamespaces.FromCs(x, fragmentMapping))))
+    let ret =
+      WithCtesAndXmlNamespaces.WithCtesAndXmlNamespaces((src.ChangeTrackingContext |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.CommonTableExpressions |> Seq.map (fun src -> CommonTableExpression.CommonTableExpression((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ExpressionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.XmlNamespaces |> Option.ofObj |> Option.map (fun x -> XmlNamespaces.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DeleteSpecification = (* Abstract? = false *)
   | DeleteSpecification of FromClause:FromClause option * OutputClause:OutputClause option * OutputIntoClause:OutputIntoClause option * Target:TableReference option * TopRowFilter:TopRowFilter option * WhereClause:WhereClause option  
   member this.ToCs() : ScriptDom.DeleteSpecification =
@@ -12960,7 +13377,10 @@ and [<RequireQualifiedAccess>] DeleteSpecification = (* Abstract? = false *)
       ret.WhereClause <- aWhereClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DeleteSpecification, fragmentMapping:FragmentMapping) : DeleteSpecification =
-    DeleteSpecification.DeleteSpecification((src.FromClause |> Option.ofObj |> Option.map (fun x -> FromClause.FromCs(x, fragmentMapping))), (src.OutputClause |> Option.ofObj |> Option.map (fun x -> OutputClause.FromCs(x, fragmentMapping))), (src.OutputIntoClause |> Option.ofObj |> Option.map (fun x -> OutputIntoClause.FromCs(x, fragmentMapping))), (src.Target |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))), (src.WhereClause |> Option.ofObj |> Option.map (fun x -> WhereClause.FromCs(x, fragmentMapping))))
+    let ret =
+      DeleteSpecification.DeleteSpecification((src.FromClause |> Option.ofObj |> Option.map (fun x -> FromClause.FromCs(x, fragmentMapping))), (src.OutputClause |> Option.ofObj |> Option.map (fun x -> OutputClause.FromCs(x, fragmentMapping))), (src.OutputIntoClause |> Option.ofObj |> Option.map (fun x -> OutputIntoClause.FromCs(x, fragmentMapping))), (src.Target |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))), (src.WhereClause |> Option.ofObj |> Option.map (fun x -> WhereClause.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] InsertSpecification = (* Abstract? = false *)
   | InsertSpecification of Columns:(ColumnReferenceExpression) list * InsertOption:ScriptDom.InsertOption * InsertSource:InsertSource option * OutputClause:OutputClause option * OutputIntoClause:OutputIntoClause option * Target:TableReference option * TopRowFilter:TopRowFilter option  
   member this.ToCs() : ScriptDom.InsertSpecification =
@@ -12976,7 +13396,10 @@ and [<RequireQualifiedAccess>] InsertSpecification = (* Abstract? = false *)
       ret.TopRowFilter <- aTopRowFilter |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.InsertSpecification, fragmentMapping:FragmentMapping) : InsertSpecification =
-    InsertSpecification.InsertSpecification((src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.InsertOption), (src.InsertSource |> Option.ofObj |> Option.map (fun x -> InsertSource.FromCs(x, fragmentMapping))), (src.OutputClause |> Option.ofObj |> Option.map (fun x -> OutputClause.FromCs(x, fragmentMapping))), (src.OutputIntoClause |> Option.ofObj |> Option.map (fun x -> OutputIntoClause.FromCs(x, fragmentMapping))), (src.Target |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))))
+    let ret =
+      InsertSpecification.InsertSpecification((src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.InsertOption), (src.InsertSource |> Option.ofObj |> Option.map (fun x -> InsertSource.FromCs(x, fragmentMapping))), (src.OutputClause |> Option.ofObj |> Option.map (fun x -> OutputClause.FromCs(x, fragmentMapping))), (src.OutputIntoClause |> Option.ofObj |> Option.map (fun x -> OutputIntoClause.FromCs(x, fragmentMapping))), (src.Target |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] MergeSpecification = (* Abstract? = false *)
   | MergeSpecification of ActionClauses:(MergeActionClause) list * OutputClause:OutputClause option * OutputIntoClause:OutputIntoClause option * SearchCondition:BooleanExpression option * TableAlias:Identifier option * TableReference:TableReference option * Target:TableReference option * TopRowFilter:TopRowFilter option  
   member this.ToCs() : ScriptDom.MergeSpecification =
@@ -12993,7 +13416,10 @@ and [<RequireQualifiedAccess>] MergeSpecification = (* Abstract? = false *)
       ret.TopRowFilter <- aTopRowFilter |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.MergeSpecification, fragmentMapping:FragmentMapping) : MergeSpecification =
-    MergeSpecification.MergeSpecification((src.ActionClauses |> Seq.map (fun src -> MergeActionClause.MergeActionClause((src.Action |> Option.ofObj |> Option.map (fun x -> MergeAction.FromCs(x, fragmentMapping))), (src.Condition), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.OutputClause |> Option.ofObj |> Option.map (fun x -> OutputClause.FromCs(x, fragmentMapping))), (src.OutputIntoClause |> Option.ofObj |> Option.map (fun x -> OutputIntoClause.FromCs(x, fragmentMapping))), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.TableAlias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.Target |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))))
+    let ret =
+      MergeSpecification.MergeSpecification((src.ActionClauses |> Seq.map (fun src -> MergeActionClause.MergeActionClause((src.Action |> Option.ofObj |> Option.map (fun x -> MergeAction.FromCs(x, fragmentMapping))), (src.Condition), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.OutputClause |> Option.ofObj |> Option.map (fun x -> OutputClause.FromCs(x, fragmentMapping))), (src.OutputIntoClause |> Option.ofObj |> Option.map (fun x -> OutputIntoClause.FromCs(x, fragmentMapping))), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.TableAlias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.Target |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] UpdateSpecification = (* Abstract? = false *)
   | UpdateSpecification of FromClause:FromClause option * OutputClause:OutputClause option * OutputIntoClause:OutputIntoClause option * SetClauses:(SetClause) list * Target:TableReference option * TopRowFilter:TopRowFilter option * WhereClause:WhereClause option  
   member this.ToCs() : ScriptDom.UpdateSpecification =
@@ -13009,7 +13435,10 @@ and [<RequireQualifiedAccess>] UpdateSpecification = (* Abstract? = false *)
       ret.WhereClause <- aWhereClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.UpdateSpecification, fragmentMapping:FragmentMapping) : UpdateSpecification =
-    UpdateSpecification.UpdateSpecification((src.FromClause |> Option.ofObj |> Option.map (fun x -> FromClause.FromCs(x, fragmentMapping))), (src.OutputClause |> Option.ofObj |> Option.map (fun x -> OutputClause.FromCs(x, fragmentMapping))), (src.OutputIntoClause |> Option.ofObj |> Option.map (fun x -> OutputIntoClause.FromCs(x, fragmentMapping))), (src.SetClauses |> Seq.map (fun x -> SetClause.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Target |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))), (src.WhereClause |> Option.ofObj |> Option.map (fun x -> WhereClause.FromCs(x, fragmentMapping))))
+    let ret =
+      UpdateSpecification.UpdateSpecification((src.FromClause |> Option.ofObj |> Option.map (fun x -> FromClause.FromCs(x, fragmentMapping))), (src.OutputClause |> Option.ofObj |> Option.map (fun x -> OutputClause.FromCs(x, fragmentMapping))), (src.OutputIntoClause |> Option.ofObj |> Option.map (fun x -> OutputIntoClause.FromCs(x, fragmentMapping))), (src.SetClauses |> Seq.map (fun x -> SetClause.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Target |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))), (src.WhereClause |> Option.ofObj |> Option.map (fun x -> WhereClause.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ComputeClause = (* Abstract? = false *)
   | ComputeClause of ByExpressions:(ScalarExpression) list * ComputeFunctions:(ComputeFunction) list  
   member this.ToCs() : ScriptDom.ComputeClause =
@@ -13020,7 +13449,10 @@ and [<RequireQualifiedAccess>] ComputeClause = (* Abstract? = false *)
       for e in aComputeFunctions do ret.ComputeFunctions.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ComputeClause, fragmentMapping:FragmentMapping) : ComputeClause =
-    ComputeClause.ComputeClause((src.ByExpressions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ComputeFunctions |> Seq.map (fun src -> ComputeFunction.ComputeFunction((src.ComputeFunctionType), (src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    let ret =
+      ComputeClause.ComputeClause((src.ByExpressions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ComputeFunctions |> Seq.map (fun src -> ComputeFunction.ComputeFunction((src.ComputeFunctionType), (src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TriggerAction = (* Abstract? = false *)
   | TriggerAction of EventTypeGroup:EventTypeGroupContainer option * TriggerActionType:ScriptDom.TriggerActionType  
   member this.ToCs() : ScriptDom.TriggerAction =
@@ -13031,7 +13463,10 @@ and [<RequireQualifiedAccess>] TriggerAction = (* Abstract? = false *)
       ret.TriggerActionType <- aTriggerActionType
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TriggerAction, fragmentMapping:FragmentMapping) : TriggerAction =
-    TriggerAction.TriggerAction((src.EventTypeGroup |> Option.ofObj |> Option.map (fun x -> EventTypeGroupContainer.FromCs(x, fragmentMapping))), (src.TriggerActionType))
+    let ret =
+      TriggerAction.TriggerAction((src.EventTypeGroup |> Option.ofObj |> Option.map (fun x -> EventTypeGroupContainer.FromCs(x, fragmentMapping))), (src.TriggerActionType))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] UserLoginOption = (* Abstract? = false *)
   | UserLoginOption of Identifier:Identifier option * UserLoginOptionType:ScriptDom.UserLoginOptionType  
   member this.ToCs() : ScriptDom.UserLoginOption =
@@ -13042,7 +13477,10 @@ and [<RequireQualifiedAccess>] UserLoginOption = (* Abstract? = false *)
       ret.UserLoginOptionType <- aUserLoginOptionType
       ret (* 333 *)
   static member FromCs(src:ScriptDom.UserLoginOption, fragmentMapping:FragmentMapping) : UserLoginOption =
-    UserLoginOption.UserLoginOption((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.UserLoginOptionType))
+    let ret =
+      UserLoginOption.UserLoginOption((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.UserLoginOptionType))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] VariableTableReference = (* Abstract? = false *)
   | VariableTableReference of Alias:Identifier option * Variable:VariableReference option  
   member this.ToCs() : ScriptDom.VariableTableReference =
@@ -13053,7 +13491,10 @@ and [<RequireQualifiedAccess>] VariableTableReference = (* Abstract? = false *)
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.VariableTableReference, fragmentMapping:FragmentMapping) : VariableTableReference =
-    VariableTableReference.VariableTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    let ret =
+      VariableTableReference.VariableTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ColumnDefinition = (* Abstract? = false *)
   | ColumnDefinition of Collation:Identifier option * ColumnIdentifier:Identifier option * ComputedColumnExpression:ScalarExpression option * Constraints:(ConstraintDefinition) list * DataType:DataTypeReference option * DefaultConstraint:DefaultConstraintDefinition option * Encryption:ColumnEncryptionDefinition option * GeneratedAlways:(ScriptDom.GeneratedAlwaysType) option * IdentityOptions:IdentityOptions option * Index:IndexDefinition option * IsHidden:bool * IsMasked:bool * IsPersisted:bool * IsRowGuidCol:bool * MaskingFunction:StringLiteral option * StorageOptions:ColumnStorageOptions option  
   member this.ToCs() : ScriptDom.ColumnDefinition =
@@ -13078,7 +13519,10 @@ and [<RequireQualifiedAccess>] ColumnDefinition = (* Abstract? = false *)
       ret.StorageOptions <- aStorageOptions |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.ColumnDefinition, fragmentMapping:FragmentMapping) : ColumnDefinition =
-    ColumnDefinition.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))
+    let ret =
+      ColumnDefinition.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SystemTimePeriodDefinition = (* Abstract? = false *)
   | SystemTimePeriodDefinition of EndTimeColumn:Identifier option * StartTimeColumn:Identifier option  
   member this.ToCs() : ScriptDom.SystemTimePeriodDefinition =
@@ -13089,7 +13533,10 @@ and [<RequireQualifiedAccess>] SystemTimePeriodDefinition = (* Abstract? = false
       ret.StartTimeColumn <- aStartTimeColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SystemTimePeriodDefinition, fragmentMapping:FragmentMapping) : SystemTimePeriodDefinition =
-    SystemTimePeriodDefinition.SystemTimePeriodDefinition((src.EndTimeColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.StartTimeColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    let ret =
+      SystemTimePeriodDefinition.SystemTimePeriodDefinition((src.EndTimeColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.StartTimeColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] RetentionPeriodDefinition = (* Abstract? = false *)
   | RetentionPeriodDefinition of Duration:IntegerLiteral option * IsInfinity:bool * Units:ScriptDom.TemporalRetentionPeriodUnit  
   member this.ToCs() : ScriptDom.RetentionPeriodDefinition =
@@ -13101,7 +13548,10 @@ and [<RequireQualifiedAccess>] RetentionPeriodDefinition = (* Abstract? = false 
       ret.Units <- aUnits
       ret (* 333 *)
   static member FromCs(src:ScriptDom.RetentionPeriodDefinition, fragmentMapping:FragmentMapping) : RetentionPeriodDefinition =
-    RetentionPeriodDefinition.RetentionPeriodDefinition((src.Duration |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.IsInfinity), (src.Units))
+    let ret =
+      RetentionPeriodDefinition.RetentionPeriodDefinition((src.Duration |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.IsInfinity), (src.Units))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DataCompressionOption = (* Abstract? = false *)
   | DataCompressionOption of CompressionLevel:ScriptDom.DataCompressionLevel * OptionKind:ScriptDom.IndexOptionKind * PartitionRanges:(CompressionPartitionRange) list  
   member this.ToCs() : ScriptDom.DataCompressionOption =
@@ -13113,7 +13563,10 @@ and [<RequireQualifiedAccess>] DataCompressionOption = (* Abstract? = false *)
       for e in aPartitionRanges do ret.PartitionRanges.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.DataCompressionOption, fragmentMapping:FragmentMapping) : DataCompressionOption =
-    DataCompressionOption.DataCompressionOption((src.CompressionLevel), (src.OptionKind), (src.PartitionRanges |> Seq.map (fun src -> CompressionPartitionRange.CompressionPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    let ret =
+      DataCompressionOption.DataCompressionOption((src.CompressionLevel), (src.OptionKind), (src.PartitionRanges |> Seq.map (fun src -> CompressionPartitionRange.CompressionPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TablePartitionOptionSpecifications = (* Abstract? = false *)
   | TablePartitionOptionSpecifications of BoundaryValues:(ScalarExpression) list * Range:ScriptDom.PartitionTableOptionRange  
   member this.ToCs() : ScriptDom.TablePartitionOptionSpecifications =
@@ -13124,7 +13577,10 @@ and [<RequireQualifiedAccess>] TablePartitionOptionSpecifications = (* Abstract?
       ret.Range <- aRange
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TablePartitionOptionSpecifications, fragmentMapping:FragmentMapping) : TablePartitionOptionSpecifications =
-    TablePartitionOptionSpecifications.TablePartitionOptionSpecifications((src.BoundaryValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Range))
+    let ret =
+      TablePartitionOptionSpecifications.TablePartitionOptionSpecifications((src.BoundaryValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Range))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SchemaObjectNameOrValueExpression = (* Abstract? = false *)
   | SchemaObjectNameOrValueExpression of SchemaObjectName:SchemaObjectName option * ValueExpression:ValueExpression option  
   member this.ToCs() : ScriptDom.SchemaObjectNameOrValueExpression =
@@ -13135,7 +13591,10 @@ and [<RequireQualifiedAccess>] SchemaObjectNameOrValueExpression = (* Abstract? 
       ret.ValueExpression <- aValueExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SchemaObjectNameOrValueExpression, fragmentMapping:FragmentMapping) : SchemaObjectNameOrValueExpression =
-    SchemaObjectNameOrValueExpression.SchemaObjectNameOrValueExpression((src.SchemaObjectName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.ValueExpression |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      SchemaObjectNameOrValueExpression.SchemaObjectNameOrValueExpression((src.SchemaObjectName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.ValueExpression |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TableSampleClause = (* Abstract? = false *)
   | TableSampleClause of RepeatSeed:ScalarExpression option * SampleNumber:ScalarExpression option * System:bool * TableSampleClauseOption:ScriptDom.TableSampleClauseOption  
   member this.ToCs() : ScriptDom.TableSampleClause =
@@ -13148,7 +13607,10 @@ and [<RequireQualifiedAccess>] TableSampleClause = (* Abstract? = false *)
       ret.TableSampleClauseOption <- aTableSampleClauseOption
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TableSampleClause, fragmentMapping:FragmentMapping) : TableSampleClause =
-    TableSampleClause.TableSampleClause((src.RepeatSeed |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SampleNumber |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.System), (src.TableSampleClauseOption))
+    let ret =
+      TableSampleClause.TableSampleClause((src.RepeatSeed |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SampleNumber |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.System), (src.TableSampleClauseOption))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] TemporalClause = (* Abstract? = false *)
   | TemporalClause of EndTime:ScalarExpression option * StartTime:ScalarExpression option * TemporalClauseType:ScriptDom.TemporalClauseType  
   member this.ToCs() : ScriptDom.TemporalClause =
@@ -13160,7 +13622,10 @@ and [<RequireQualifiedAccess>] TemporalClause = (* Abstract? = false *)
       ret.TemporalClauseType <- aTemporalClauseType
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TemporalClause, fragmentMapping:FragmentMapping) : TemporalClause =
-    TemporalClause.TemporalClause((src.EndTime |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.StartTime |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.TemporalClauseType))
+    let ret =
+      TemporalClause.TemporalClause((src.EndTime |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.StartTime |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.TemporalClauseType))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] SchemaDeclarationItemOpenjson = (* Abstract? = false *)
   | SchemaDeclarationItemOpenjson of AsJson:bool * ColumnDefinition:ColumnDefinitionBase option * Mapping:ValueExpression option  
   member this.ToCs() : ScriptDom.SchemaDeclarationItemOpenjson =
@@ -13172,7 +13637,10 @@ and [<RequireQualifiedAccess>] SchemaDeclarationItemOpenjson = (* Abstract? = fa
       ret.Mapping <- aMapping |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.SchemaDeclarationItemOpenjson, fragmentMapping:FragmentMapping) : SchemaDeclarationItemOpenjson =
-    SchemaDeclarationItemOpenjson.SchemaDeclarationItemOpenjson((src.AsJson), (src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Mapping |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      SchemaDeclarationItemOpenjson.SchemaDeclarationItemOpenjson((src.AsJson), (src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Mapping |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] WindowDelimiter = (* Abstract? = false *)
   | WindowDelimiter of OffsetValue:ScalarExpression option * WindowDelimiterType:ScriptDom.WindowDelimiterType  
   member this.ToCs() : ScriptDom.WindowDelimiter =
@@ -13183,7 +13651,10 @@ and [<RequireQualifiedAccess>] WindowDelimiter = (* Abstract? = false *)
       ret.WindowDelimiterType <- aWindowDelimiterType
       ret (* 333 *)
   static member FromCs(src:ScriptDom.WindowDelimiter, fragmentMapping:FragmentMapping) : WindowDelimiter =
-    WindowDelimiter.WindowDelimiter((src.OffsetValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WindowDelimiterType))
+    let ret =
+      WindowDelimiter.WindowDelimiter((src.OffsetValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WindowDelimiterType))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] CommonTableExpression = (* Abstract? = false *)
   | CommonTableExpression of Columns:(Identifier) list * ExpressionName:Identifier option * QueryExpression:QueryExpression option  
   member this.ToCs() : ScriptDom.CommonTableExpression =
@@ -13195,7 +13666,10 @@ and [<RequireQualifiedAccess>] CommonTableExpression = (* Abstract? = false *)
       ret.QueryExpression <- aQueryExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.CommonTableExpression, fragmentMapping:FragmentMapping) : CommonTableExpression =
-    CommonTableExpression.CommonTableExpression((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ExpressionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))
+    let ret =
+      CommonTableExpression.CommonTableExpression((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ExpressionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] WlmTimeLiteral = (* Abstract? = false *)
   | WlmTimeLiteral of TimeString:StringLiteral option  
   member this.ToCs() : ScriptDom.WlmTimeLiteral =
@@ -13205,4 +13679,7 @@ and [<RequireQualifiedAccess>] WlmTimeLiteral = (* Abstract? = false *)
       ret.TimeString <- aTimeString |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.WlmTimeLiteral, fragmentMapping:FragmentMapping) : WlmTimeLiteral =
-    WlmTimeLiteral.WlmTimeLiteral((src.TimeString |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
+    let ret =
+      WlmTimeLiteral.WlmTimeLiteral((src.TimeString |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
