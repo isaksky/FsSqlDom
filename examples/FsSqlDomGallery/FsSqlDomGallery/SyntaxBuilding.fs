@@ -233,10 +233,11 @@ let get_cs_build_str (expr: TSqlFragment) (reuse_vars: bool) (fsharp_syntax: boo
       match o with
       | null -> None
       | :? string as s ->
+        let escaped_s = s.Replace("{", "{{").Replace("}", "}}")
         CodeNode
           ( prop_name = pname, 
             is_inline = true, 
-            format_str = "\"" + s + "\"")
+            format_str = "\"" + escaped_s + "\"")
         |> Some
       | :? TSqlFragment as frag ->
         if reuse_vars then
