@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{63297B98-5CED-492C-A5B7-A5B4F73CF142}"
 	ProjectSection(SolutionItems) = preProject
@@ -46,6 +46,11 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsSqlDomGallery", "examples
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FsSqlDomGalleryUI", "examples\FsSqlDomGallery\FsSqlDomGalleryUI\FsSqlDomGalleryUI.csproj", "{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED83D996-B731-475B-887E-2FD4787298BB}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,5 +83,8 @@ Global
 		{349D1936-1EA0-4D16-B58F-A938375CB91C} = {ED8079DD-2B06-4030-9F0F-DC548F98E1C4}
 		{5C09D0E1-9185-4E62-9E23-6D9929277562} = {485A95AE-CA87-4E27-AE7E-175FB81B620F}
 		{9BBADC98-AD85-4B8C-B509-39B9F6C5C4FD} = {485A95AE-CA87-4E27-AE7E-175FB81B620F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {01A87AD6-48BE-411D-9786-7612682C6E2B}
 	EndGlobalSection
 EndGlobal

@@ -17,6 +17,7 @@ using static Microsoft.FSharp.Compiler.Interactive.Shell;
 using Microsoft.FSharp.Core;
 using System.Reflection;
 using System.Threading;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace FsSqlDomGalleryUI {
 
@@ -158,7 +159,19 @@ tr.ToString()";
 
             try {
                 var syntax = await Task.Factory.StartNew(() => {
-                    return SyntaxBuilding.build_syntax(query, reuse_vars, use_fsharp_syntax);
+                    if (use_fsharp_syntax) {
+                        return SyntaxBuilding.build_syntax(query, reuse_vars, true);
+                    } else {
+                        var quoter = new SqlQuoter();
+                        var p = new TSql150Parser(false);
+                        var frag = p.Parse(new StringReader(query), out var errs);
+                        if (errs.Any()) {
+                            return string.Join("\n", errs.Select(err => $"{err.Line}: {err.Message}"));
+                        }
+                        var quoted = quoter.Render(frag);
+                        return quoted;
+                    }
+                    
                 });
                 this.Dispatcher.Invoke(() => {
                     _syntax_tb.Text = syntax;
