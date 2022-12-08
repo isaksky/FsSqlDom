@@ -17,7 +17,8 @@ namespace FsSqlDomGalleryUI {
 
         static HashSet<string> SkipEnumValues = new HashSet<string> {
             "QuoteType.NotQuoted",
-            "UniqueRowFilter.NotSpecified"
+            "UniqueRowFilter.NotSpecified",
+            "ColumnType.Regular"
         };
 
         public string Render(TSqlFragment frag) {
