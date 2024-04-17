@@ -97,8 +97,11 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
   | ExpressionWithSortOrder of Expression:ScalarExpression option * SortOrder:ScriptDom.SortOrder
   | ExternalDataSourceOption of ExternalDataSourceOption
   | ExternalFileFormatOption of ExternalFileFormatOption
+  | ExternalLanguageFileOption of Content:ScalarExpression option * EnvironmentVariables:StringLiteral option * FileName:StringLiteral option * Parameters:StringLiteral option * Path:StringLiteral option * Platform:Identifier option
+  | ExternalLibraryFileOption of Content:ScalarExpression option * Path:StringLiteral option * Platform:Identifier option
   | ExternalResourcePoolAffinitySpecification of AffinityType:ScriptDom.ExternalResourcePoolAffinityType * IsAuto:bool * ParameterValue:Literal option * PoolAffinityRanges:(LiteralRange) list
   | ExternalResourcePoolParameter of AffinitySpecification:ExternalResourcePoolAffinitySpecification option * ParameterType:ScriptDom.ExternalResourcePoolParameterType * ParameterValue:Literal option
+  | ExternalStreamOption of ExternalStreamOption
   | ExternalTableColumnDefinition of ColumnDefinition:ColumnDefinitionBase option * NullableConstraint:NullableConstraintDefinition option
   | ExternalTableDistributionPolicy of ExternalTableDistributionPolicy
   | ExternalTableOption of ExternalTableOption
@@ -109,7 +112,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
   | FileGroupDefinition of ContainsFileStream:bool * ContainsMemoryOptimizedData:bool * FileDeclarations:(FileDeclaration) list * IsDefault:bool * Name:Identifier option
   | FileGroupOrPartitionScheme of Name:IdentifierOrValueExpression option * PartitionSchemeColumns:(Identifier) list
   | ForClause of ForClause
-  | FromClause of TableReferences:(TableReference) list
+  | FromClause of PredictTableReference:(PredictTableReference) list * TableReferences:(TableReference) list
   | FullTextCatalogAndFileGroup of CatalogName:Identifier option * FileGroupIsFirst:bool * FileGroupName:Identifier option
   | FullTextCatalogOption of FullTextCatalogOption
   | FullTextIndexColumn of LanguageTerm:IdentifierOrValueExpression option * Name:Identifier option * StatisticalSemantics:bool * TypeColumn:Identifier option
@@ -141,12 +144,13 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
   | MultiPartIdentifier of MultiPartIdentifier
   | OffsetClause of FetchExpression:ScalarExpression option * OffsetExpression:ScalarExpression option
   | OnlineIndexLowPriorityLockWaitOption of Options:(LowPriorityLockWaitOption) list
+  | OpenRowsetCosmosOption of OpenRowsetCosmosOption
   | OptimizerHint of OptimizerHint
   | OptionValue of OptionValue
   | OrderByClause of OrderByElements:(ExpressionWithSortOrder) list
   | OutputClause of SelectColumns:(SelectElement) list
   | OutputIntoClause of IntoTable:TableReference option * IntoTableColumns:(ColumnReferenceExpression) list * SelectColumns:(SelectElement) list
-  | OverClause of OrderByClause:OrderByClause option * Partitions:(ScalarExpression) list * WindowFrameClause:WindowFrameClause option
+  | OverClause of OrderByClause:OrderByClause option * Partitions:(ScalarExpression) list * WindowFrameClause:WindowFrameClause option * WindowName:Identifier option
   | PartitionParameterType of Collation:Identifier option * DataType:DataTypeReference option
   | PartitionSpecifications of PartitionSpecifications
   | PartitionSpecifier of All:bool * Number:ScalarExpression option
@@ -218,6 +222,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
   | ViewOption of ViewOption
   | WhenClause of WhenClause
   | WhereClause of Cursor:CursorId option * SearchCondition:BooleanExpression option
+  | WindowClause of WindowDefinition:(WindowDefinition) list
+  | WindowDefinition of OrderByClause:OrderByClause option * Partitions:(ScalarExpression) list * RefWindowName:Identifier option * WindowFrameClause:WindowFrameClause option * WindowName:Identifier option
   | WindowDelimiter of OffsetValue:ScalarExpression option * WindowDelimiterType:ScriptDom.WindowDelimiterType
   | WindowFrameClause of Bottom:WindowDelimiter option * Top:WindowDelimiter option * WindowFrameType:ScriptDom.WindowFrameType
   | WithCtesAndXmlNamespaces of ChangeTrackingContext:ValueExpression option * CommonTableExpressions:(CommonTableExpression) list * XmlNamespaces:XmlNamespaces option
@@ -518,6 +524,21 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
       ret :> ScriptDom.TSqlFragment (* 335 *)
     | ExternalDataSourceOption(x) -> x.ToCs() :> ScriptDom.TSqlFragment (* 345 *)
     | ExternalFileFormatOption(x) -> x.ToCs() :> ScriptDom.TSqlFragment (* 345 *)
+    | ExternalLanguageFileOption(Content=aContent; EnvironmentVariables=aEnvironmentVariables; FileName=aFileName; Parameters=aParameters; Path=aPath; Platform=aPlatform) ->
+      let ret = ScriptDom.ExternalLanguageFileOption()
+      ret.Content <- aContent |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.EnvironmentVariables <- aEnvironmentVariables |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.FileName <- aFileName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Parameters <- aParameters |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Path <- aPath |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Platform <- aPlatform |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.TSqlFragment (* 335 *)
+    | ExternalLibraryFileOption(Content=aContent; Path=aPath; Platform=aPlatform) ->
+      let ret = ScriptDom.ExternalLibraryFileOption()
+      ret.Content <- aContent |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Path <- aPath |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Platform <- aPlatform |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.TSqlFragment (* 335 *)
     | ExternalResourcePoolAffinitySpecification(AffinityType=aAffinityType; IsAuto=aIsAuto; ParameterValue=aParameterValue; PoolAffinityRanges=aPoolAffinityRanges) ->
       let ret = ScriptDom.ExternalResourcePoolAffinitySpecification()
       ret.AffinityType <- aAffinityType
@@ -531,6 +552,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
       ret.ParameterType <- aParameterType
       ret.ParameterValue <- aParameterValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TSqlFragment (* 335 *)
+    | ExternalStreamOption(x) -> x.ToCs() :> ScriptDom.TSqlFragment (* 345 *)
     | ExternalTableColumnDefinition(ColumnDefinition=aColumnDefinition; NullableConstraint=aNullableConstraint) ->
       let ret = ScriptDom.ExternalTableColumnDefinition()
       ret.ColumnDefinition <- aColumnDefinition |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -568,8 +590,9 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
       for e in aPartitionSchemeColumns do ret.PartitionSchemeColumns.Add (e.ToCs())
       ret :> ScriptDom.TSqlFragment (* 335 *)
     | ForClause(x) -> x.ToCs() :> ScriptDom.TSqlFragment (* 345 *)
-    | FromClause(TableReferences=aTableReferences) ->
+    | FromClause(PredictTableReference=aPredictTableReference; TableReferences=aTableReferences) ->
       let ret = ScriptDom.FromClause()
+      for e in aPredictTableReference do ret.PredictTableReference.Add (e.ToCs())
       for e in aTableReferences do ret.TableReferences.Add (e.ToCs())
       ret :> ScriptDom.TSqlFragment (* 335 *)
     | FullTextCatalogAndFileGroup(CatalogName=aCatalogName; FileGroupIsFirst=aFileGroupIsFirst; FileGroupName=aFileGroupName) ->
@@ -683,6 +706,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
       let ret = ScriptDom.OnlineIndexLowPriorityLockWaitOption()
       for e in aOptions do ret.Options.Add (e.ToCs())
       ret :> ScriptDom.TSqlFragment (* 335 *)
+    | OpenRowsetCosmosOption(x) -> x.ToCs() :> ScriptDom.TSqlFragment (* 345 *)
     | OptimizerHint(x) -> x.ToCs() :> ScriptDom.TSqlFragment (* 345 *)
     | OptionValue(x) -> x.ToCs() :> ScriptDom.TSqlFragment (* 345 *)
     | OrderByClause(OrderByElements=aOrderByElements) ->
@@ -699,11 +723,12 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
       for e in aIntoTableColumns do ret.IntoTableColumns.Add (e.ToCs())
       for e in aSelectColumns do ret.SelectColumns.Add (e.ToCs())
       ret :> ScriptDom.TSqlFragment (* 335 *)
-    | OverClause(OrderByClause=aOrderByClause; Partitions=aPartitions; WindowFrameClause=aWindowFrameClause) ->
+    | OverClause(OrderByClause=aOrderByClause; Partitions=aPartitions; WindowFrameClause=aWindowFrameClause; WindowName=aWindowName) ->
       let ret = ScriptDom.OverClause()
       ret.OrderByClause <- aOrderByClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aPartitions do ret.Partitions.Add (e.ToCs())
       ret.WindowFrameClause <- aWindowFrameClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.WindowName <- aWindowName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TSqlFragment (* 335 *)
     | PartitionParameterType(Collation=aCollation; DataType=aDataType) ->
       let ret = ScriptDom.PartitionParameterType()
@@ -938,6 +963,18 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
       ret.Cursor <- aCursor |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.SearchCondition <- aSearchCondition |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TSqlFragment (* 335 *)
+    | WindowClause(WindowDefinition=aWindowDefinition) ->
+      let ret = ScriptDom.WindowClause()
+      for e in aWindowDefinition do ret.WindowDefinition.Add (e.ToCs())
+      ret :> ScriptDom.TSqlFragment (* 335 *)
+    | WindowDefinition(OrderByClause=aOrderByClause; Partitions=aPartitions; RefWindowName=aRefWindowName; WindowFrameClause=aWindowFrameClause; WindowName=aWindowName) ->
+      let ret = ScriptDom.WindowDefinition()
+      ret.OrderByClause <- aOrderByClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aPartitions do ret.Partitions.Add (e.ToCs())
+      ret.RefWindowName <- aRefWindowName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.WindowFrameClause <- aWindowFrameClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.WindowName <- aWindowName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.TSqlFragment (* 335 *)
     | WindowDelimiter(OffsetValue=aOffsetValue; WindowDelimiterType=aWindowDelimiterType) ->
       let ret = ScriptDom.WindowDelimiter()
       ret.OffsetValue <- aOffsetValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -1064,6 +1101,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.AuditOption((AuditOption.AuditGuidAuditOption((src.Guid |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OptionKind))  ))
         | :? ScriptDom.OnFailureAuditOption as src->
           TSqlFragment.AuditOption((AuditOption.OnFailureAuditOption((src.OnFailureAction), (src.OptionKind))  ))
+        | :? ScriptDom.OperatorAuditOption as src->
+          TSqlFragment.AuditOption((AuditOption.OperatorAuditOption((src.OptionKind), (src.Value))  ))
         | :? ScriptDom.QueueDelayAuditOption as src->
           TSqlFragment.AuditOption((AuditOption.QueueDelayAuditOption((src.Delay |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.OptionKind))  ))
         | :? ScriptDom.StateAuditOption as src->
@@ -1144,6 +1183,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.BooleanExpression((BooleanExpression.BooleanParenthesisExpression((src.Expression |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.BooleanTernaryExpression as src->
           TSqlFragment.BooleanExpression((BooleanExpression.BooleanTernaryExpression((src.FirstExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SecondExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.TernaryExpressionType), (src.ThirdExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.DistinctPredicate as src->
+          TSqlFragment.BooleanExpression((BooleanExpression.DistinctPredicate((src.FirstExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.IsNot), (src.SecondExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.EventDeclarationCompareFunctionParameter as src->
           TSqlFragment.BooleanExpression((BooleanExpression.EventDeclarationCompareFunctionParameter((src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))), (src.SourceDeclaration |> Option.ofObj |> Option.map (fun x -> SourceDeclaration.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.ExistsPredicate as src->
@@ -1206,6 +1247,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
         match src with
         | :? ScriptDom.ColumnDefinition as src->
           TSqlFragment.ColumnDefinitionBase((ColumnDefinitionBase.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.OpenRowsetColumnDefinition as src->
+          TSqlFragment.ColumnDefinitionBase((ColumnDefinitionBase.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))  ))
         | _ -> (* :? ScriptDom.ColumnDefinitionBase as src *)
           TSqlFragment.ColumnDefinitionBase((ColumnDefinitionBase.Base((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))))))
       | :? ScriptDom.ColumnEncryptionDefinition as src ->
@@ -1255,7 +1298,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
         | :? ScriptDom.DefaultConstraintDefinition as src->
           TSqlFragment.ConstraintDefinition((ConstraintDefinition.DefaultConstraintDefinition((src.Column |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WithValues))  ))
         | :? ScriptDom.ForeignKeyConstraintDefinition as src->
-          TSqlFragment.ConstraintDefinition((ConstraintDefinition.ForeignKeyConstraintDefinition((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DeleteAction), (src.NotForReplication), (src.ReferenceTableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.ReferencedTableColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.UpdateAction))  ))
+          TSqlFragment.ConstraintDefinition((ConstraintDefinition.ForeignKeyConstraintDefinition((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DeleteAction), (Option.ofNullable (src.IsEnforced)), (src.NotForReplication), (src.ReferenceTableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.ReferencedTableColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.UpdateAction))  ))
         | :? ScriptDom.GraphConnectionConstraintDefinition as src->
           TSqlFragment.ConstraintDefinition((ConstraintDefinition.GraphConnectionConstraintDefinition((src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DeleteAction), (src.FromNodeToNodeList |> Seq.map (fun src -> GraphConnectionBetweenNodes.GraphConnectionBetweenNodes((src.FromNode |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.ToNode |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))) |> List.ofSeq))  ))
         | :? ScriptDom.NullableConstraintDefinition as src->
@@ -1316,6 +1359,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
         TSqlFragment.DatabaseConfigurationClearOption((src.OptionKind),(src.PlanHandle |> Option.ofObj |> Option.map (fun x -> BinaryLiteral.FromCs(x, fragmentMapping))))
       | :? ScriptDom.DatabaseConfigurationSetOption as src ->
         match src with
+        | :? ScriptDom.DWCompatibilityLevelConfigurationOption as src->
+          TSqlFragment.DatabaseConfigurationSetOption((DatabaseConfigurationSetOption.DWCompatibilityLevelConfigurationOption((src.GenericOptionKind |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.GenericConfigurationOption as src->
           TSqlFragment.DatabaseConfigurationSetOption((DatabaseConfigurationSetOption.GenericConfigurationOption((src.GenericOptionKind |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.GenericOptionState |> Option.ofObj |> Option.map (fun x -> IdentifierOrScalarExpression.FromCs(x, fragmentMapping))), (src.OptionKind))  ))
         | :? ScriptDom.MaxDopConfigurationOption as src->
@@ -1340,12 +1385,16 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.DatabaseOption((DatabaseOption.CursorDefaultDatabaseOption((src.IsLocal), (src.OptionKind))  ))
         | :? ScriptDom.DelayedDurabilityDatabaseOption as src->
           TSqlFragment.DatabaseOption((DatabaseOption.DelayedDurabilityDatabaseOption((src.OptionKind), (src.Value))  ))
+        | :? ScriptDom.ElasticPoolSpecification as src->
+          TSqlFragment.DatabaseOption((DatabaseOption.ElasticPoolSpecification((src.ElasticPoolName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OptionKind))  ))
         | :? ScriptDom.FileStreamDatabaseOption as src->
           TSqlFragment.DatabaseOption((DatabaseOption.FileStreamDatabaseOption((src.DirectoryName |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (Option.ofNullable (src.NonTransactedAccess)), (src.OptionKind))  ))
         | :? ScriptDom.HadrDatabaseOption as src->
           TSqlFragment.DatabaseOption((DatabaseOption.HadrDatabaseOption((HadrDatabaseOption.FromCs(src, fragmentMapping)))  ))
         | :? ScriptDom.IdentifierDatabaseOption as src->
           TSqlFragment.DatabaseOption((DatabaseOption.IdentifierDatabaseOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.LedgerOption as src->
+          TSqlFragment.DatabaseOption((DatabaseOption.LedgerOption((src.OptionKind), (src.OptionState))  ))
         | :? ScriptDom.LiteralDatabaseOption as src->
           TSqlFragment.DatabaseOption((DatabaseOption.LiteralDatabaseOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.MaxSizeDatabaseOption as src->
@@ -1478,10 +1527,18 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.ExternalFileFormatOption((ExternalFileFormatOption.ExternalFileFormatLiteralOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.ExternalFileFormatUseDefaultTypeOption as src->
           TSqlFragment.ExternalFileFormatOption((ExternalFileFormatOption.ExternalFileFormatUseDefaultTypeOption((src.ExternalFileFormatUseDefaultType), (src.OptionKind))  ))
+      | :? ScriptDom.ExternalLanguageFileOption as src ->
+        TSqlFragment.ExternalLanguageFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.EnvironmentVariables |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.FileName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Parameters |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.ExternalLibraryFileOption as src ->
+        TSqlFragment.ExternalLibraryFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.ExternalResourcePoolAffinitySpecification as src ->
         TSqlFragment.ExternalResourcePoolAffinitySpecification((src.AffinityType),(src.IsAuto),(src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.PoolAffinityRanges |> Seq.map (fun x -> LiteralRange.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.ExternalResourcePoolParameter as src ->
         TSqlFragment.ExternalResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ExternalResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))),(src.ParameterType),(src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.ExternalStreamOption as src ->
+        match src with
+        | :? ScriptDom.ExternalStreamLiteralOrIdentifierOption as src->
+          TSqlFragment.ExternalStreamOption((ExternalStreamOption.ExternalStreamLiteralOrIdentifierOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.ExternalTableColumnDefinition as src ->
         TSqlFragment.ExternalTableColumnDefinition((src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))),(src.NullableConstraint |> Option.ofObj |> Option.map (fun x -> NullableConstraintDefinition.FromCs(x, fragmentMapping))))
       | :? ScriptDom.ExternalTableDistributionPolicy as src ->
@@ -1541,7 +1598,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
         | :? ScriptDom.XmlForClauseOption as src->
           TSqlFragment.ForClause((ForClause.XmlForClauseOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.FromClause as src ->
-        TSqlFragment.FromClause((src.TableReferences |> Seq.map (fun x -> TableReference.FromCs(x, fragmentMapping)) |> List.ofSeq))
+        TSqlFragment.FromClause((src.PredictTableReference |> Seq.map (fun src -> PredictTableReference.PredictTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataSource |> Option.ofObj |> Option.map (fun x -> TableReferenceWithAlias.FromCs(x, fragmentMapping))), (src.ForPath), (src.ModelSubquery |> Option.ofObj |> Option.map (fun x -> ScalarSubquery.FromCs(x, fragmentMapping))), (src.ModelVariable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.RunTime |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq),(src.TableReferences |> Seq.map (fun x -> TableReference.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.FullTextCatalogAndFileGroup as src ->
         TSqlFragment.FullTextCatalogAndFileGroup((src.CatalogName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.FileGroupIsFirst),(src.FileGroupName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.FullTextCatalogOption as src ->
@@ -1634,6 +1691,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.IndexOption((IndexOption.OrderIndexOption((src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.OptionKind))  ))
         | :? ScriptDom.WaitAtLowPriorityOption as src->
           TSqlFragment.IndexOption((IndexOption.WaitAtLowPriorityOption((src.OptionKind), (src.Options |> Seq.map (fun x -> LowPriorityLockWaitOption.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
+        | :? ScriptDom.XmlCompressionOption as src->
+          TSqlFragment.IndexOption((IndexOption.XmlCompressionOption((src.IsCompressed), (src.OptionKind), (src.PartitionRanges |> Seq.map (fun src -> CompressionPartitionRange.CompressionPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))  ))
       | :? ScriptDom.IndexType as src ->
         TSqlFragment.IndexType((Option.ofNullable (src.IndexTypeKind)))
       | :? ScriptDom.InsertBulkColumnDefinition as src ->
@@ -1694,6 +1753,12 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
         TSqlFragment.OffsetClause((src.FetchExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.OffsetExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.OnlineIndexLowPriorityLockWaitOption as src ->
         TSqlFragment.OnlineIndexLowPriorityLockWaitOption((src.Options |> Seq.map (fun x -> LowPriorityLockWaitOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+      | :? ScriptDom.OpenRowsetCosmosOption as src ->
+        match src with
+        | :? ScriptDom.LiteralOpenRowsetCosmosOption as src->
+          TSqlFragment.OpenRowsetCosmosOption((OpenRowsetCosmosOption.LiteralOpenRowsetCosmosOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))  ))
+        | _ -> (* :? ScriptDom.OpenRowsetCosmosOption as src *)
+          TSqlFragment.OpenRowsetCosmosOption((OpenRowsetCosmosOption.Base((src.OptionKind))))
       | :? ScriptDom.OptimizerHint as src ->
         match src with
         | :? ScriptDom.LiteralOptimizerHint as src->
@@ -1719,7 +1784,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
       | :? ScriptDom.OutputIntoClause as src ->
         TSqlFragment.OutputIntoClause((src.IntoTable |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))),(src.IntoTableColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.SelectColumns |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.OverClause as src ->
-        TSqlFragment.OverClause((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))),(src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))))
+        TSqlFragment.OverClause((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))),(src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))),(src.WindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.PartitionParameterType as src ->
         TSqlFragment.PartitionParameterType((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))))
       | :? ScriptDom.PartitionSpecifications as src ->
@@ -1785,7 +1850,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
         | :? ScriptDom.QueryParenthesisExpression as src->
           TSqlFragment.QueryExpression((QueryExpression.QueryParenthesisExpression((src.ForClause |> Option.ofObj |> Option.map (fun x -> ForClause.FromCs(x, fragmentMapping))), (src.OffsetClause |> Option.ofObj |> Option.map (fun x -> OffsetClause.FromCs(x, fragmentMapping))), (src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.QuerySpecification as src->
-          TSqlFragment.QueryExpression((QueryExpression.QuerySpecification((src.ForClause |> Option.ofObj |> Option.map (fun x -> ForClause.FromCs(x, fragmentMapping))), (src.FromClause |> Option.ofObj |> Option.map (fun x -> FromClause.FromCs(x, fragmentMapping))), (src.GroupByClause |> Option.ofObj |> Option.map (fun x -> GroupByClause.FromCs(x, fragmentMapping))), (src.HavingClause |> Option.ofObj |> Option.map (fun x -> HavingClause.FromCs(x, fragmentMapping))), (src.OffsetClause |> Option.ofObj |> Option.map (fun x -> OffsetClause.FromCs(x, fragmentMapping))), (src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.SelectElements |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))), (src.UniqueRowFilter), (src.WhereClause |> Option.ofObj |> Option.map (fun x -> WhereClause.FromCs(x, fragmentMapping))))  ))
+          TSqlFragment.QueryExpression((QueryExpression.QuerySpecification((src.ForClause |> Option.ofObj |> Option.map (fun x -> ForClause.FromCs(x, fragmentMapping))), (src.FromClause |> Option.ofObj |> Option.map (fun x -> FromClause.FromCs(x, fragmentMapping))), (src.GroupByClause |> Option.ofObj |> Option.map (fun x -> GroupByClause.FromCs(x, fragmentMapping))), (src.HavingClause |> Option.ofObj |> Option.map (fun x -> HavingClause.FromCs(x, fragmentMapping))), (src.OffsetClause |> Option.ofObj |> Option.map (fun x -> OffsetClause.FromCs(x, fragmentMapping))), (src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.SelectElements |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))), (src.UniqueRowFilter), (src.WhereClause |> Option.ofObj |> Option.map (fun x -> WhereClause.FromCs(x, fragmentMapping))), (src.WindowClause |> Option.ofObj |> Option.map (fun x -> WindowClause.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.QueryStoreOption as src ->
         match src with
         | :? ScriptDom.QueryStoreCapturePolicyOption as src->
@@ -1870,6 +1935,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.ScalarExpression((ScalarExpression.ExtractFromExpression((src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.ExtractedElement |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.IdentityFunctionCall as src->
           TSqlFragment.ScalarExpression((ScalarExpression.IdentityFunctionCall((src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.Increment |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Seed |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.JsonKeyValue as src->
+          TSqlFragment.ScalarExpression((ScalarExpression.JsonKeyValue((src.JsonKeyName |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.JsonValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.OdbcConvertSpecification as src->
           TSqlFragment.ScalarExpression((ScalarExpression.OdbcConvertSpecification((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.PrimaryExpression as src->
@@ -2158,6 +2225,10 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.TSqlStatement((TSqlStatement.DropDatabaseStatement((src.Databases |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IsIfExists))  ))
         | :? ScriptDom.DropEventNotificationStatement as src->
           TSqlFragment.TSqlStatement((TSqlStatement.DropEventNotificationStatement((src.Notifications |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Scope |> Option.ofObj |> Option.map (fun x -> EventNotificationObjectScope.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.DropExternalLanguageStatement as src->
+          TSqlFragment.TSqlStatement((TSqlStatement.DropExternalLanguageStatement((src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.DropExternalLibraryStatement as src->
+          TSqlFragment.TSqlStatement((TSqlStatement.DropExternalLibraryStatement((src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.DropFullTextIndexStatement as src->
           TSqlFragment.TSqlStatement((TSqlStatement.DropFullTextIndexStatement((src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.DropIndexStatement as src->
@@ -2190,8 +2261,16 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.TSqlStatement((TSqlStatement.ExternalDataSourceStatement((ExternalDataSourceStatement.FromCs(src, fragmentMapping)))  ))
         | :? ScriptDom.ExternalFileFormatStatement as src->
           TSqlFragment.TSqlStatement((TSqlStatement.ExternalFileFormatStatement((ExternalFileFormatStatement.FromCs(src, fragmentMapping)))  ))
+        | :? ScriptDom.ExternalLanguageStatement as src->
+          TSqlFragment.TSqlStatement((TSqlStatement.ExternalLanguageStatement((ExternalLanguageStatement.FromCs(src, fragmentMapping)))  ))
+        | :? ScriptDom.ExternalLibraryStatement as src->
+          TSqlFragment.TSqlStatement((TSqlStatement.ExternalLibraryStatement((ExternalLibraryStatement.FromCs(src, fragmentMapping)))  ))
         | :? ScriptDom.ExternalResourcePoolStatement as src->
           TSqlFragment.TSqlStatement((TSqlStatement.ExternalResourcePoolStatement((ExternalResourcePoolStatement.FromCs(src, fragmentMapping)))  ))
+        | :? ScriptDom.ExternalStreamStatement as src->
+          TSqlFragment.TSqlStatement((TSqlStatement.ExternalStreamStatement((ExternalStreamStatement.FromCs(src, fragmentMapping)))  ))
+        | :? ScriptDom.ExternalStreamingJobStatement as src->
+          TSqlFragment.TSqlStatement((TSqlStatement.ExternalStreamingJobStatement((ExternalStreamingJobStatement.FromCs(src, fragmentMapping)))  ))
         | :? ScriptDom.ExternalTableStatement as src->
           TSqlFragment.TSqlStatement((TSqlStatement.ExternalTableStatement((ExternalTableStatement.FromCs(src, fragmentMapping)))  ))
         | :? ScriptDom.FullTextCatalogStatement as src->
@@ -2201,7 +2280,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
         | :? ScriptDom.IfStatement as src->
           TSqlFragment.TSqlStatement((TSqlStatement.IfStatement((src.ElseStatement |> Option.ofObj |> Option.map (fun x -> TSqlStatement.FromCs(x, fragmentMapping))), (src.Predicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.ThenStatement |> Option.ofObj |> Option.map (fun x -> TSqlStatement.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.IndexDefinition as src->
-          TSqlFragment.TSqlStatement((TSqlStatement.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))  ))
+          TSqlFragment.TSqlStatement((TSqlStatement.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IncludeColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))  ))
         | :? ScriptDom.IndexStatement as src->
           TSqlFragment.TSqlStatement((TSqlStatement.IndexStatement((IndexStatement.FromCs(src, fragmentMapping)))  ))
         | :? ScriptDom.KillQueryNotificationSubscriptionStatement as src->
@@ -2327,11 +2406,11 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
         | :? ScriptDom.WorkloadGroupStatement as src->
           TSqlFragment.TSqlStatement((TSqlStatement.WorkloadGroupStatement((WorkloadGroupStatement.FromCs(src, fragmentMapping)))  ))
       | :? ScriptDom.TableDefinition as src ->
-        TSqlFragment.TableDefinition((src.ColumnDefinitions |> Seq.map (fun src -> ColumnDefinition.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Indexes |> Seq.map (fun src -> IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))) |> List.ofSeq),(src.SystemTimePeriod |> Option.ofObj |> Option.map (fun x -> SystemTimePeriodDefinition.FromCs(x, fragmentMapping))),(src.TableConstraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq))
+        TSqlFragment.TableDefinition((src.ColumnDefinitions |> Seq.map (fun src -> ColumnDefinition.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Indexes |> Seq.map (fun src -> IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IncludeColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))) |> List.ofSeq),(src.SystemTimePeriod |> Option.ofObj |> Option.map (fun x -> SystemTimePeriodDefinition.FromCs(x, fragmentMapping))),(src.TableConstraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.TableDistributionPolicy as src ->
         match src with
         | :? ScriptDom.TableHashDistributionPolicy as src->
-          TSqlFragment.TableDistributionPolicy((TableDistributionPolicy.TableHashDistributionPolicy((src.DistributionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+          TSqlFragment.TableDistributionPolicy((TableDistributionPolicy.TableHashDistributionPolicy((src.DistributionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DistributionColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
         | :? ScriptDom.TableReplicateDistributionPolicy as src->
           TSqlFragment.TableDistributionPolicy((TableDistributionPolicy.TableReplicateDistributionPolicy  ))
         | :? ScriptDom.TableRoundRobinDistributionPolicy as src->
@@ -2354,6 +2433,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.TableIndexType((TableIndexType.TableNonClusteredIndexType  ))
       | :? ScriptDom.TableOption as src ->
         match src with
+        | :? ScriptDom.DataRetentionTableOption as src->
+          TSqlFragment.TableOption((TableOption.DataRetentionTableOption((src.FilterColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OptionKind), (src.OptionState), (src.RetentionPeriod |> Option.ofObj |> Option.map (fun x -> RetentionPeriodDefinition.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.DurabilityTableOption as src->
           TSqlFragment.TableOption((TableOption.DurabilityTableOption((src.DurabilityTableOptionKind), (src.OptionKind))  ))
         | :? ScriptDom.FileStreamOnTableOption as src->
@@ -2364,6 +2445,10 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.TableOption((TableOption.FileTableConstraintNameTableOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.FileTableDirectoryTableOption as src->
           TSqlFragment.TableOption((TableOption.FileTableDirectoryTableOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.LedgerTableOption as src->
+          TSqlFragment.TableOption((TableOption.LedgerTableOption((src.AppendOnly), (src.LedgerViewOption |> Option.ofObj |> Option.map (fun x -> LedgerViewOption.FromCs(x, fragmentMapping))), (src.OptionKind), (src.OptionState))  ))
+        | :? ScriptDom.LedgerViewOption as src->
+          TSqlFragment.TableOption((TableOption.LedgerViewOption((src.OperationTypeColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OperationTypeDescColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OptionKind), (src.SequenceNumberColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.TransactionIdColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ViewName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.LocationOption as src->
           TSqlFragment.TableOption((TableOption.LocationOption((src.LocationValue |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OptionKind))  ))
         | :? ScriptDom.LockEscalationTableOption as src->
@@ -2384,6 +2469,8 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.TableOption((TableOption.TableIndexOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> TableIndexType.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.TablePartitionOption as src->
           TSqlFragment.TableOption((TableOption.TablePartitionOption((src.OptionKind), (src.PartitionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PartitionOptionSpecs |> Option.ofObj |> Option.map (fun x -> TablePartitionOptionSpecifications.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.TableXmlCompressionOption as src->
+          TSqlFragment.TableOption((TableOption.TableXmlCompressionOption((src.OptionKind), (src.XmlCompressionOption |> Option.ofObj |> Option.map (fun x -> XmlCompressionOption.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.TableReference as src ->
         match src with
         | :? ScriptDom.JoinParenthesisTableReference as src->
@@ -2425,7 +2512,7 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
       | :? ScriptDom.ViewDistributionPolicy as src ->
         match src with
         | :? ScriptDom.ViewHashDistributionPolicy as src->
-          TSqlFragment.ViewDistributionPolicy((ViewDistributionPolicy.ViewHashDistributionPolicy((src.DistributionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+          TSqlFragment.ViewDistributionPolicy((ViewDistributionPolicy.ViewHashDistributionPolicy((src.DistributionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DistributionColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
         | :? ScriptDom.ViewRoundRobinDistributionPolicy as src->
           TSqlFragment.ViewDistributionPolicy((ViewDistributionPolicy.ViewRoundRobinDistributionPolicy  ))
       | :? ScriptDom.ViewOption as src ->
@@ -2444,6 +2531,10 @@ type [<RequireQualifiedAccess>] TSqlFragment = (* IsAbstract = true *)
           TSqlFragment.WhenClause((WhenClause.SimpleWhenClause((src.ThenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WhenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.WhereClause as src ->
         TSqlFragment.WhereClause((src.Cursor |> Option.ofObj |> Option.map (fun x -> CursorId.FromCs(x, fragmentMapping))),(src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.WindowClause as src ->
+        TSqlFragment.WindowClause((src.WindowDefinition |> Seq.map (fun src -> WindowDefinition.WindowDefinition((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.RefWindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))), (src.WindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+      | :? ScriptDom.WindowDefinition as src ->
+        TSqlFragment.WindowDefinition((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))),(src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.RefWindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))),(src.WindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.WindowDelimiter as src ->
         TSqlFragment.WindowDelimiter((src.OffsetValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.WindowDelimiterType))
       | :? ScriptDom.WindowFrameClause as src ->
@@ -2748,6 +2839,7 @@ and [<RequireQualifiedAccess>] AtomicBlockOption = (* IsAbstract = true *)
 and [<RequireQualifiedAccess>] AuditOption = (* IsAbstract = true *)
   | AuditGuidAuditOption of Guid:Literal option * OptionKind:ScriptDom.AuditOptionKind
   | OnFailureAuditOption of OnFailureAction:ScriptDom.AuditFailureActionType * OptionKind:ScriptDom.AuditOptionKind
+  | OperatorAuditOption of OptionKind:ScriptDom.AuditOptionKind * Value:ScriptDom.OptionState
   | QueueDelayAuditOption of Delay:Literal option * OptionKind:ScriptDom.AuditOptionKind
   | StateAuditOption of OptionKind:ScriptDom.AuditOptionKind * Value:ScriptDom.OptionState
   member this.ToCs() : ScriptDom.AuditOption =
@@ -2761,6 +2853,11 @@ and [<RequireQualifiedAccess>] AuditOption = (* IsAbstract = true *)
       let ret = ScriptDom.OnFailureAuditOption()
       ret.OnFailureAction <- aOnFailureAction
       ret.OptionKind <- aOptionKind
+      ret :> ScriptDom.AuditOption (* 335 *)
+    | OperatorAuditOption(OptionKind=aOptionKind; Value=aValue) ->
+      let ret = ScriptDom.OperatorAuditOption()
+      ret.OptionKind <- aOptionKind
+      ret.Value <- aValue
       ret :> ScriptDom.AuditOption (* 335 *)
     | QueueDelayAuditOption(Delay=aDelay; OptionKind=aOptionKind) ->
       let ret = ScriptDom.QueueDelayAuditOption()
@@ -2779,6 +2876,8 @@ and [<RequireQualifiedAccess>] AuditOption = (* IsAbstract = true *)
         AuditOption.AuditGuidAuditOption((src.Guid |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.OptionKind))
       | :? ScriptDom.OnFailureAuditOption as src ->
         AuditOption.OnFailureAuditOption((src.OnFailureAction),(src.OptionKind))
+      | :? ScriptDom.OperatorAuditOption as src ->
+        AuditOption.OperatorAuditOption((src.OptionKind),(src.Value))
       | :? ScriptDom.QueueDelayAuditOption as src ->
         AuditOption.QueueDelayAuditOption((src.Delay |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.OptionKind))
       | :? ScriptDom.StateAuditOption as src ->
@@ -3008,6 +3107,7 @@ and [<RequireQualifiedAccess>] BooleanExpression = (* IsAbstract = true *)
   | BooleanNotExpression of Expression:BooleanExpression option
   | BooleanParenthesisExpression of Expression:BooleanExpression option
   | BooleanTernaryExpression of FirstExpression:ScalarExpression option * SecondExpression:ScalarExpression option * TernaryExpressionType:ScriptDom.BooleanTernaryExpressionType * ThirdExpression:ScalarExpression option
+  | DistinctPredicate of FirstExpression:ScalarExpression option * IsNot:bool * SecondExpression:ScalarExpression option
   | EventDeclarationCompareFunctionParameter of EventValue:ScalarExpression option * Name:EventSessionObjectName option * SourceDeclaration:SourceDeclaration option
   | ExistsPredicate of Subquery:ScalarSubquery option
   | FullTextPredicate of Columns:(ColumnReferenceExpression) list * FullTextFunctionType:ScriptDom.FullTextFunctionType * LanguageTerm:ValueExpression option * PropertyName:StringLiteral option * Value:ValueExpression option
@@ -3060,6 +3160,12 @@ and [<RequireQualifiedAccess>] BooleanExpression = (* IsAbstract = true *)
       ret.SecondExpression <- aSecondExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.TernaryExpressionType <- aTernaryExpressionType
       ret.ThirdExpression <- aThirdExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.BooleanExpression (* 335 *)
+    | DistinctPredicate(FirstExpression=aFirstExpression; IsNot=aIsNot; SecondExpression=aSecondExpression) ->
+      let ret = ScriptDom.DistinctPredicate()
+      ret.FirstExpression <- aFirstExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.IsNot <- aIsNot
+      ret.SecondExpression <- aSecondExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.BooleanExpression (* 335 *)
     | EventDeclarationCompareFunctionParameter(EventValue=aEventValue; Name=aName; SourceDeclaration=aSourceDeclaration) ->
       let ret = ScriptDom.EventDeclarationCompareFunctionParameter()
@@ -3169,6 +3275,8 @@ and [<RequireQualifiedAccess>] BooleanExpression = (* IsAbstract = true *)
         BooleanExpression.BooleanParenthesisExpression((src.Expression |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.BooleanTernaryExpression as src ->
         BooleanExpression.BooleanTernaryExpression((src.FirstExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.SecondExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.TernaryExpressionType),(src.ThirdExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.DistinctPredicate as src ->
+        BooleanExpression.DistinctPredicate((src.FirstExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.IsNot),(src.SecondExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.EventDeclarationCompareFunctionParameter as src ->
         BooleanExpression.EventDeclarationCompareFunctionParameter((src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))),(src.SourceDeclaration |> Option.ofObj |> Option.map (fun x -> SourceDeclaration.FromCs(x, fragmentMapping))))
       | :? ScriptDom.ExistsPredicate as src ->
@@ -3289,6 +3397,7 @@ and [<RequireQualifiedAccess>] ChangeTrackingOptionDetail = (* IsAbstract = true
 and [<RequireQualifiedAccess>] ColumnDefinitionBase = (* IsAbstract = false *)
   | Base of Collation:Identifier option * ColumnIdentifier:Identifier option * DataType:DataTypeReference option
   | ColumnDefinition of Collation:Identifier option * ColumnIdentifier:Identifier option * ComputedColumnExpression:ScalarExpression option * Constraints:(ConstraintDefinition) list * DataType:DataTypeReference option * DefaultConstraint:DefaultConstraintDefinition option * Encryption:ColumnEncryptionDefinition option * GeneratedAlways:(ScriptDom.GeneratedAlwaysType) option * IdentityOptions:IdentityOptions option * Index:IndexDefinition option * IsHidden:bool * IsMasked:bool * IsPersisted:bool * IsRowGuidCol:bool * MaskingFunction:StringLiteral option * StorageOptions:ColumnStorageOptions option
+  | OpenRowsetColumnDefinition of Collation:Identifier option * ColumnIdentifier:Identifier option * ColumnOrdinal:IntegerLiteral option * DataType:DataTypeReference option * JsonPath:StringLiteral option
   member this.ToCs() : ScriptDom.ColumnDefinitionBase =
     match this with
     | ColumnDefinition(Collation=aCollation; ColumnIdentifier=aColumnIdentifier; ComputedColumnExpression=aComputedColumnExpression; Constraints=aConstraints; DataType=aDataType; DefaultConstraint=aDefaultConstraint; Encryption=aEncryption; GeneratedAlways=aGeneratedAlways; IdentityOptions=aIdentityOptions; Index=aIndex; IsHidden=aIsHidden; IsMasked=aIsMasked; IsPersisted=aIsPersisted; IsRowGuidCol=aIsRowGuidCol; MaskingFunction=aMaskingFunction; StorageOptions=aStorageOptions) ->
@@ -3310,6 +3419,14 @@ and [<RequireQualifiedAccess>] ColumnDefinitionBase = (* IsAbstract = false *)
       ret.MaskingFunction <- aMaskingFunction |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.StorageOptions <- aStorageOptions |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.ColumnDefinitionBase (* 335 *)
+    | OpenRowsetColumnDefinition(Collation=aCollation; ColumnIdentifier=aColumnIdentifier; ColumnOrdinal=aColumnOrdinal; DataType=aDataType; JsonPath=aJsonPath) ->
+      let ret = ScriptDom.OpenRowsetColumnDefinition()
+      ret.Collation <- aCollation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ColumnIdentifier <- aColumnIdentifier |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ColumnOrdinal <- aColumnOrdinal |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.DataType <- aDataType |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.JsonPath <- aJsonPath |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ColumnDefinitionBase (* 335 *)
     | Base(Collation=aCollation; ColumnIdentifier=aColumnIdentifier; DataType=aDataType) ->
 
       let ret = ScriptDom.ColumnDefinitionBase()
@@ -3322,6 +3439,8 @@ and [<RequireQualifiedAccess>] ColumnDefinitionBase = (* IsAbstract = false *)
       match src with
       | :? ScriptDom.ColumnDefinition as src ->
         ColumnDefinitionBase.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))),(src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))),(src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))),(Option.ofNullable (src.GeneratedAlways)),(src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))),(src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))),(src.IsHidden),(src.IsMasked),(src.IsPersisted),(src.IsRowGuidCol),(src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.OpenRowsetColumnDefinition as src ->
+        ColumnDefinitionBase.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))),(src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))),(src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
       | _ -> (* :? ScriptDom.ColumnDefinitionBase as src *)
         ColumnDefinitionBase.Base(((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))))  )
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
@@ -3425,7 +3544,7 @@ and [<RequireQualifiedAccess>] ColumnMasterKeyParameter = (* IsAbstract = true *
 and [<RequireQualifiedAccess>] ConstraintDefinition = (* IsAbstract = true *)
   | CheckConstraintDefinition of CheckCondition:BooleanExpression option * ConstraintIdentifier:Identifier option * NotForReplication:bool
   | DefaultConstraintDefinition of Column:Identifier option * ConstraintIdentifier:Identifier option * Expression:ScalarExpression option * WithValues:bool
-  | ForeignKeyConstraintDefinition of Columns:(Identifier) list * ConstraintIdentifier:Identifier option * DeleteAction:ScriptDom.DeleteUpdateAction * NotForReplication:bool * ReferenceTableName:SchemaObjectName option * ReferencedTableColumns:(Identifier) list * UpdateAction:ScriptDom.DeleteUpdateAction
+  | ForeignKeyConstraintDefinition of Columns:(Identifier) list * ConstraintIdentifier:Identifier option * DeleteAction:ScriptDom.DeleteUpdateAction * IsEnforced:(bool) option * NotForReplication:bool * ReferenceTableName:SchemaObjectName option * ReferencedTableColumns:(Identifier) list * UpdateAction:ScriptDom.DeleteUpdateAction
   | GraphConnectionConstraintDefinition of ConstraintIdentifier:Identifier option * DeleteAction:ScriptDom.DeleteUpdateAction * FromNodeToNodeList:(GraphConnectionBetweenNodes) list
   | NullableConstraintDefinition of ConstraintIdentifier:Identifier option * Nullable:bool
   | UniqueConstraintDefinition of Clustered:(bool) option * Columns:(ColumnWithSortOrder) list * ConstraintIdentifier:Identifier option * FileStreamOn:IdentifierOrValueExpression option * IndexOptions:(IndexOption) list * IndexType:IndexType option * IsEnforced:(bool) option * IsPrimaryKey:bool * OnFileGroupOrPartitionScheme:FileGroupOrPartitionScheme option
@@ -3444,11 +3563,12 @@ and [<RequireQualifiedAccess>] ConstraintDefinition = (* IsAbstract = true *)
       ret.Expression <- aExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.WithValues <- aWithValues
       ret :> ScriptDom.ConstraintDefinition (* 335 *)
-    | ForeignKeyConstraintDefinition(Columns=aColumns; ConstraintIdentifier=aConstraintIdentifier; DeleteAction=aDeleteAction; NotForReplication=aNotForReplication; ReferenceTableName=aReferenceTableName; ReferencedTableColumns=aReferencedTableColumns; UpdateAction=aUpdateAction) ->
+    | ForeignKeyConstraintDefinition(Columns=aColumns; ConstraintIdentifier=aConstraintIdentifier; DeleteAction=aDeleteAction; IsEnforced=aIsEnforced; NotForReplication=aNotForReplication; ReferenceTableName=aReferenceTableName; ReferencedTableColumns=aReferencedTableColumns; UpdateAction=aUpdateAction) ->
       let ret = ScriptDom.ForeignKeyConstraintDefinition()
       for e in aColumns do ret.Columns.Add (e.ToCs())
       ret.ConstraintIdentifier <- aConstraintIdentifier |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.DeleteAction <- aDeleteAction
+      ret.IsEnforced <- Option.toNullable aIsEnforced
       ret.NotForReplication <- aNotForReplication
       ret.ReferenceTableName <- aReferenceTableName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aReferencedTableColumns do ret.ReferencedTableColumns.Add (e.ToCs())
@@ -3485,7 +3605,7 @@ and [<RequireQualifiedAccess>] ConstraintDefinition = (* IsAbstract = true *)
       | :? ScriptDom.DefaultConstraintDefinition as src ->
         ConstraintDefinition.DefaultConstraintDefinition((src.Column |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.WithValues))
       | :? ScriptDom.ForeignKeyConstraintDefinition as src ->
-        ConstraintDefinition.ForeignKeyConstraintDefinition((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DeleteAction),(src.NotForReplication),(src.ReferenceTableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.ReferencedTableColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.UpdateAction))
+        ConstraintDefinition.ForeignKeyConstraintDefinition((src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DeleteAction),(Option.ofNullable (src.IsEnforced)),(src.NotForReplication),(src.ReferenceTableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.ReferencedTableColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.UpdateAction))
       | :? ScriptDom.GraphConnectionConstraintDefinition as src ->
         ConstraintDefinition.GraphConnectionConstraintDefinition((src.ConstraintIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DeleteAction),(src.FromNodeToNodeList |> Seq.map (fun src -> GraphConnectionBetweenNodes.GraphConnectionBetweenNodes((src.FromNode |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.ToNode |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))) |> List.ofSeq))
       | :? ScriptDom.NullableConstraintDefinition as src ->
@@ -3651,11 +3771,18 @@ and [<RequireQualifiedAccess>] DataTypeReference = (* IsAbstract = true *)
     ret
 and [<RequireQualifiedAccess>] DatabaseConfigurationSetOption = (* IsAbstract = false *)
   | Base of GenericOptionKind:Identifier option * OptionKind:ScriptDom.DatabaseConfigSetOptionKind
+  | DWCompatibilityLevelConfigurationOption of GenericOptionKind:Identifier option * OptionKind:ScriptDom.DatabaseConfigSetOptionKind * Value:Literal option
   | GenericConfigurationOption of GenericOptionKind:Identifier option * GenericOptionState:IdentifierOrScalarExpression option * OptionKind:ScriptDom.DatabaseConfigSetOptionKind
   | MaxDopConfigurationOption of GenericOptionKind:Identifier option * OptionKind:ScriptDom.DatabaseConfigSetOptionKind * Primary:bool * Value:Literal option
   | OnOffPrimaryConfigurationOption of GenericOptionKind:Identifier option * OptionKind:ScriptDom.DatabaseConfigSetOptionKind * OptionState:ScriptDom.DatabaseConfigurationOptionState
   member this.ToCs() : ScriptDom.DatabaseConfigurationSetOption =
     match this with
+    | DWCompatibilityLevelConfigurationOption(GenericOptionKind=aGenericOptionKind; OptionKind=aOptionKind; Value=aValue) ->
+      let ret = ScriptDom.DWCompatibilityLevelConfigurationOption()
+      ret.GenericOptionKind <- aGenericOptionKind |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OptionKind <- aOptionKind
+      ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.DatabaseConfigurationSetOption (* 335 *)
     | GenericConfigurationOption(GenericOptionKind=aGenericOptionKind; GenericOptionState=aGenericOptionState; OptionKind=aOptionKind) ->
       let ret = ScriptDom.GenericConfigurationOption()
       ret.GenericOptionKind <- aGenericOptionKind |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -3684,6 +3811,8 @@ and [<RequireQualifiedAccess>] DatabaseConfigurationSetOption = (* IsAbstract = 
   static member FromCs(src:ScriptDom.DatabaseConfigurationSetOption, fragmentMapping:FragmentMapping) : DatabaseConfigurationSetOption =
     let ret =
       match src with
+      | :? ScriptDom.DWCompatibilityLevelConfigurationOption as src ->
+        DatabaseConfigurationSetOption.DWCompatibilityLevelConfigurationOption((src.GenericOptionKind |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
       | :? ScriptDom.GenericConfigurationOption as src ->
         DatabaseConfigurationSetOption.GenericConfigurationOption((src.GenericOptionKind |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.GenericOptionState |> Option.ofObj |> Option.map (fun x -> IdentifierOrScalarExpression.FromCs(x, fragmentMapping))),(src.OptionKind))
       | :? ScriptDom.MaxDopConfigurationOption as src ->
@@ -3703,9 +3832,11 @@ and [<RequireQualifiedAccess>] DatabaseOption = (* IsAbstract = false *)
   | ContainmentDatabaseOption of OptionKind:ScriptDom.DatabaseOptionKind * Value:ScriptDom.ContainmentOptionKind
   | CursorDefaultDatabaseOption of IsLocal:bool * OptionKind:ScriptDom.DatabaseOptionKind
   | DelayedDurabilityDatabaseOption of OptionKind:ScriptDom.DatabaseOptionKind * Value:ScriptDom.DelayedDurabilityOptionKind
+  | ElasticPoolSpecification of ElasticPoolName:Identifier option * OptionKind:ScriptDom.DatabaseOptionKind
   | FileStreamDatabaseOption of DirectoryName:Literal option * NonTransactedAccess:(ScriptDom.NonTransactedFileStreamAccess) option * OptionKind:ScriptDom.DatabaseOptionKind
   | HadrDatabaseOption of HadrDatabaseOption
   | IdentifierDatabaseOption of OptionKind:ScriptDom.DatabaseOptionKind * Value:Identifier option
+  | LedgerOption of OptionKind:ScriptDom.DatabaseOptionKind * OptionState:ScriptDom.OptionState
   | LiteralDatabaseOption of OptionKind:ScriptDom.DatabaseOptionKind * Value:Literal option
   | MaxSizeDatabaseOption of MaxSize:Literal option * OptionKind:ScriptDom.DatabaseOptionKind * Units:ScriptDom.MemoryUnit
   | OnOffDatabaseOption of OnOffDatabaseOption
@@ -3756,6 +3887,11 @@ and [<RequireQualifiedAccess>] DatabaseOption = (* IsAbstract = false *)
       ret.OptionKind <- aOptionKind
       ret.Value <- aValue
       ret :> ScriptDom.DatabaseOption (* 335 *)
+    | ElasticPoolSpecification(ElasticPoolName=aElasticPoolName; OptionKind=aOptionKind) ->
+      let ret = ScriptDom.ElasticPoolSpecification()
+      ret.ElasticPoolName <- aElasticPoolName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OptionKind <- aOptionKind
+      ret :> ScriptDom.DatabaseOption (* 335 *)
     | FileStreamDatabaseOption(DirectoryName=aDirectoryName; NonTransactedAccess=aNonTransactedAccess; OptionKind=aOptionKind) ->
       let ret = ScriptDom.FileStreamDatabaseOption()
       ret.DirectoryName <- aDirectoryName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -3767,6 +3903,11 @@ and [<RequireQualifiedAccess>] DatabaseOption = (* IsAbstract = false *)
       let ret = ScriptDom.IdentifierDatabaseOption()
       ret.OptionKind <- aOptionKind
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.DatabaseOption (* 335 *)
+    | LedgerOption(OptionKind=aOptionKind; OptionState=aOptionState) ->
+      let ret = ScriptDom.LedgerOption()
+      ret.OptionKind <- aOptionKind
+      ret.OptionState <- aOptionState
       ret :> ScriptDom.DatabaseOption (* 335 *)
     | LiteralDatabaseOption(OptionKind=aOptionKind; Value=aValue) ->
       let ret = ScriptDom.LiteralDatabaseOption()
@@ -3850,6 +3991,8 @@ and [<RequireQualifiedAccess>] DatabaseOption = (* IsAbstract = false *)
         DatabaseOption.CursorDefaultDatabaseOption((src.IsLocal),(src.OptionKind))
       | :? ScriptDom.DelayedDurabilityDatabaseOption as src ->
         DatabaseOption.DelayedDurabilityDatabaseOption((src.OptionKind),(src.Value))
+      | :? ScriptDom.ElasticPoolSpecification as src ->
+        DatabaseOption.ElasticPoolSpecification((src.ElasticPoolName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OptionKind))
       | :? ScriptDom.FileStreamDatabaseOption as src ->
         DatabaseOption.FileStreamDatabaseOption((src.DirectoryName |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(Option.ofNullable (src.NonTransactedAccess)),(src.OptionKind))
       | :? ScriptDom.HadrDatabaseOption as src ->
@@ -3860,6 +4003,8 @@ and [<RequireQualifiedAccess>] DatabaseOption = (* IsAbstract = false *)
           DatabaseOption.HadrDatabaseOption((HadrDatabaseOption.Base((src.HadrOption), (src.OptionKind))))
       | :? ScriptDom.IdentifierDatabaseOption as src ->
         DatabaseOption.IdentifierDatabaseOption((src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.LedgerOption as src ->
+        DatabaseOption.LedgerOption((src.OptionKind),(src.OptionState))
       | :? ScriptDom.LiteralDatabaseOption as src ->
         DatabaseOption.LiteralDatabaseOption((src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
       | :? ScriptDom.MaxSizeDatabaseOption as src ->
@@ -4209,6 +4354,22 @@ and [<RequireQualifiedAccess>] ExternalFileFormatOption = (* IsAbstract = true *
         ExternalFileFormatOption.ExternalFileFormatLiteralOption((src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
       | :? ScriptDom.ExternalFileFormatUseDefaultTypeOption as src ->
         ExternalFileFormatOption.ExternalFileFormatUseDefaultTypeOption((src.ExternalFileFormatUseDefaultType),(src.OptionKind))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] ExternalStreamOption = (* IsAbstract = true *)
+  | ExternalStreamLiteralOrIdentifierOption of OptionKind:ScriptDom.ExternalStreamOptionKind * Value:IdentifierOrValueExpression option
+  member this.ToCs() : ScriptDom.ExternalStreamOption =
+    match this with
+    | ExternalStreamLiteralOrIdentifierOption(OptionKind=aOptionKind; Value=aValue) ->
+      let ret = ScriptDom.ExternalStreamLiteralOrIdentifierOption()
+      ret.OptionKind <- aOptionKind
+      ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ExternalStreamOption (* 335 *)
+  static member FromCs(src:ScriptDom.ExternalStreamOption, fragmentMapping:FragmentMapping) : ExternalStreamOption =
+    let ret =
+      match src with
+      | :? ScriptDom.ExternalStreamLiteralOrIdentifierOption as src ->
+        ExternalStreamOption.ExternalStreamLiteralOrIdentifierOption((src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ExternalTableDistributionPolicy = (* IsAbstract = true *)
@@ -4583,6 +4744,7 @@ and [<RequireQualifiedAccess>] IndexOption = (* IsAbstract = true *)
   | MoveToDropIndexOption of MoveTo:FileGroupOrPartitionScheme option * OptionKind:ScriptDom.IndexOptionKind
   | OrderIndexOption of Columns:(ColumnReferenceExpression) list * OptionKind:ScriptDom.IndexOptionKind
   | WaitAtLowPriorityOption of OptionKind:ScriptDom.IndexOptionKind * Options:(LowPriorityLockWaitOption) list
+  | XmlCompressionOption of IsCompressed:ScriptDom.XmlCompressionOptionState * OptionKind:ScriptDom.IndexOptionKind * PartitionRanges:(CompressionPartitionRange) list
   member this.ToCs() : ScriptDom.IndexOption =
     match this with
     | CompressionDelayIndexOption(Expression=aExpression; OptionKind=aOptionKind; TimeUnit=aTimeUnit) ->
@@ -4629,6 +4791,12 @@ and [<RequireQualifiedAccess>] IndexOption = (* IsAbstract = true *)
       ret.OptionKind <- aOptionKind
       for e in aOptions do ret.Options.Add (e.ToCs())
       ret :> ScriptDom.IndexOption (* 335 *)
+    | XmlCompressionOption(IsCompressed=aIsCompressed; OptionKind=aOptionKind; PartitionRanges=aPartitionRanges) ->
+      let ret = ScriptDom.XmlCompressionOption()
+      ret.IsCompressed <- aIsCompressed
+      ret.OptionKind <- aOptionKind
+      for e in aPartitionRanges do ret.PartitionRanges.Add (e.ToCs())
+      ret :> ScriptDom.IndexOption (* 335 *)
   static member FromCs(src:ScriptDom.IndexOption, fragmentMapping:FragmentMapping) : IndexOption =
     let ret =
       match src with
@@ -4656,6 +4824,8 @@ and [<RequireQualifiedAccess>] IndexOption = (* IsAbstract = true *)
         IndexOption.OrderIndexOption((src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.OptionKind))
       | :? ScriptDom.WaitAtLowPriorityOption as src ->
         IndexOption.WaitAtLowPriorityOption((src.OptionKind),(src.Options |> Seq.map (fun x -> LowPriorityLockWaitOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+      | :? ScriptDom.XmlCompressionOption as src ->
+        IndexOption.XmlCompressionOption((src.IsCompressed),(src.OptionKind),(src.PartitionRanges |> Seq.map (fun src -> CompressionPartitionRange.CompressionPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] InsertSource = (* IsAbstract = true *)
@@ -4838,6 +5008,30 @@ and [<RequireQualifiedAccess>] MultiPartIdentifier = (* IsAbstract = false *)
           MultiPartIdentifier.SchemaObjectName((SchemaObjectName.Base((src.BaseIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Count), (src.DatabaseIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Identifiers |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.SchemaIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ServerIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))))
       | _ -> (* :? ScriptDom.MultiPartIdentifier as src *)
         MultiPartIdentifier.Base(((src.Count), (src.Identifiers |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))  )
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] OpenRowsetCosmosOption = (* IsAbstract = false *)
+  | Base of OptionKind:ScriptDom.OpenRowsetCosmosOptionKind
+  | LiteralOpenRowsetCosmosOption of OptionKind:ScriptDom.OpenRowsetCosmosOptionKind * Value:Literal option
+  member this.ToCs() : ScriptDom.OpenRowsetCosmosOption =
+    match this with
+    | LiteralOpenRowsetCosmosOption(OptionKind=aOptionKind; Value=aValue) ->
+      let ret = ScriptDom.LiteralOpenRowsetCosmosOption()
+      ret.OptionKind <- aOptionKind
+      ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.OpenRowsetCosmosOption (* 335 *)
+    | Base(OptionKind=aOptionKind) ->
+
+      let ret = ScriptDom.OpenRowsetCosmosOption()
+      ret.OptionKind <- aOptionKind
+      ret
+  static member FromCs(src:ScriptDom.OpenRowsetCosmosOption, fragmentMapping:FragmentMapping) : OpenRowsetCosmosOption =
+    let ret =
+      match src with
+      | :? ScriptDom.LiteralOpenRowsetCosmosOption as src ->
+        OpenRowsetCosmosOption.LiteralOpenRowsetCosmosOption((src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+      | _ -> (* :? ScriptDom.OpenRowsetCosmosOption as src *)
+        OpenRowsetCosmosOption.Base(((src.OptionKind))  )
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] OptimizerHint = (* IsAbstract = false *)
@@ -5114,7 +5308,7 @@ and [<RequireQualifiedAccess>] ProcedureOption = (* IsAbstract = false *)
 and [<RequireQualifiedAccess>] QueryExpression = (* IsAbstract = true *)
   | BinaryQueryExpression of All:bool * BinaryQueryExpressionType:ScriptDom.BinaryQueryExpressionType * FirstQueryExpression:QueryExpression option * ForClause:ForClause option * OffsetClause:OffsetClause option * OrderByClause:OrderByClause option * SecondQueryExpression:QueryExpression option
   | QueryParenthesisExpression of ForClause:ForClause option * OffsetClause:OffsetClause option * OrderByClause:OrderByClause option * QueryExpression:QueryExpression option
-  | QuerySpecification of ForClause:ForClause option * FromClause:FromClause option * GroupByClause:GroupByClause option * HavingClause:HavingClause option * OffsetClause:OffsetClause option * OrderByClause:OrderByClause option * SelectElements:(SelectElement) list * TopRowFilter:TopRowFilter option * UniqueRowFilter:ScriptDom.UniqueRowFilter * WhereClause:WhereClause option
+  | QuerySpecification of ForClause:ForClause option * FromClause:FromClause option * GroupByClause:GroupByClause option * HavingClause:HavingClause option * OffsetClause:OffsetClause option * OrderByClause:OrderByClause option * SelectElements:(SelectElement) list * TopRowFilter:TopRowFilter option * UniqueRowFilter:ScriptDom.UniqueRowFilter * WhereClause:WhereClause option * WindowClause:WindowClause option
   member this.ToCs() : ScriptDom.QueryExpression =
     match this with
     | BinaryQueryExpression(All=aAll; BinaryQueryExpressionType=aBinaryQueryExpressionType; FirstQueryExpression=aFirstQueryExpression; ForClause=aForClause; OffsetClause=aOffsetClause; OrderByClause=aOrderByClause; SecondQueryExpression=aSecondQueryExpression) ->
@@ -5134,7 +5328,7 @@ and [<RequireQualifiedAccess>] QueryExpression = (* IsAbstract = true *)
       ret.OrderByClause <- aOrderByClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.QueryExpression <- aQueryExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.QueryExpression (* 335 *)
-    | QuerySpecification(ForClause=aForClause; FromClause=aFromClause; GroupByClause=aGroupByClause; HavingClause=aHavingClause; OffsetClause=aOffsetClause; OrderByClause=aOrderByClause; SelectElements=aSelectElements; TopRowFilter=aTopRowFilter; UniqueRowFilter=aUniqueRowFilter; WhereClause=aWhereClause) ->
+    | QuerySpecification(ForClause=aForClause; FromClause=aFromClause; GroupByClause=aGroupByClause; HavingClause=aHavingClause; OffsetClause=aOffsetClause; OrderByClause=aOrderByClause; SelectElements=aSelectElements; TopRowFilter=aTopRowFilter; UniqueRowFilter=aUniqueRowFilter; WhereClause=aWhereClause; WindowClause=aWindowClause) ->
       let ret = ScriptDom.QuerySpecification()
       ret.ForClause <- aForClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.FromClause <- aFromClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -5146,6 +5340,7 @@ and [<RequireQualifiedAccess>] QueryExpression = (* IsAbstract = true *)
       ret.TopRowFilter <- aTopRowFilter |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.UniqueRowFilter <- aUniqueRowFilter
       ret.WhereClause <- aWhereClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.WindowClause <- aWindowClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.QueryExpression (* 335 *)
   static member FromCs(src:ScriptDom.QueryExpression, fragmentMapping:FragmentMapping) : QueryExpression =
     let ret =
@@ -5155,7 +5350,7 @@ and [<RequireQualifiedAccess>] QueryExpression = (* IsAbstract = true *)
       | :? ScriptDom.QueryParenthesisExpression as src ->
         QueryExpression.QueryParenthesisExpression((src.ForClause |> Option.ofObj |> Option.map (fun x -> ForClause.FromCs(x, fragmentMapping))),(src.OffsetClause |> Option.ofObj |> Option.map (fun x -> OffsetClause.FromCs(x, fragmentMapping))),(src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))),(src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.QuerySpecification as src ->
-        QueryExpression.QuerySpecification((src.ForClause |> Option.ofObj |> Option.map (fun x -> ForClause.FromCs(x, fragmentMapping))),(src.FromClause |> Option.ofObj |> Option.map (fun x -> FromClause.FromCs(x, fragmentMapping))),(src.GroupByClause |> Option.ofObj |> Option.map (fun x -> GroupByClause.FromCs(x, fragmentMapping))),(src.HavingClause |> Option.ofObj |> Option.map (fun x -> HavingClause.FromCs(x, fragmentMapping))),(src.OffsetClause |> Option.ofObj |> Option.map (fun x -> OffsetClause.FromCs(x, fragmentMapping))),(src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))),(src.SelectElements |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))),(src.UniqueRowFilter),(src.WhereClause |> Option.ofObj |> Option.map (fun x -> WhereClause.FromCs(x, fragmentMapping))))
+        QueryExpression.QuerySpecification((src.ForClause |> Option.ofObj |> Option.map (fun x -> ForClause.FromCs(x, fragmentMapping))),(src.FromClause |> Option.ofObj |> Option.map (fun x -> FromClause.FromCs(x, fragmentMapping))),(src.GroupByClause |> Option.ofObj |> Option.map (fun x -> GroupByClause.FromCs(x, fragmentMapping))),(src.HavingClause |> Option.ofObj |> Option.map (fun x -> HavingClause.FromCs(x, fragmentMapping))),(src.OffsetClause |> Option.ofObj |> Option.map (fun x -> OffsetClause.FromCs(x, fragmentMapping))),(src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))),(src.SelectElements |> Seq.map (fun x -> SelectElement.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.TopRowFilter |> Option.ofObj |> Option.map (fun x -> TopRowFilter.FromCs(x, fragmentMapping))),(src.UniqueRowFilter),(src.WhereClause |> Option.ofObj |> Option.map (fun x -> WhereClause.FromCs(x, fragmentMapping))),(src.WindowClause |> Option.ofObj |> Option.map (fun x -> WindowClause.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] QueryStoreOption = (* IsAbstract = true *)
@@ -5422,6 +5617,7 @@ and [<RequireQualifiedAccess>] ScalarExpression = (* IsAbstract = true *)
   | BinaryExpression of BinaryExpressionType:ScriptDom.BinaryExpressionType * FirstExpression:ScalarExpression option * SecondExpression:ScalarExpression option
   | ExtractFromExpression of Expression:ScalarExpression option * ExtractedElement:Identifier option
   | IdentityFunctionCall of DataType:DataTypeReference option * Increment:ScalarExpression option * Seed:ScalarExpression option
+  | JsonKeyValue of JsonKeyName:ScalarExpression option * JsonValue:ScalarExpression option
   | OdbcConvertSpecification of Identifier:Identifier option
   | PrimaryExpression of PrimaryExpression
   | ScalarExpressionSnippet of Script:String option
@@ -5445,6 +5641,11 @@ and [<RequireQualifiedAccess>] ScalarExpression = (* IsAbstract = true *)
       ret.DataType <- aDataType |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Increment <- aIncrement |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Seed <- aSeed |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ScalarExpression (* 335 *)
+    | JsonKeyValue(JsonKeyName=aJsonKeyName; JsonValue=aJsonValue) ->
+      let ret = ScriptDom.JsonKeyValue()
+      ret.JsonKeyName <- aJsonKeyName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.JsonValue <- aJsonValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.ScalarExpression (* 335 *)
     | OdbcConvertSpecification(Identifier=aIdentifier) ->
       let ret = ScriptDom.OdbcConvertSpecification()
@@ -5473,6 +5674,8 @@ and [<RequireQualifiedAccess>] ScalarExpression = (* IsAbstract = true *)
         ScalarExpression.ExtractFromExpression((src.Expression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.ExtractedElement |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.IdentityFunctionCall as src ->
         ScalarExpression.IdentityFunctionCall((src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))),(src.Increment |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.Seed |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.JsonKeyValue as src ->
+        ScalarExpression.JsonKeyValue((src.JsonKeyName |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.JsonValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.OdbcConvertSpecification as src ->
         ScalarExpression.OdbcConvertSpecification((src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.PrimaryExpression as src ->
@@ -5490,7 +5693,7 @@ and [<RequireQualifiedAccess>] ScalarExpression = (* IsAbstract = true *)
         | :? ScriptDom.ConvertCall as src->
           ScalarExpression.PrimaryExpression((PrimaryExpression.ConvertCall((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.Parameter |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Style |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.FunctionCall as src->
-          ScalarExpression.PrimaryExpression((PrimaryExpression.FunctionCall((src.CallTarget |> Option.ofObj |> Option.map (fun x -> CallTarget.FromCs(x, fragmentMapping))), (src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.FunctionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OverClause |> Option.ofObj |> Option.map (fun x -> OverClause.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.UniqueRowFilter), (src.WithinGroupClause |> Option.ofObj |> Option.map (fun x -> WithinGroupClause.FromCs(x, fragmentMapping))))  ))
+          ScalarExpression.PrimaryExpression((PrimaryExpression.FunctionCall((src.AbsentOrNullOnNull |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.CallTarget |> Option.ofObj |> Option.map (fun x -> CallTarget.FromCs(x, fragmentMapping))), (src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.FunctionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.IgnoreRespectNulls |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.JsonParameters |> Seq.map (fun src -> JsonKeyValue.JsonKeyValue((src.JsonKeyName |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.JsonValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.OverClause |> Option.ofObj |> Option.map (fun x -> OverClause.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.TrimOptions |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.UniqueRowFilter), (src.WithinGroupClause |> Option.ofObj |> Option.map (fun x -> WithinGroupClause.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.IIfCall as src->
           ScalarExpression.PrimaryExpression((PrimaryExpression.IIfCall((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ElseExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Predicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.ThenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.LeftFunctionCall as src->
@@ -5954,6 +6157,8 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
   | DropDatabaseEncryptionKeyStatement 
   | DropDatabaseStatement of Databases:(Identifier) list * IsIfExists:bool
   | DropEventNotificationStatement of Notifications:(Identifier) list * Scope:EventNotificationObjectScope option
+  | DropExternalLanguageStatement of Name:Identifier option * Owner:Identifier option
+  | DropExternalLibraryStatement of Name:Identifier option * Owner:Identifier option
   | DropFullTextIndexStatement of TableName:SchemaObjectName option
   | DropIndexStatement of DropIndexClauses:(DropIndexClauseBase) list * IsIfExists:bool
   | DropMasterKeyStatement 
@@ -5970,12 +6175,16 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
   | ExecuteStatement of ExecuteSpecification:ExecuteSpecification option * Options:(ExecuteOption) list
   | ExternalDataSourceStatement of ExternalDataSourceStatement
   | ExternalFileFormatStatement of ExternalFileFormatStatement
+  | ExternalLanguageStatement of ExternalLanguageStatement
+  | ExternalLibraryStatement of ExternalLibraryStatement
   | ExternalResourcePoolStatement of ExternalResourcePoolStatement
+  | ExternalStreamStatement of ExternalStreamStatement
+  | ExternalStreamingJobStatement of ExternalStreamingJobStatement
   | ExternalTableStatement of ExternalTableStatement
   | FullTextCatalogStatement of FullTextCatalogStatement
   | GoToStatement of LabelName:Identifier option
   | IfStatement of ElseStatement:TSqlStatement option * Predicate:BooleanExpression option * ThenStatement:TSqlStatement option
-  | IndexDefinition of Columns:(ColumnWithSortOrder) list * FileStreamOn:IdentifierOrValueExpression option * FilterPredicate:BooleanExpression option * IndexOptions:(IndexOption) list * IndexType:IndexType option * Name:Identifier option * OnFileGroupOrPartitionScheme:FileGroupOrPartitionScheme option * Unique:bool
+  | IndexDefinition of Columns:(ColumnWithSortOrder) list * FileStreamOn:IdentifierOrValueExpression option * FilterPredicate:BooleanExpression option * IncludeColumns:(ColumnReferenceExpression) list * IndexOptions:(IndexOption) list * IndexType:IndexType option * Name:Identifier option * OnFileGroupOrPartitionScheme:FileGroupOrPartitionScheme option * Unique:bool
   | IndexStatement of IndexStatement
   | KillQueryNotificationSubscriptionStatement of All:bool * SubscriptionId:Literal option
   | KillStatement of Parameter:ScalarExpression option * WithStatusOnly:bool
@@ -6406,6 +6615,16 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
       for e in aNotifications do ret.Notifications.Add (e.ToCs())
       ret.Scope <- aScope |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TSqlStatement (* 335 *)
+    | DropExternalLanguageStatement(Name=aName; Owner=aOwner) ->
+      let ret = ScriptDom.DropExternalLanguageStatement()
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Owner <- aOwner |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.TSqlStatement (* 335 *)
+    | DropExternalLibraryStatement(Name=aName; Owner=aOwner) ->
+      let ret = ScriptDom.DropExternalLibraryStatement()
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Owner <- aOwner |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.TSqlStatement (* 335 *)
     | DropFullTextIndexStatement(TableName=aTableName) ->
       let ret = ScriptDom.DropFullTextIndexStatement()
       ret.TableName <- aTableName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -6465,7 +6684,11 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
       ret :> ScriptDom.TSqlStatement (* 335 *)
     | ExternalDataSourceStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
     | ExternalFileFormatStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
+    | ExternalLanguageStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
+    | ExternalLibraryStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
     | ExternalResourcePoolStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
+    | ExternalStreamStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
+    | ExternalStreamingJobStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
     | ExternalTableStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
     | FullTextCatalogStatement(x) -> x.ToCs() :> ScriptDom.TSqlStatement (* 345 *)
     | GoToStatement(LabelName=aLabelName) ->
@@ -6478,11 +6701,12 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
       ret.Predicate <- aPredicate |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.ThenStatement <- aThenStatement |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TSqlStatement (* 335 *)
-    | IndexDefinition(Columns=aColumns; FileStreamOn=aFileStreamOn; FilterPredicate=aFilterPredicate; IndexOptions=aIndexOptions; IndexType=aIndexType; Name=aName; OnFileGroupOrPartitionScheme=aOnFileGroupOrPartitionScheme; Unique=aUnique) ->
+    | IndexDefinition(Columns=aColumns; FileStreamOn=aFileStreamOn; FilterPredicate=aFilterPredicate; IncludeColumns=aIncludeColumns; IndexOptions=aIndexOptions; IndexType=aIndexType; Name=aName; OnFileGroupOrPartitionScheme=aOnFileGroupOrPartitionScheme; Unique=aUnique) ->
       let ret = ScriptDom.IndexDefinition()
       for e in aColumns do ret.Columns.Add (e.ToCs())
       ret.FileStreamOn <- aFileStreamOn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.FilterPredicate <- aFilterPredicate |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aIncludeColumns do ret.IncludeColumns.Add (e.ToCs())
       for e in aIndexOptions do ret.IndexOptions.Add (e.ToCs())
       ret.IndexType <- aIndexType |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -7004,6 +7228,10 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
         TSqlStatement.DropDatabaseStatement((src.Databases |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.IsIfExists))
       | :? ScriptDom.DropEventNotificationStatement as src ->
         TSqlStatement.DropEventNotificationStatement((src.Notifications |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Scope |> Option.ofObj |> Option.map (fun x -> EventNotificationObjectScope.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.DropExternalLanguageStatement as src ->
+        TSqlStatement.DropExternalLanguageStatement((src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.DropExternalLibraryStatement as src ->
+        TSqlStatement.DropExternalLibraryStatement((src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.DropFullTextIndexStatement as src ->
         TSqlStatement.DropFullTextIndexStatement((src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
       | :? ScriptDom.DropIndexStatement as src ->
@@ -7078,6 +7306,10 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
           TSqlStatement.DropUnownedObjectStatement((DropUnownedObjectStatement.DropExternalFileFormatStatement((src.IsIfExists), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.DropExternalResourcePoolStatement as src->
           TSqlStatement.DropUnownedObjectStatement((DropUnownedObjectStatement.DropExternalResourcePoolStatement((src.IsIfExists), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.DropExternalStreamStatement as src->
+          TSqlStatement.DropUnownedObjectStatement((DropUnownedObjectStatement.DropExternalStreamStatement((src.IsIfExists), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.DropExternalStreamingJobStatement as src->
+          TSqlStatement.DropUnownedObjectStatement((DropUnownedObjectStatement.DropExternalStreamingJobStatement((src.IsIfExists), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.DropFederationStatement as src->
           TSqlStatement.DropUnownedObjectStatement((DropUnownedObjectStatement.DropFederationStatement((src.IsIfExists), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.DropFullTextCatalogStatement as src->
@@ -7139,13 +7371,25 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
       | :? ScriptDom.ExternalDataSourceStatement as src ->
         match src with
         | :? ScriptDom.AlterExternalDataSourceStatement as src->
-          TSqlStatement.ExternalDataSourceStatement((ExternalDataSourceStatement.AlterExternalDataSourceStatement((src.DataSourceType), (src.ExternalDataSourceOptions |> Seq.map (fun x -> ExternalDataSourceOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PreviousPushDownOption), (src.PushdownOption))  ))
+          TSqlStatement.ExternalDataSourceStatement((ExternalDataSourceStatement.AlterExternalDataSourceStatement((src.DataSourceType), (src.ExternalDataSourceOptions |> Seq.map (fun x -> ExternalDataSourceOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PreviousPushDownOption), (Option.ofNullable (src.PushdownOption)))  ))
         | :? ScriptDom.CreateExternalDataSourceStatement as src->
-          TSqlStatement.ExternalDataSourceStatement((ExternalDataSourceStatement.CreateExternalDataSourceStatement((src.DataSourceType), (src.ExternalDataSourceOptions |> Seq.map (fun x -> ExternalDataSourceOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PushdownOption))  ))
+          TSqlStatement.ExternalDataSourceStatement((ExternalDataSourceStatement.CreateExternalDataSourceStatement((src.DataSourceType), (src.ExternalDataSourceOptions |> Seq.map (fun x -> ExternalDataSourceOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (Option.ofNullable (src.PushdownOption)))  ))
       | :? ScriptDom.ExternalFileFormatStatement as src ->
         match src with
         | :? ScriptDom.CreateExternalFileFormatStatement as src->
           TSqlStatement.ExternalFileFormatStatement((ExternalFileFormatStatement.CreateExternalFileFormatStatement((src.ExternalFileFormatOptions |> Seq.map (fun x -> ExternalFileFormatOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.FormatType), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+      | :? ScriptDom.ExternalLanguageStatement as src ->
+        match src with
+        | :? ScriptDom.AlterExternalLanguageStatement as src->
+          TSqlStatement.ExternalLanguageStatement((ExternalLanguageStatement.AlterExternalLanguageStatement((src.ExternalLanguageFiles |> Seq.map (fun src -> ExternalLanguageFileOption.ExternalLanguageFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.EnvironmentVariables |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.FileName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Parameters |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Operation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.CreateExternalLanguageStatement as src->
+          TSqlStatement.ExternalLanguageStatement((ExternalLanguageStatement.CreateExternalLanguageStatement((src.ExternalLanguageFiles |> Seq.map (fun src -> ExternalLanguageFileOption.ExternalLanguageFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.EnvironmentVariables |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.FileName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Parameters |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+      | :? ScriptDom.ExternalLibraryStatement as src ->
+        match src with
+        | :? ScriptDom.AlterExternalLibraryStatement as src->
+          TSqlStatement.ExternalLibraryStatement((ExternalLibraryStatement.AlterExternalLibraryStatement((src.ExternalLibraryFiles |> Seq.map (fun src -> ExternalLibraryFileOption.ExternalLibraryFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Language |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+        | :? ScriptDom.CreateExternalLibraryStatement as src->
+          TSqlStatement.ExternalLibraryStatement((ExternalLibraryStatement.CreateExternalLibraryStatement((src.ExternalLibraryFiles |> Seq.map (fun src -> ExternalLibraryFileOption.ExternalLibraryFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Language |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.ExternalResourcePoolStatement as src ->
         match src with
         | :? ScriptDom.AlterExternalResourcePoolStatement as src->
@@ -7154,6 +7398,14 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
           TSqlStatement.ExternalResourcePoolStatement((ExternalResourcePoolStatement.CreateExternalResourcePoolStatement((src.ExternalResourcePoolParameters |> Seq.map (fun src -> ExternalResourcePoolParameter.ExternalResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ExternalResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | _ -> (* :? ScriptDom.ExternalResourcePoolStatement as src *)
           TSqlStatement.ExternalResourcePoolStatement((ExternalResourcePoolStatement.Base((src.ExternalResourcePoolParameters |> Seq.map (fun src -> ExternalResourcePoolParameter.ExternalResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ExternalResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))))
+      | :? ScriptDom.ExternalStreamStatement as src ->
+        match src with
+        | :? ScriptDom.CreateExternalStreamStatement as src->
+          TSqlStatement.ExternalStreamStatement((ExternalStreamStatement.CreateExternalStreamStatement((src.ExternalStreamOptions |> Seq.map (fun x -> ExternalStreamOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.InputOptions |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OutputOptions |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))  ))
+      | :? ScriptDom.ExternalStreamingJobStatement as src ->
+        match src with
+        | :? ScriptDom.CreateExternalStreamingJobStatement as src->
+          TSqlStatement.ExternalStreamingJobStatement((ExternalStreamingJobStatement.CreateExternalStreamingJobStatement((src.Name |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Statement |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.ExternalTableStatement as src ->
         match src with
         | :? ScriptDom.CreateExternalTableStatement as src->
@@ -7169,7 +7421,7 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
       | :? ScriptDom.IfStatement as src ->
         TSqlStatement.IfStatement((src.ElseStatement |> Option.ofObj |> Option.map (fun x -> TSqlStatement.FromCs(x, fragmentMapping))),(src.Predicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))),(src.ThenStatement |> Option.ofObj |> Option.map (fun x -> TSqlStatement.FromCs(x, fragmentMapping))))
       | :? ScriptDom.IndexDefinition as src ->
-        TSqlStatement.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq),(src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))),(src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))),(src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))),(src.Unique))
+        TSqlStatement.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq),(src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))),(src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))),(src.IncludeColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))),(src.Unique))
       | :? ScriptDom.IndexStatement as src ->
         match src with
         | :? ScriptDom.AlterIndexStatement as src->
@@ -7179,7 +7431,7 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
         | :? ScriptDom.CreateSelectiveXmlIndexStatement as src->
           TSqlStatement.IndexStatement((IndexStatement.CreateSelectiveXmlIndexStatement((src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IsSecondary), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.PathName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.PromotedPaths |> Seq.map (fun src -> SelectiveXmlIndexPromotedPath.SelectiveXmlIndexPromotedPath((src.IsSingleton), (src.MaxLength |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.SQLDataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.XQueryDataType |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.UsingXmlIndexName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.XmlColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.XmlNamespaces |> Option.ofObj |> Option.map (fun x -> XmlNamespaces.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.CreateXmlIndexStatement as src->
-          TSqlStatement.IndexStatement((IndexStatement.CreateXmlIndexStatement((src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Primary), (src.SecondaryXmlIndexName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.SecondaryXmlIndexType), (src.XmlColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+          TSqlStatement.IndexStatement((IndexStatement.CreateXmlIndexStatement((src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.OnName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Primary), (src.SecondaryXmlIndexName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.SecondaryXmlIndexType), (src.XmlColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.KillQueryNotificationSubscriptionStatement as src ->
         TSqlStatement.KillQueryNotificationSubscriptionStatement((src.All),(src.SubscriptionId |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
       | :? ScriptDom.KillStatement as src ->
@@ -7425,14 +7677,15 @@ and [<RequireQualifiedAccess>] TSqlStatement = (* IsAbstract = true *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] TableDistributionPolicy = (* IsAbstract = true *)
-  | TableHashDistributionPolicy of DistributionColumn:Identifier option
+  | TableHashDistributionPolicy of DistributionColumn:Identifier option * DistributionColumns:(Identifier) list
   | TableReplicateDistributionPolicy 
   | TableRoundRobinDistributionPolicy 
   member this.ToCs() : ScriptDom.TableDistributionPolicy =
     match this with
-    | TableHashDistributionPolicy(DistributionColumn=aDistributionColumn) ->
+    | TableHashDistributionPolicy(DistributionColumn=aDistributionColumn; DistributionColumns=aDistributionColumns) ->
       let ret = ScriptDom.TableHashDistributionPolicy()
       ret.DistributionColumn <- aDistributionColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aDistributionColumns do ret.DistributionColumns.Add (e.ToCs())
       ret :> ScriptDom.TableDistributionPolicy (* 335 *)
     | TableReplicateDistributionPolicy -> ScriptDom.TableReplicateDistributionPolicy() :> ScriptDom.TableDistributionPolicy (* 327 *)
     | TableRoundRobinDistributionPolicy -> ScriptDom.TableRoundRobinDistributionPolicy() :> ScriptDom.TableDistributionPolicy (* 327 *)
@@ -7440,7 +7693,7 @@ and [<RequireQualifiedAccess>] TableDistributionPolicy = (* IsAbstract = true *)
     let ret =
       match src with
       | :? ScriptDom.TableHashDistributionPolicy as src ->
-        TableDistributionPolicy.TableHashDistributionPolicy((src.DistributionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+        TableDistributionPolicy.TableHashDistributionPolicy((src.DistributionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DistributionColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.TableReplicateDistributionPolicy as src ->
         TableDistributionPolicy.TableReplicateDistributionPolicy
       | :? ScriptDom.TableRoundRobinDistributionPolicy as src ->
@@ -7510,11 +7763,14 @@ and [<RequireQualifiedAccess>] TableIndexType = (* IsAbstract = true *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] TableOption = (* IsAbstract = true *)
+  | DataRetentionTableOption of FilterColumn:Identifier option * OptionKind:ScriptDom.TableOptionKind * OptionState:ScriptDom.OptionState * RetentionPeriod:RetentionPeriodDefinition option
   | DurabilityTableOption of DurabilityTableOptionKind:ScriptDom.DurabilityTableOptionKind * OptionKind:ScriptDom.TableOptionKind
   | FileStreamOnTableOption of OptionKind:ScriptDom.TableOptionKind * Value:IdentifierOrValueExpression option
   | FileTableCollateFileNameTableOption of OptionKind:ScriptDom.TableOptionKind * Value:Identifier option
   | FileTableConstraintNameTableOption of OptionKind:ScriptDom.TableOptionKind * Value:Identifier option
   | FileTableDirectoryTableOption of OptionKind:ScriptDom.TableOptionKind * Value:Literal option
+  | LedgerTableOption of AppendOnly:ScriptDom.OptionState * LedgerViewOption:LedgerViewOption option * OptionKind:ScriptDom.TableOptionKind * OptionState:ScriptDom.OptionState
+  | LedgerViewOption of OperationTypeColumnName:Identifier option * OperationTypeDescColumnName:Identifier option * OptionKind:ScriptDom.TableOptionKind * SequenceNumberColumnName:Identifier option * TransactionIdColumnName:Identifier option * ViewName:SchemaObjectName option
   | LocationOption of LocationValue:Identifier option * OptionKind:ScriptDom.TableOptionKind
   | LockEscalationTableOption of OptionKind:ScriptDom.TableOptionKind * Value:ScriptDom.LockEscalationMethod
   | MemoryOptimizedTableOption of OptionKind:ScriptDom.TableOptionKind * OptionState:ScriptDom.OptionState
@@ -7525,8 +7781,16 @@ and [<RequireQualifiedAccess>] TableOption = (* IsAbstract = true *)
   | TableDistributionOption of OptionKind:ScriptDom.TableOptionKind * Value:TableDistributionPolicy option
   | TableIndexOption of OptionKind:ScriptDom.TableOptionKind * Value:TableIndexType option
   | TablePartitionOption of OptionKind:ScriptDom.TableOptionKind * PartitionColumn:Identifier option * PartitionOptionSpecs:TablePartitionOptionSpecifications option
+  | TableXmlCompressionOption of OptionKind:ScriptDom.TableOptionKind * XmlCompressionOption:XmlCompressionOption option
   member this.ToCs() : ScriptDom.TableOption =
     match this with
+    | DataRetentionTableOption(FilterColumn=aFilterColumn; OptionKind=aOptionKind; OptionState=aOptionState; RetentionPeriod=aRetentionPeriod) ->
+      let ret = ScriptDom.DataRetentionTableOption()
+      ret.FilterColumn <- aFilterColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OptionKind <- aOptionKind
+      ret.OptionState <- aOptionState
+      ret.RetentionPeriod <- aRetentionPeriod |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.TableOption (* 335 *)
     | DurabilityTableOption(DurabilityTableOptionKind=aDurabilityTableOptionKind; OptionKind=aOptionKind) ->
       let ret = ScriptDom.DurabilityTableOption()
       ret.DurabilityTableOptionKind <- aDurabilityTableOptionKind
@@ -7551,6 +7815,22 @@ and [<RequireQualifiedAccess>] TableOption = (* IsAbstract = true *)
       let ret = ScriptDom.FileTableDirectoryTableOption()
       ret.OptionKind <- aOptionKind
       ret.Value <- aValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.TableOption (* 335 *)
+    | LedgerTableOption(AppendOnly=aAppendOnly; LedgerViewOption=aLedgerViewOption; OptionKind=aOptionKind; OptionState=aOptionState) ->
+      let ret = ScriptDom.LedgerTableOption()
+      ret.AppendOnly <- aAppendOnly
+      ret.LedgerViewOption <- aLedgerViewOption |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OptionKind <- aOptionKind
+      ret.OptionState <- aOptionState
+      ret :> ScriptDom.TableOption (* 335 *)
+    | LedgerViewOption(OperationTypeColumnName=aOperationTypeColumnName; OperationTypeDescColumnName=aOperationTypeDescColumnName; OptionKind=aOptionKind; SequenceNumberColumnName=aSequenceNumberColumnName; TransactionIdColumnName=aTransactionIdColumnName; ViewName=aViewName) ->
+      let ret = ScriptDom.LedgerViewOption()
+      ret.OperationTypeColumnName <- aOperationTypeColumnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OperationTypeDescColumnName <- aOperationTypeDescColumnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OptionKind <- aOptionKind
+      ret.SequenceNumberColumnName <- aSequenceNumberColumnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.TransactionIdColumnName <- aTransactionIdColumnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ViewName <- aViewName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableOption (* 335 *)
     | LocationOption(LocationValue=aLocationValue; OptionKind=aOptionKind) ->
       let ret = ScriptDom.LocationOption()
@@ -7611,9 +7891,16 @@ and [<RequireQualifiedAccess>] TableOption = (* IsAbstract = true *)
       ret.PartitionColumn <- aPartitionColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.PartitionOptionSpecs <- aPartitionOptionSpecs |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableOption (* 335 *)
+    | TableXmlCompressionOption(OptionKind=aOptionKind; XmlCompressionOption=aXmlCompressionOption) ->
+      let ret = ScriptDom.TableXmlCompressionOption()
+      ret.OptionKind <- aOptionKind
+      ret.XmlCompressionOption <- aXmlCompressionOption |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.TableOption (* 335 *)
   static member FromCs(src:ScriptDom.TableOption, fragmentMapping:FragmentMapping) : TableOption =
     let ret =
       match src with
+      | :? ScriptDom.DataRetentionTableOption as src ->
+        TableOption.DataRetentionTableOption((src.FilterColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OptionKind),(src.OptionState),(src.RetentionPeriod |> Option.ofObj |> Option.map (fun x -> RetentionPeriodDefinition.FromCs(x, fragmentMapping))))
       | :? ScriptDom.DurabilityTableOption as src ->
         TableOption.DurabilityTableOption((src.DurabilityTableOptionKind),(src.OptionKind))
       | :? ScriptDom.FileStreamOnTableOption as src ->
@@ -7624,6 +7911,10 @@ and [<RequireQualifiedAccess>] TableOption = (* IsAbstract = true *)
         TableOption.FileTableConstraintNameTableOption((src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.FileTableDirectoryTableOption as src ->
         TableOption.FileTableDirectoryTableOption((src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.LedgerTableOption as src ->
+        TableOption.LedgerTableOption((src.AppendOnly),(src.LedgerViewOption |> Option.ofObj |> Option.map (fun x -> LedgerViewOption.FromCs(x, fragmentMapping))),(src.OptionKind),(src.OptionState))
+      | :? ScriptDom.LedgerViewOption as src ->
+        TableOption.LedgerViewOption((src.OperationTypeColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OperationTypeDescColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OptionKind),(src.SequenceNumberColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.TransactionIdColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ViewName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
       | :? ScriptDom.LocationOption as src ->
         TableOption.LocationOption((src.LocationValue |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OptionKind))
       | :? ScriptDom.LockEscalationTableOption as src ->
@@ -7644,6 +7935,8 @@ and [<RequireQualifiedAccess>] TableOption = (* IsAbstract = true *)
         TableOption.TableIndexOption((src.OptionKind),(src.Value |> Option.ofObj |> Option.map (fun x -> TableIndexType.FromCs(x, fragmentMapping))))
       | :? ScriptDom.TablePartitionOption as src ->
         TableOption.TablePartitionOption((src.OptionKind),(src.PartitionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.PartitionOptionSpecs |> Option.ofObj |> Option.map (fun x -> TablePartitionOptionSpecifications.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.TableXmlCompressionOption as src ->
+        TableOption.TableXmlCompressionOption((src.OptionKind),(src.XmlCompressionOption |> Option.ofObj |> Option.map (fun x -> XmlCompressionOption.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] TableReference = (* IsAbstract = true *)
@@ -7679,35 +7972,35 @@ and [<RequireQualifiedAccess>] TableReference = (* IsAbstract = true *)
       | :? ScriptDom.TableReferenceWithAlias as src ->
         match src with
         | :? ScriptDom.AdHocTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.AdHocTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataSource |> Option.ofObj |> Option.map (fun x -> AdHocDataSource.FromCs(x, fragmentMapping))), (src.Object |> Option.ofObj |> Option.map (fun x -> SchemaObjectNameOrValueExpression.FromCs(x, fragmentMapping))))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.AdHocTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataSource |> Option.ofObj |> Option.map (fun x -> AdHocDataSource.FromCs(x, fragmentMapping))), (src.ForPath), (src.Object |> Option.ofObj |> Option.map (fun x -> SchemaObjectNameOrValueExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.BuiltInFunctionTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.BuiltInFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.BuiltInFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
         | :? ScriptDom.FullTextTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.FullTextTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.FullTextFunctionType), (src.Language |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.PropertyName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.TopN |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.FullTextTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.ForPath), (src.FullTextFunctionType), (src.Language |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.PropertyName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.SearchCondition |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.TopN |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.GlobalFunctionTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.GlobalFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.GlobalFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
         | :? ScriptDom.InternalOpenRowset as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.InternalOpenRowset((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.VarArgs |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.InternalOpenRowset((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.VarArgs |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
         | :? ScriptDom.NamedTableReference as src->
           TableReference.TableReferenceWithAlias((TableReferenceWithAlias.NamedTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.SchemaObject |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.TableHints |> Seq.map (fun x -> TableHint.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.TableSampleClause |> Option.ofObj |> Option.map (fun x -> TableSampleClause.FromCs(x, fragmentMapping))), (src.TemporalClause |> Option.ofObj |> Option.map (fun x -> TemporalClause.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.OpenJsonTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.OpenJsonTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.RowPattern |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SchemaDeclarationItems |> Seq.map (fun src -> SchemaDeclarationItemOpenjson.SchemaDeclarationItemOpenjson((src.AsJson), (src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Mapping |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Variable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.OpenJsonTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.RowPattern |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SchemaDeclarationItems |> Seq.map (fun src -> SchemaDeclarationItemOpenjson.SchemaDeclarationItemOpenjson((src.AsJson), (src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Mapping |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Variable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.OpenQueryTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.OpenQueryTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.LinkedServer |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Query |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))  ))
-        | :? ScriptDom.OpenRowsetTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.OpenRowsetTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataSource |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Object |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Password |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.ProviderName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.ProviderString |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Query |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.UserId |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.OpenQueryTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.LinkedServer |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Query |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.OpenXmlTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.OpenXmlTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Flags |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.RowPattern |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.OpenXmlTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Flags |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.ForPath), (src.RowPattern |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.PivotedTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.PivotedTableReference((src.AggregateFunctionIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))), (src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.InColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.PivotColumn |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.ValueColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.PivotedTableReference((src.AggregateFunctionIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))), (src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.InColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.PivotColumn |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.ValueColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq))  ))
+        | :? ScriptDom.PredictTableReference as src->
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.PredictTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataSource |> Option.ofObj |> Option.map (fun x -> TableReferenceWithAlias.FromCs(x, fragmentMapping))), (src.ForPath), (src.ModelSubquery |> Option.ofObj |> Option.map (fun x -> ScalarSubquery.FromCs(x, fragmentMapping))), (src.ModelVariable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.RunTime |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
         | :? ScriptDom.SemanticTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.SemanticTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.MatchedColumn |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.MatchedKey |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SemanticFunctionType), (src.SourceKey |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.SemanticTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.ForPath), (src.MatchedColumn |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.MatchedKey |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.SemanticFunctionType), (src.SourceKey |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.TableReferenceWithAliasAndColumns as src->
           TableReference.TableReferenceWithAlias((TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.FromCs(src, fragmentMapping)))  ))
         | :? ScriptDom.UnpivotedTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.UnpivotedTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.InColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.PivotColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.ValueColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.UnpivotedTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.InColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.PivotColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))), (src.ValueColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.VariableTableReference as src->
-          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.VariableTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))  ))
+          TableReference.TableReferenceWithAlias((TableReferenceWithAlias.VariableTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))  ))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] TableSwitchOption = (* IsAbstract = true *)
@@ -7759,20 +8052,21 @@ and [<RequireQualifiedAccess>] TriggerOption = (* IsAbstract = false *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ViewDistributionPolicy = (* IsAbstract = true *)
-  | ViewHashDistributionPolicy of DistributionColumn:Identifier option
+  | ViewHashDistributionPolicy of DistributionColumn:Identifier option * DistributionColumns:(Identifier) list
   | ViewRoundRobinDistributionPolicy 
   member this.ToCs() : ScriptDom.ViewDistributionPolicy =
     match this with
-    | ViewHashDistributionPolicy(DistributionColumn=aDistributionColumn) ->
+    | ViewHashDistributionPolicy(DistributionColumn=aDistributionColumn; DistributionColumns=aDistributionColumns) ->
       let ret = ScriptDom.ViewHashDistributionPolicy()
       ret.DistributionColumn <- aDistributionColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aDistributionColumns do ret.DistributionColumns.Add (e.ToCs())
       ret :> ScriptDom.ViewDistributionPolicy (* 335 *)
     | ViewRoundRobinDistributionPolicy -> ScriptDom.ViewRoundRobinDistributionPolicy() :> ScriptDom.ViewDistributionPolicy (* 327 *)
   static member FromCs(src:ScriptDom.ViewDistributionPolicy, fragmentMapping:FragmentMapping) : ViewDistributionPolicy =
     let ret =
       match src with
       | :? ScriptDom.ViewHashDistributionPolicy as src ->
-        ViewDistributionPolicy.ViewHashDistributionPolicy((src.DistributionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+        ViewDistributionPolicy.ViewHashDistributionPolicy((src.DistributionColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DistributionColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.ViewRoundRobinDistributionPolicy as src ->
         ViewDistributionPolicy.ViewRoundRobinDistributionPolicy
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
@@ -8143,7 +8437,7 @@ and [<RequireQualifiedAccess>] PrimaryExpression = (* IsAbstract = true *)
   | CoalesceExpression of Collation:Identifier option * Expressions:(ScalarExpression) list
   | ColumnReferenceExpression of Collation:Identifier option * ColumnType:ScriptDom.ColumnType * MultiPartIdentifier:MultiPartIdentifier option
   | ConvertCall of Collation:Identifier option * DataType:DataTypeReference option * Parameter:ScalarExpression option * Style:ScalarExpression option
-  | FunctionCall of CallTarget:CallTarget option * Collation:Identifier option * FunctionName:Identifier option * OverClause:OverClause option * Parameters:(ScalarExpression) list * UniqueRowFilter:ScriptDom.UniqueRowFilter * WithinGroupClause:WithinGroupClause option
+  | FunctionCall of AbsentOrNullOnNull:(Identifier) list * CallTarget:CallTarget option * Collation:Identifier option * FunctionName:Identifier option * IgnoreRespectNulls:(Identifier) list * JsonParameters:(JsonKeyValue) list * OverClause:OverClause option * Parameters:(ScalarExpression) list * TrimOptions:Identifier option * UniqueRowFilter:ScriptDom.UniqueRowFilter * WithinGroupClause:WithinGroupClause option
   | IIfCall of Collation:Identifier option * ElseExpression:ScalarExpression option * Predicate:BooleanExpression option * ThenExpression:ScalarExpression option
   | LeftFunctionCall of Collation:Identifier option * Parameters:(ScalarExpression) list
   | NextValueForExpression of Collation:Identifier option * OverClause:OverClause option * SequenceName:SchemaObjectName option
@@ -8193,13 +8487,17 @@ and [<RequireQualifiedAccess>] PrimaryExpression = (* IsAbstract = true *)
       ret.Parameter <- aParameter |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Style <- aStyle |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.PrimaryExpression (* 335 *)
-    | FunctionCall(CallTarget=aCallTarget; Collation=aCollation; FunctionName=aFunctionName; OverClause=aOverClause; Parameters=aParameters; UniqueRowFilter=aUniqueRowFilter; WithinGroupClause=aWithinGroupClause) ->
+    | FunctionCall(AbsentOrNullOnNull=aAbsentOrNullOnNull; CallTarget=aCallTarget; Collation=aCollation; FunctionName=aFunctionName; IgnoreRespectNulls=aIgnoreRespectNulls; JsonParameters=aJsonParameters; OverClause=aOverClause; Parameters=aParameters; TrimOptions=aTrimOptions; UniqueRowFilter=aUniqueRowFilter; WithinGroupClause=aWithinGroupClause) ->
       let ret = ScriptDom.FunctionCall()
+      for e in aAbsentOrNullOnNull do ret.AbsentOrNullOnNull.Add (e.ToCs())
       ret.CallTarget <- aCallTarget |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Collation <- aCollation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.FunctionName <- aFunctionName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aIgnoreRespectNulls do ret.IgnoreRespectNulls.Add (e.ToCs())
+      for e in aJsonParameters do ret.JsonParameters.Add (e.ToCs())
       ret.OverClause <- aOverClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aParameters do ret.Parameters.Add (e.ToCs())
+      ret.TrimOptions <- aTrimOptions |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.UniqueRowFilter <- aUniqueRowFilter
       ret.WithinGroupClause <- aWithinGroupClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.PrimaryExpression (* 335 *)
@@ -8315,7 +8613,7 @@ and [<RequireQualifiedAccess>] PrimaryExpression = (* IsAbstract = true *)
       | :? ScriptDom.ConvertCall as src ->
         PrimaryExpression.ConvertCall((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))),(src.Parameter |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.Style |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.FunctionCall as src ->
-        PrimaryExpression.FunctionCall((src.CallTarget |> Option.ofObj |> Option.map (fun x -> CallTarget.FromCs(x, fragmentMapping))),(src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.FunctionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OverClause |> Option.ofObj |> Option.map (fun x -> OverClause.FromCs(x, fragmentMapping))),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.UniqueRowFilter),(src.WithinGroupClause |> Option.ofObj |> Option.map (fun x -> WithinGroupClause.FromCs(x, fragmentMapping))))
+        PrimaryExpression.FunctionCall((src.AbsentOrNullOnNull |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.CallTarget |> Option.ofObj |> Option.map (fun x -> CallTarget.FromCs(x, fragmentMapping))),(src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.FunctionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.IgnoreRespectNulls |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.JsonParameters |> Seq.map (fun src -> JsonKeyValue.JsonKeyValue((src.JsonKeyName |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.JsonValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.OverClause |> Option.ofObj |> Option.map (fun x -> OverClause.FromCs(x, fragmentMapping))),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.TrimOptions |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.UniqueRowFilter),(src.WithinGroupClause |> Option.ofObj |> Option.map (fun x -> WithinGroupClause.FromCs(x, fragmentMapping))))
       | :? ScriptDom.IIfCall as src ->
         PrimaryExpression.IIfCall((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ElseExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.Predicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))),(src.ThenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.LeftFunctionCall as src ->
@@ -9332,6 +9630,8 @@ and [<RequireQualifiedAccess>] DropUnownedObjectStatement = (* IsAbstract = true
   | DropExternalDataSourceStatement of IsIfExists:bool * Name:Identifier option
   | DropExternalFileFormatStatement of IsIfExists:bool * Name:Identifier option
   | DropExternalResourcePoolStatement of IsIfExists:bool * Name:Identifier option
+  | DropExternalStreamStatement of IsIfExists:bool * Name:Identifier option
+  | DropExternalStreamingJobStatement of IsIfExists:bool * Name:Identifier option
   | DropFederationStatement of IsIfExists:bool * Name:Identifier option
   | DropFullTextCatalogStatement of IsIfExists:bool * Name:Identifier option
   | DropFullTextStopListStatement of IsIfExists:bool * Name:Identifier option
@@ -9434,6 +9734,16 @@ and [<RequireQualifiedAccess>] DropUnownedObjectStatement = (* IsAbstract = true
       ret :> ScriptDom.DropUnownedObjectStatement (* 335 *)
     | DropExternalResourcePoolStatement(IsIfExists=aIsIfExists; Name=aName) ->
       let ret = ScriptDom.DropExternalResourcePoolStatement()
+      ret.IsIfExists <- aIsIfExists
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.DropUnownedObjectStatement (* 335 *)
+    | DropExternalStreamStatement(IsIfExists=aIsIfExists; Name=aName) ->
+      let ret = ScriptDom.DropExternalStreamStatement()
+      ret.IsIfExists <- aIsIfExists
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.DropUnownedObjectStatement (* 335 *)
+    | DropExternalStreamingJobStatement(IsIfExists=aIsIfExists; Name=aName) ->
+      let ret = ScriptDom.DropExternalStreamingJobStatement()
       ret.IsIfExists <- aIsIfExists
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.DropUnownedObjectStatement (* 335 *)
@@ -9573,6 +9883,10 @@ and [<RequireQualifiedAccess>] DropUnownedObjectStatement = (* IsAbstract = true
         DropUnownedObjectStatement.DropExternalFileFormatStatement((src.IsIfExists),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.DropExternalResourcePoolStatement as src ->
         DropUnownedObjectStatement.DropExternalResourcePoolStatement((src.IsIfExists),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.DropExternalStreamStatement as src ->
+        DropUnownedObjectStatement.DropExternalStreamStatement((src.IsIfExists),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.DropExternalStreamingJobStatement as src ->
+        DropUnownedObjectStatement.DropExternalStreamingJobStatement((src.IsIfExists),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.DropFederationStatement as src ->
         DropUnownedObjectStatement.DropFederationStatement((src.IsIfExists),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.DropFullTextCatalogStatement as src ->
@@ -9661,8 +9975,8 @@ and [<RequireQualifiedAccess>] EventSessionStatement = (* IsAbstract = false *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ExternalDataSourceStatement = (* IsAbstract = true *)
-  | AlterExternalDataSourceStatement of DataSourceType:ScriptDom.ExternalDataSourceType * ExternalDataSourceOptions:(ExternalDataSourceOption) list * Location:Literal option * Name:Identifier option * PreviousPushDownOption:ScriptDom.ExternalDataSourcePushdownOption * PushdownOption:ScriptDom.ExternalDataSourcePushdownOption
-  | CreateExternalDataSourceStatement of DataSourceType:ScriptDom.ExternalDataSourceType * ExternalDataSourceOptions:(ExternalDataSourceOption) list * Location:Literal option * Name:Identifier option * PushdownOption:ScriptDom.ExternalDataSourcePushdownOption
+  | AlterExternalDataSourceStatement of DataSourceType:ScriptDom.ExternalDataSourceType * ExternalDataSourceOptions:(ExternalDataSourceOption) list * Location:Literal option * Name:Identifier option * PreviousPushDownOption:ScriptDom.ExternalDataSourcePushdownOption * PushdownOption:(ScriptDom.ExternalDataSourcePushdownOption) option
+  | CreateExternalDataSourceStatement of DataSourceType:ScriptDom.ExternalDataSourceType * ExternalDataSourceOptions:(ExternalDataSourceOption) list * Location:Literal option * Name:Identifier option * PushdownOption:(ScriptDom.ExternalDataSourcePushdownOption) option
   member this.ToCs() : ScriptDom.ExternalDataSourceStatement =
     match this with
     | AlterExternalDataSourceStatement(DataSourceType=aDataSourceType; ExternalDataSourceOptions=aExternalDataSourceOptions; Location=aLocation; Name=aName; PreviousPushDownOption=aPreviousPushDownOption; PushdownOption=aPushdownOption) ->
@@ -9672,7 +9986,7 @@ and [<RequireQualifiedAccess>] ExternalDataSourceStatement = (* IsAbstract = tru
       ret.Location <- aLocation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.PreviousPushDownOption <- aPreviousPushDownOption
-      ret.PushdownOption <- aPushdownOption
+      ret.PushdownOption <- Option.toNullable aPushdownOption
       ret :> ScriptDom.ExternalDataSourceStatement (* 335 *)
     | CreateExternalDataSourceStatement(DataSourceType=aDataSourceType; ExternalDataSourceOptions=aExternalDataSourceOptions; Location=aLocation; Name=aName; PushdownOption=aPushdownOption) ->
       let ret = ScriptDom.CreateExternalDataSourceStatement()
@@ -9680,15 +9994,15 @@ and [<RequireQualifiedAccess>] ExternalDataSourceStatement = (* IsAbstract = tru
       for e in aExternalDataSourceOptions do ret.ExternalDataSourceOptions.Add (e.ToCs())
       ret.Location <- aLocation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret.PushdownOption <- aPushdownOption
+      ret.PushdownOption <- Option.toNullable aPushdownOption
       ret :> ScriptDom.ExternalDataSourceStatement (* 335 *)
   static member FromCs(src:ScriptDom.ExternalDataSourceStatement, fragmentMapping:FragmentMapping) : ExternalDataSourceStatement =
     let ret =
       match src with
       | :? ScriptDom.AlterExternalDataSourceStatement as src ->
-        ExternalDataSourceStatement.AlterExternalDataSourceStatement((src.DataSourceType),(src.ExternalDataSourceOptions |> Seq.map (fun x -> ExternalDataSourceOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.PreviousPushDownOption),(src.PushdownOption))
+        ExternalDataSourceStatement.AlterExternalDataSourceStatement((src.DataSourceType),(src.ExternalDataSourceOptions |> Seq.map (fun x -> ExternalDataSourceOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.PreviousPushDownOption),(Option.ofNullable (src.PushdownOption)))
       | :? ScriptDom.CreateExternalDataSourceStatement as src ->
-        ExternalDataSourceStatement.CreateExternalDataSourceStatement((src.DataSourceType),(src.ExternalDataSourceOptions |> Seq.map (fun x -> ExternalDataSourceOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.PushdownOption))
+        ExternalDataSourceStatement.CreateExternalDataSourceStatement((src.DataSourceType),(src.ExternalDataSourceOptions |> Seq.map (fun x -> ExternalDataSourceOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(Option.ofNullable (src.PushdownOption)))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ExternalFileFormatStatement = (* IsAbstract = true *)
@@ -9706,6 +10020,62 @@ and [<RequireQualifiedAccess>] ExternalFileFormatStatement = (* IsAbstract = tru
       match src with
       | :? ScriptDom.CreateExternalFileFormatStatement as src ->
         ExternalFileFormatStatement.CreateExternalFileFormatStatement((src.ExternalFileFormatOptions |> Seq.map (fun x -> ExternalFileFormatOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.FormatType),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] ExternalLanguageStatement = (* IsAbstract = true *)
+  | AlterExternalLanguageStatement of ExternalLanguageFiles:(ExternalLanguageFileOption) list * Name:Identifier option * Operation:Identifier option * Owner:Identifier option * Platform:Identifier option
+  | CreateExternalLanguageStatement of ExternalLanguageFiles:(ExternalLanguageFileOption) list * Name:Identifier option * Owner:Identifier option
+  member this.ToCs() : ScriptDom.ExternalLanguageStatement =
+    match this with
+    | AlterExternalLanguageStatement(ExternalLanguageFiles=aExternalLanguageFiles; Name=aName; Operation=aOperation; Owner=aOwner; Platform=aPlatform) ->
+      let ret = ScriptDom.AlterExternalLanguageStatement()
+      for e in aExternalLanguageFiles do ret.ExternalLanguageFiles.Add (e.ToCs())
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Operation <- aOperation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Owner <- aOwner |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Platform <- aPlatform |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ExternalLanguageStatement (* 335 *)
+    | CreateExternalLanguageStatement(ExternalLanguageFiles=aExternalLanguageFiles; Name=aName; Owner=aOwner) ->
+      let ret = ScriptDom.CreateExternalLanguageStatement()
+      for e in aExternalLanguageFiles do ret.ExternalLanguageFiles.Add (e.ToCs())
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Owner <- aOwner |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ExternalLanguageStatement (* 335 *)
+  static member FromCs(src:ScriptDom.ExternalLanguageStatement, fragmentMapping:FragmentMapping) : ExternalLanguageStatement =
+    let ret =
+      match src with
+      | :? ScriptDom.AlterExternalLanguageStatement as src ->
+        ExternalLanguageStatement.AlterExternalLanguageStatement((src.ExternalLanguageFiles |> Seq.map (fun src -> ExternalLanguageFileOption.ExternalLanguageFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.EnvironmentVariables |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.FileName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Parameters |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Operation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.CreateExternalLanguageStatement as src ->
+        ExternalLanguageStatement.CreateExternalLanguageStatement((src.ExternalLanguageFiles |> Seq.map (fun src -> ExternalLanguageFileOption.ExternalLanguageFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.EnvironmentVariables |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.FileName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Parameters |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] ExternalLibraryStatement = (* IsAbstract = true *)
+  | AlterExternalLibraryStatement of ExternalLibraryFiles:(ExternalLibraryFileOption) list * Language:StringLiteral option * Name:Identifier option * Owner:Identifier option
+  | CreateExternalLibraryStatement of ExternalLibraryFiles:(ExternalLibraryFileOption) list * Language:StringLiteral option * Name:Identifier option * Owner:Identifier option
+  member this.ToCs() : ScriptDom.ExternalLibraryStatement =
+    match this with
+    | AlterExternalLibraryStatement(ExternalLibraryFiles=aExternalLibraryFiles; Language=aLanguage; Name=aName; Owner=aOwner) ->
+      let ret = ScriptDom.AlterExternalLibraryStatement()
+      for e in aExternalLibraryFiles do ret.ExternalLibraryFiles.Add (e.ToCs())
+      ret.Language <- aLanguage |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Owner <- aOwner |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ExternalLibraryStatement (* 335 *)
+    | CreateExternalLibraryStatement(ExternalLibraryFiles=aExternalLibraryFiles; Language=aLanguage; Name=aName; Owner=aOwner) ->
+      let ret = ScriptDom.CreateExternalLibraryStatement()
+      for e in aExternalLibraryFiles do ret.ExternalLibraryFiles.Add (e.ToCs())
+      ret.Language <- aLanguage |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Owner <- aOwner |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ExternalLibraryStatement (* 335 *)
+  static member FromCs(src:ScriptDom.ExternalLibraryStatement, fragmentMapping:FragmentMapping) : ExternalLibraryStatement =
+    let ret =
+      match src with
+      | :? ScriptDom.AlterExternalLibraryStatement as src ->
+        ExternalLibraryStatement.AlterExternalLibraryStatement((src.ExternalLibraryFiles |> Seq.map (fun src -> ExternalLibraryFileOption.ExternalLibraryFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Language |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+      | :? ScriptDom.CreateExternalLibraryStatement as src ->
+        ExternalLibraryStatement.CreateExternalLibraryStatement((src.ExternalLibraryFiles |> Seq.map (fun src -> ExternalLibraryFileOption.ExternalLibraryFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Language |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Owner |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ExternalResourcePoolStatement = (* IsAbstract = false *)
@@ -9739,6 +10109,41 @@ and [<RequireQualifiedAccess>] ExternalResourcePoolStatement = (* IsAbstract = f
         ExternalResourcePoolStatement.CreateExternalResourcePoolStatement((src.ExternalResourcePoolParameters |> Seq.map (fun src -> ExternalResourcePoolParameter.ExternalResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ExternalResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | _ -> (* :? ScriptDom.ExternalResourcePoolStatement as src *)
         ExternalResourcePoolStatement.Base(((src.ExternalResourcePoolParameters |> Seq.map (fun src -> ExternalResourcePoolParameter.ExternalResourcePoolParameter((src.AffinitySpecification |> Option.ofObj |> Option.map (fun x -> ExternalResourcePoolAffinitySpecification.FromCs(x, fragmentMapping))), (src.ParameterType), (src.ParameterValue |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))  )
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] ExternalStreamStatement = (* IsAbstract = true *)
+  | CreateExternalStreamStatement of ExternalStreamOptions:(ExternalStreamOption) list * InputOptions:Literal option * Location:Literal option * Name:Identifier option * OutputOptions:Literal option
+  member this.ToCs() : ScriptDom.ExternalStreamStatement =
+    match this with
+    | CreateExternalStreamStatement(ExternalStreamOptions=aExternalStreamOptions; InputOptions=aInputOptions; Location=aLocation; Name=aName; OutputOptions=aOutputOptions) ->
+      let ret = ScriptDom.CreateExternalStreamStatement()
+      for e in aExternalStreamOptions do ret.ExternalStreamOptions.Add (e.ToCs())
+      ret.InputOptions <- aInputOptions |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Location <- aLocation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OutputOptions <- aOutputOptions |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ExternalStreamStatement (* 335 *)
+  static member FromCs(src:ScriptDom.ExternalStreamStatement, fragmentMapping:FragmentMapping) : ExternalStreamStatement =
+    let ret =
+      match src with
+      | :? ScriptDom.CreateExternalStreamStatement as src ->
+        ExternalStreamStatement.CreateExternalStreamStatement((src.ExternalStreamOptions |> Seq.map (fun x -> ExternalStreamOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.InputOptions |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.Location |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OutputOptions |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] ExternalStreamingJobStatement = (* IsAbstract = true *)
+  | CreateExternalStreamingJobStatement of Name:StringLiteral option * Statement:StringLiteral option
+  member this.ToCs() : ScriptDom.ExternalStreamingJobStatement =
+    match this with
+    | CreateExternalStreamingJobStatement(Name=aName; Statement=aStatement) ->
+      let ret = ScriptDom.CreateExternalStreamingJobStatement()
+      ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Statement <- aStatement |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret :> ScriptDom.ExternalStreamingJobStatement (* 335 *)
+  static member FromCs(src:ScriptDom.ExternalStreamingJobStatement, fragmentMapping:FragmentMapping) : ExternalStreamingJobStatement =
+    let ret =
+      match src with
+      | :? ScriptDom.CreateExternalStreamingJobStatement as src ->
+        ExternalStreamingJobStatement.CreateExternalStreamingJobStatement((src.Name |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Statement |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ExternalTableStatement = (* IsAbstract = true *)
@@ -9793,7 +10198,7 @@ and [<RequireQualifiedAccess>] IndexStatement = (* IsAbstract = true *)
   | AlterIndexStatement of All:bool * AlterIndexType:ScriptDom.AlterIndexType * IndexOptions:(IndexOption) list * Name:Identifier option * OnName:SchemaObjectName option * Partition:PartitionSpecifier option * PromotedPaths:(SelectiveXmlIndexPromotedPath) list * XmlNamespaces:XmlNamespaces option
   | CreateIndexStatement of Clustered:(bool) option * Columns:(ColumnWithSortOrder) list * FileStreamOn:IdentifierOrValueExpression option * FilterPredicate:BooleanExpression option * IncludeColumns:(ColumnReferenceExpression) list * IndexOptions:(IndexOption) list * Name:Identifier option * OnFileGroupOrPartitionScheme:FileGroupOrPartitionScheme option * OnName:SchemaObjectName option * Translated80SyntaxTo90:bool * Unique:bool
   | CreateSelectiveXmlIndexStatement of IndexOptions:(IndexOption) list * IsSecondary:bool * Name:Identifier option * OnName:SchemaObjectName option * PathName:Identifier option * PromotedPaths:(SelectiveXmlIndexPromotedPath) list * UsingXmlIndexName:Identifier option * XmlColumn:Identifier option * XmlNamespaces:XmlNamespaces option
-  | CreateXmlIndexStatement of IndexOptions:(IndexOption) list * Name:Identifier option * OnName:SchemaObjectName option * Primary:bool * SecondaryXmlIndexName:Identifier option * SecondaryXmlIndexType:ScriptDom.SecondaryXmlIndexType * XmlColumn:Identifier option
+  | CreateXmlIndexStatement of IndexOptions:(IndexOption) list * Name:Identifier option * OnFileGroupOrPartitionScheme:FileGroupOrPartitionScheme option * OnName:SchemaObjectName option * Primary:bool * SecondaryXmlIndexName:Identifier option * SecondaryXmlIndexType:ScriptDom.SecondaryXmlIndexType * XmlColumn:Identifier option
   member this.ToCs() : ScriptDom.IndexStatement =
     match this with
     | AlterIndexStatement(All=aAll; AlterIndexType=aAlterIndexType; IndexOptions=aIndexOptions; Name=aName; OnName=aOnName; Partition=aPartition; PromotedPaths=aPromotedPaths; XmlNamespaces=aXmlNamespaces) ->
@@ -9833,10 +10238,11 @@ and [<RequireQualifiedAccess>] IndexStatement = (* IsAbstract = true *)
       ret.XmlColumn <- aXmlColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.XmlNamespaces <- aXmlNamespaces |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.IndexStatement (* 335 *)
-    | CreateXmlIndexStatement(IndexOptions=aIndexOptions; Name=aName; OnName=aOnName; Primary=aPrimary; SecondaryXmlIndexName=aSecondaryXmlIndexName; SecondaryXmlIndexType=aSecondaryXmlIndexType; XmlColumn=aXmlColumn) ->
+    | CreateXmlIndexStatement(IndexOptions=aIndexOptions; Name=aName; OnFileGroupOrPartitionScheme=aOnFileGroupOrPartitionScheme; OnName=aOnName; Primary=aPrimary; SecondaryXmlIndexName=aSecondaryXmlIndexName; SecondaryXmlIndexType=aSecondaryXmlIndexType; XmlColumn=aXmlColumn) ->
       let ret = ScriptDom.CreateXmlIndexStatement()
       for e in aIndexOptions do ret.IndexOptions.Add (e.ToCs())
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OnFileGroupOrPartitionScheme <- aOnFileGroupOrPartitionScheme |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.OnName <- aOnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Primary <- aPrimary
       ret.SecondaryXmlIndexName <- aSecondaryXmlIndexName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -9853,7 +10259,7 @@ and [<RequireQualifiedAccess>] IndexStatement = (* IsAbstract = true *)
       | :? ScriptDom.CreateSelectiveXmlIndexStatement as src ->
         IndexStatement.CreateSelectiveXmlIndexStatement((src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.IsSecondary),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OnName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.PathName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.PromotedPaths |> Seq.map (fun src -> SelectiveXmlIndexPromotedPath.SelectiveXmlIndexPromotedPath((src.IsSingleton), (src.MaxLength |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))), (src.SQLDataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.XQueryDataType |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.UsingXmlIndexName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.XmlColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.XmlNamespaces |> Option.ofObj |> Option.map (fun x -> XmlNamespaces.FromCs(x, fragmentMapping))))
       | :? ScriptDom.CreateXmlIndexStatement as src ->
-        IndexStatement.CreateXmlIndexStatement((src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OnName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.Primary),(src.SecondaryXmlIndexName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.SecondaryXmlIndexType),(src.XmlColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+        IndexStatement.CreateXmlIndexStatement((src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))),(src.OnName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.Primary),(src.SecondaryXmlIndexName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.SecondaryXmlIndexType),(src.XmlColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] MasterKeyStatement = (* IsAbstract = true *)
@@ -10678,39 +11084,42 @@ and [<RequireQualifiedAccess>] JoinTableReference = (* IsAbstract = true *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] TableReferenceWithAlias = (* IsAbstract = true *)
-  | AdHocTableReference of Alias:Identifier option * DataSource:AdHocDataSource option * Object:SchemaObjectNameOrValueExpression option
-  | BuiltInFunctionTableReference of Alias:Identifier option * Name:Identifier option * Parameters:(ScalarExpression) list
-  | FullTextTableReference of Alias:Identifier option * Columns:(ColumnReferenceExpression) list * FullTextFunctionType:ScriptDom.FullTextFunctionType * Language:ValueExpression option * PropertyName:StringLiteral option * SearchCondition:ValueExpression option * TableName:SchemaObjectName option * TopN:ValueExpression option
-  | GlobalFunctionTableReference of Alias:Identifier option * Name:Identifier option * Parameters:(ScalarExpression) list
-  | InternalOpenRowset of Alias:Identifier option * Identifier:Identifier option * VarArgs:(ScalarExpression) list
+  | AdHocTableReference of Alias:Identifier option * DataSource:AdHocDataSource option * ForPath:bool * Object:SchemaObjectNameOrValueExpression option
+  | BuiltInFunctionTableReference of Alias:Identifier option * ForPath:bool * Name:Identifier option * Parameters:(ScalarExpression) list
+  | FullTextTableReference of Alias:Identifier option * Columns:(ColumnReferenceExpression) list * ForPath:bool * FullTextFunctionType:ScriptDom.FullTextFunctionType * Language:ValueExpression option * PropertyName:StringLiteral option * SearchCondition:ValueExpression option * TableName:SchemaObjectName option * TopN:ValueExpression option
+  | GlobalFunctionTableReference of Alias:Identifier option * ForPath:bool * Name:Identifier option * Parameters:(ScalarExpression) list
+  | InternalOpenRowset of Alias:Identifier option * ForPath:bool * Identifier:Identifier option * VarArgs:(ScalarExpression) list
   | NamedTableReference of Alias:Identifier option * ForPath:bool * SchemaObject:SchemaObjectName option * TableHints:(TableHint) list * TableSampleClause:TableSampleClause option * TemporalClause:TemporalClause option
-  | OpenJsonTableReference of Alias:Identifier option * RowPattern:ScalarExpression option * SchemaDeclarationItems:(SchemaDeclarationItemOpenjson) list * Variable:ScalarExpression option
-  | OpenQueryTableReference of Alias:Identifier option * LinkedServer:Identifier option * Query:StringLiteral option
-  | OpenRowsetTableReference of Alias:Identifier option * DataSource:StringLiteral option * Object:SchemaObjectName option * Password:StringLiteral option * ProviderName:StringLiteral option * ProviderString:StringLiteral option * Query:StringLiteral option * UserId:StringLiteral option
-  | OpenXmlTableReference of Alias:Identifier option * Flags:ValueExpression option * RowPattern:ValueExpression option * SchemaDeclarationItems:(SchemaDeclarationItem) list * TableName:SchemaObjectName option * Variable:VariableReference option
-  | PivotedTableReference of AggregateFunctionIdentifier:MultiPartIdentifier option * Alias:Identifier option * InColumns:(Identifier) list * PivotColumn:ColumnReferenceExpression option * TableReference:TableReference option * ValueColumns:(ColumnReferenceExpression) list
-  | SemanticTableReference of Alias:Identifier option * Columns:(ColumnReferenceExpression) list * MatchedColumn:ColumnReferenceExpression option * MatchedKey:ScalarExpression option * SemanticFunctionType:ScriptDom.SemanticFunctionType * SourceKey:ScalarExpression option * TableName:SchemaObjectName option
+  | OpenJsonTableReference of Alias:Identifier option * ForPath:bool * RowPattern:ScalarExpression option * SchemaDeclarationItems:(SchemaDeclarationItemOpenjson) list * Variable:ScalarExpression option
+  | OpenQueryTableReference of Alias:Identifier option * ForPath:bool * LinkedServer:Identifier option * Query:StringLiteral option
+  | OpenXmlTableReference of Alias:Identifier option * Flags:ValueExpression option * ForPath:bool * RowPattern:ValueExpression option * SchemaDeclarationItems:(SchemaDeclarationItem) list * TableName:SchemaObjectName option * Variable:VariableReference option
+  | PivotedTableReference of AggregateFunctionIdentifier:MultiPartIdentifier option * Alias:Identifier option * ForPath:bool * InColumns:(Identifier) list * PivotColumn:ColumnReferenceExpression option * TableReference:TableReference option * ValueColumns:(ColumnReferenceExpression) list
+  | PredictTableReference of Alias:Identifier option * DataSource:TableReferenceWithAlias option * ForPath:bool * ModelSubquery:ScalarSubquery option * ModelVariable:ScalarExpression option * RunTime:Identifier option * SchemaDeclarationItems:(SchemaDeclarationItem) list
+  | SemanticTableReference of Alias:Identifier option * Columns:(ColumnReferenceExpression) list * ForPath:bool * MatchedColumn:ColumnReferenceExpression option * MatchedKey:ScalarExpression option * SemanticFunctionType:ScriptDom.SemanticFunctionType * SourceKey:ScalarExpression option * TableName:SchemaObjectName option
   | TableReferenceWithAliasAndColumns of TableReferenceWithAliasAndColumns
-  | UnpivotedTableReference of Alias:Identifier option * InColumns:(ColumnReferenceExpression) list * PivotColumn:Identifier option * TableReference:TableReference option * ValueColumn:Identifier option
-  | VariableTableReference of Alias:Identifier option * Variable:VariableReference option
+  | UnpivotedTableReference of Alias:Identifier option * ForPath:bool * InColumns:(ColumnReferenceExpression) list * PivotColumn:Identifier option * TableReference:TableReference option * ValueColumn:Identifier option
+  | VariableTableReference of Alias:Identifier option * ForPath:bool * Variable:VariableReference option
   member this.ToCs() : ScriptDom.TableReferenceWithAlias =
     match this with
-    | AdHocTableReference(Alias=aAlias; DataSource=aDataSource; Object=aObject) ->
+    | AdHocTableReference(Alias=aAlias; DataSource=aDataSource; ForPath=aForPath; Object=aObject) ->
       let ret = ScriptDom.AdHocTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.DataSource <- aDataSource |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.Object <- aObject |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | BuiltInFunctionTableReference(Alias=aAlias; Name=aName; Parameters=aParameters) ->
+    | BuiltInFunctionTableReference(Alias=aAlias; ForPath=aForPath; Name=aName; Parameters=aParameters) ->
       let ret = ScriptDom.BuiltInFunctionTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aParameters do ret.Parameters.Add (e.ToCs())
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | FullTextTableReference(Alias=aAlias; Columns=aColumns; FullTextFunctionType=aFullTextFunctionType; Language=aLanguage; PropertyName=aPropertyName; SearchCondition=aSearchCondition; TableName=aTableName; TopN=aTopN) ->
+    | FullTextTableReference(Alias=aAlias; Columns=aColumns; ForPath=aForPath; FullTextFunctionType=aFullTextFunctionType; Language=aLanguage; PropertyName=aPropertyName; SearchCondition=aSearchCondition; TableName=aTableName; TopN=aTopN) ->
       let ret = ScriptDom.FullTextTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
       ret.FullTextFunctionType <- aFullTextFunctionType
       ret.Language <- aLanguage |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.PropertyName <- aPropertyName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -10718,15 +11127,17 @@ and [<RequireQualifiedAccess>] TableReferenceWithAlias = (* IsAbstract = true *)
       ret.TableName <- aTableName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.TopN <- aTopN |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | GlobalFunctionTableReference(Alias=aAlias; Name=aName; Parameters=aParameters) ->
+    | GlobalFunctionTableReference(Alias=aAlias; ForPath=aForPath; Name=aName; Parameters=aParameters) ->
       let ret = ScriptDom.GlobalFunctionTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aParameters do ret.Parameters.Add (e.ToCs())
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | InternalOpenRowset(Alias=aAlias; Identifier=aIdentifier; VarArgs=aVarArgs) ->
+    | InternalOpenRowset(Alias=aAlias; ForPath=aForPath; Identifier=aIdentifier; VarArgs=aVarArgs) ->
       let ret = ScriptDom.InternalOpenRowset()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.Identifier <- aIdentifier |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aVarArgs do ret.VarArgs.Add (e.ToCs())
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
@@ -10739,52 +11150,56 @@ and [<RequireQualifiedAccess>] TableReferenceWithAlias = (* IsAbstract = true *)
       ret.TableSampleClause <- aTableSampleClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.TemporalClause <- aTemporalClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | OpenJsonTableReference(Alias=aAlias; RowPattern=aRowPattern; SchemaDeclarationItems=aSchemaDeclarationItems; Variable=aVariable) ->
+    | OpenJsonTableReference(Alias=aAlias; ForPath=aForPath; RowPattern=aRowPattern; SchemaDeclarationItems=aSchemaDeclarationItems; Variable=aVariable) ->
       let ret = ScriptDom.OpenJsonTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.RowPattern <- aRowPattern |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aSchemaDeclarationItems do ret.SchemaDeclarationItems.Add (e.ToCs())
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | OpenQueryTableReference(Alias=aAlias; LinkedServer=aLinkedServer; Query=aQuery) ->
+    | OpenQueryTableReference(Alias=aAlias; ForPath=aForPath; LinkedServer=aLinkedServer; Query=aQuery) ->
       let ret = ScriptDom.OpenQueryTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.LinkedServer <- aLinkedServer |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Query <- aQuery |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | OpenRowsetTableReference(Alias=aAlias; DataSource=aDataSource; Object=aObject; Password=aPassword; ProviderName=aProviderName; ProviderString=aProviderString; Query=aQuery; UserId=aUserId) ->
-      let ret = ScriptDom.OpenRowsetTableReference()
-      ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret.DataSource <- aDataSource |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret.Object <- aObject |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret.Password <- aPassword |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret.ProviderName <- aProviderName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret.ProviderString <- aProviderString |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret.Query <- aQuery |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret.UserId <- aUserId |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-      ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | OpenXmlTableReference(Alias=aAlias; Flags=aFlags; RowPattern=aRowPattern; SchemaDeclarationItems=aSchemaDeclarationItems; TableName=aTableName; Variable=aVariable) ->
+    | OpenXmlTableReference(Alias=aAlias; Flags=aFlags; ForPath=aForPath; RowPattern=aRowPattern; SchemaDeclarationItems=aSchemaDeclarationItems; TableName=aTableName; Variable=aVariable) ->
       let ret = ScriptDom.OpenXmlTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Flags <- aFlags |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.RowPattern <- aRowPattern |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aSchemaDeclarationItems do ret.SchemaDeclarationItems.Add (e.ToCs())
       ret.TableName <- aTableName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | PivotedTableReference(AggregateFunctionIdentifier=aAggregateFunctionIdentifier; Alias=aAlias; InColumns=aInColumns; PivotColumn=aPivotColumn; TableReference=aTableReference; ValueColumns=aValueColumns) ->
+    | PivotedTableReference(AggregateFunctionIdentifier=aAggregateFunctionIdentifier; Alias=aAlias; ForPath=aForPath; InColumns=aInColumns; PivotColumn=aPivotColumn; TableReference=aTableReference; ValueColumns=aValueColumns) ->
       let ret = ScriptDom.PivotedTableReference()
       ret.AggregateFunctionIdentifier <- aAggregateFunctionIdentifier |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       for e in aInColumns do ret.InColumns.Add (e.ToCs())
       ret.PivotColumn <- aPivotColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.TableReference <- aTableReference |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aValueColumns do ret.ValueColumns.Add (e.ToCs())
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | SemanticTableReference(Alias=aAlias; Columns=aColumns; MatchedColumn=aMatchedColumn; MatchedKey=aMatchedKey; SemanticFunctionType=aSemanticFunctionType; SourceKey=aSourceKey; TableName=aTableName) ->
+    | PredictTableReference(Alias=aAlias; DataSource=aDataSource; ForPath=aForPath; ModelSubquery=aModelSubquery; ModelVariable=aModelVariable; RunTime=aRunTime; SchemaDeclarationItems=aSchemaDeclarationItems) ->
+      let ret = ScriptDom.PredictTableReference()
+      ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.DataSource <- aDataSource |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
+      ret.ModelSubquery <- aModelSubquery |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ModelVariable <- aModelVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.RunTime <- aRunTime |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aSchemaDeclarationItems do ret.SchemaDeclarationItems.Add (e.ToCs())
+      ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
+    | SemanticTableReference(Alias=aAlias; Columns=aColumns; ForPath=aForPath; MatchedColumn=aMatchedColumn; MatchedKey=aMatchedKey; SemanticFunctionType=aSemanticFunctionType; SourceKey=aSourceKey; TableName=aTableName) ->
       let ret = ScriptDom.SemanticTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
       ret.MatchedColumn <- aMatchedColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.MatchedKey <- aMatchedKey |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.SemanticFunctionType <- aSemanticFunctionType
@@ -10792,68 +11207,74 @@ and [<RequireQualifiedAccess>] TableReferenceWithAlias = (* IsAbstract = true *)
       ret.TableName <- aTableName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
     | TableReferenceWithAliasAndColumns(x) -> x.ToCs() :> ScriptDom.TableReferenceWithAlias (* 345 *)
-    | UnpivotedTableReference(Alias=aAlias; InColumns=aInColumns; PivotColumn=aPivotColumn; TableReference=aTableReference; ValueColumn=aValueColumn) ->
+    | UnpivotedTableReference(Alias=aAlias; ForPath=aForPath; InColumns=aInColumns; PivotColumn=aPivotColumn; TableReference=aTableReference; ValueColumn=aValueColumn) ->
       let ret = ScriptDom.UnpivotedTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       for e in aInColumns do ret.InColumns.Add (e.ToCs())
       ret.PivotColumn <- aPivotColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.TableReference <- aTableReference |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.ValueColumn <- aValueColumn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
-    | VariableTableReference(Alias=aAlias; Variable=aVariable) ->
+    | VariableTableReference(Alias=aAlias; ForPath=aForPath; Variable=aVariable) ->
       let ret = ScriptDom.VariableTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAlias (* 335 *)
   static member FromCs(src:ScriptDom.TableReferenceWithAlias, fragmentMapping:FragmentMapping) : TableReferenceWithAlias =
     let ret =
       match src with
       | :? ScriptDom.AdHocTableReference as src ->
-        TableReferenceWithAlias.AdHocTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DataSource |> Option.ofObj |> Option.map (fun x -> AdHocDataSource.FromCs(x, fragmentMapping))),(src.Object |> Option.ofObj |> Option.map (fun x -> SchemaObjectNameOrValueExpression.FromCs(x, fragmentMapping))))
+        TableReferenceWithAlias.AdHocTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DataSource |> Option.ofObj |> Option.map (fun x -> AdHocDataSource.FromCs(x, fragmentMapping))),(src.ForPath),(src.Object |> Option.ofObj |> Option.map (fun x -> SchemaObjectNameOrValueExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.BuiltInFunctionTableReference as src ->
-        TableReferenceWithAlias.BuiltInFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
+        TableReferenceWithAlias.BuiltInFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.FullTextTableReference as src ->
-        TableReferenceWithAlias.FullTextTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.FullTextFunctionType),(src.Language |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.PropertyName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.SearchCondition |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.TopN |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+        TableReferenceWithAlias.FullTextTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.ForPath),(src.FullTextFunctionType),(src.Language |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.PropertyName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.SearchCondition |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.TopN |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.GlobalFunctionTableReference as src ->
-        TableReferenceWithAlias.GlobalFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
+        TableReferenceWithAlias.GlobalFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.InternalOpenRowset as src ->
-        TableReferenceWithAlias.InternalOpenRowset((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.VarArgs |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
+        TableReferenceWithAlias.InternalOpenRowset((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.Identifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.VarArgs |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.NamedTableReference as src ->
         TableReferenceWithAlias.NamedTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.SchemaObject |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.TableHints |> Seq.map (fun x -> TableHint.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.TableSampleClause |> Option.ofObj |> Option.map (fun x -> TableSampleClause.FromCs(x, fragmentMapping))),(src.TemporalClause |> Option.ofObj |> Option.map (fun x -> TemporalClause.FromCs(x, fragmentMapping))))
       | :? ScriptDom.OpenJsonTableReference as src ->
-        TableReferenceWithAlias.OpenJsonTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.RowPattern |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.SchemaDeclarationItems |> Seq.map (fun src -> SchemaDeclarationItemOpenjson.SchemaDeclarationItemOpenjson((src.AsJson), (src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Mapping |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Variable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+        TableReferenceWithAlias.OpenJsonTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.RowPattern |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.SchemaDeclarationItems |> Seq.map (fun src -> SchemaDeclarationItemOpenjson.SchemaDeclarationItemOpenjson((src.AsJson), (src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Mapping |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.Variable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.OpenQueryTableReference as src ->
-        TableReferenceWithAlias.OpenQueryTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.LinkedServer |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Query |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
-      | :? ScriptDom.OpenRowsetTableReference as src ->
-        TableReferenceWithAlias.OpenRowsetTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DataSource |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Object |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.Password |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.ProviderName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.ProviderString |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Query |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.UserId |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
+        TableReferenceWithAlias.OpenQueryTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.LinkedServer |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Query |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
       | :? ScriptDom.OpenXmlTableReference as src ->
-        TableReferenceWithAlias.OpenXmlTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Flags |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.RowPattern |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+        TableReferenceWithAlias.OpenXmlTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Flags |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.ForPath),(src.RowPattern |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
       | :? ScriptDom.PivotedTableReference as src ->
-        TableReferenceWithAlias.PivotedTableReference((src.AggregateFunctionIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))),(src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.InColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.PivotColumn |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))),(src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))),(src.ValueColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+        TableReferenceWithAlias.PivotedTableReference((src.AggregateFunctionIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))),(src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.InColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.PivotColumn |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))),(src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))),(src.ValueColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+      | :? ScriptDom.PredictTableReference as src ->
+        TableReferenceWithAlias.PredictTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.DataSource |> Option.ofObj |> Option.map (fun x -> TableReferenceWithAlias.FromCs(x, fragmentMapping))),(src.ForPath),(src.ModelSubquery |> Option.ofObj |> Option.map (fun x -> ScalarSubquery.FromCs(x, fragmentMapping))),(src.ModelVariable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.RunTime |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq))
       | :? ScriptDom.SemanticTableReference as src ->
-        TableReferenceWithAlias.SemanticTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.MatchedColumn |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))),(src.MatchedKey |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.SemanticFunctionType),(src.SourceKey |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+        TableReferenceWithAlias.SemanticTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.ForPath),(src.MatchedColumn |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))),(src.MatchedKey |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.SemanticFunctionType),(src.SourceKey |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))),(src.TableName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
       | :? ScriptDom.TableReferenceWithAliasAndColumns as src ->
         match src with
         | :? ScriptDom.BulkOpenRowset as src->
-          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.BulkOpenRowset((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataFile |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Options |> Seq.map (fun x -> BulkInsertOption.FromCs(x, fragmentMapping)) |> List.ofSeq))  ))
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.BulkOpenRowset((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataFiles |> Seq.map (fun src -> StringLiteral.StringLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.IsLargeObject), (src.IsNational), (src.LiteralType), (Option.ofObj (src.Value)))) |> List.ofSeq), (src.ForPath), (src.Options |> Seq.map (fun x -> BulkInsertOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.WithColumns |> Seq.map (fun src -> OpenRowsetColumnDefinition.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))) |> List.ofSeq))  ))
         | :? ScriptDom.ChangeTableChangesTableReference as src->
-          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.ChangeTableChangesTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.SinceVersion |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.Target |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.ChangeTableChangesTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ForPath), (src.SinceVersion |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))), (src.Target |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.ChangeTableVersionTableReference as src->
-          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.ChangeTableVersionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.PrimaryKeyColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.PrimaryKeyValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Target |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.ChangeTableVersionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ForPath), (src.PrimaryKeyColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.PrimaryKeyValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Target |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.DataModificationTableReference as src->
-          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.DataModificationTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataModificationSpecification |> Option.ofObj |> Option.map (fun x -> DataModificationSpecification.FromCs(x, fragmentMapping))))  ))
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.DataModificationTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataModificationSpecification |> Option.ofObj |> Option.map (fun x -> DataModificationSpecification.FromCs(x, fragmentMapping))), (src.ForPath))  ))
         | :? ScriptDom.InlineDerivedTable as src->
-          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.InlineDerivedTable((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.RowValues |> Seq.map (fun src -> RowValue.RowValue((src.ColumnValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq))  ))
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.InlineDerivedTable((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ForPath), (src.RowValues |> Seq.map (fun src -> RowValue.RowValue((src.ColumnValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq))  ))
+        | :? ScriptDom.OpenRowsetCosmos as src->
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.OpenRowsetCosmos((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ForPath), (src.Options |> Seq.map (fun x -> OpenRowsetCosmosOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.WithColumns |> Seq.map (fun src -> OpenRowsetColumnDefinition.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))) |> List.ofSeq))  ))
+        | :? ScriptDom.OpenRowsetTableReference as src->
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.OpenRowsetTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataSource |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.ForPath), (src.Object |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))), (src.Password |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.ProviderName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.ProviderString |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Query |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.UserId |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.WithColumns |> Seq.map (fun src -> OpenRowsetColumnDefinition.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))) |> List.ofSeq))  ))
         | :? ScriptDom.QueryDerivedTable as src->
-          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.QueryDerivedTable((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))  ))
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.QueryDerivedTable((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ForPath), (src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.SchemaObjectFunctionTableReference as src->
-          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.SchemaObjectFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.SchemaObject |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.SchemaObjectFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ForPath), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.SchemaObject |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))  ))
         | :? ScriptDom.VariableMethodCallTableReference as src->
-          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.VariableMethodCallTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.MethodName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))  ))
+          TableReferenceWithAlias.TableReferenceWithAliasAndColumns((TableReferenceWithAliasAndColumns.VariableMethodCallTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.ForPath), (src.MethodName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))  ))
       | :? ScriptDom.UnpivotedTableReference as src ->
-        TableReferenceWithAlias.UnpivotedTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.InColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.PivotColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))),(src.ValueColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+        TableReferenceWithAlias.UnpivotedTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.InColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq),(src.PivotColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.TableReference |> Option.ofObj |> Option.map (fun x -> TableReference.FromCs(x, fragmentMapping))),(src.ValueColumn |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
       | :? ScriptDom.VariableTableReference as src ->
-        TableReferenceWithAlias.VariableTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+        TableReferenceWithAlias.VariableTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.ForPath),(src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] CaseExpression = (* IsAbstract = true *)
@@ -11153,67 +11574,100 @@ and [<RequireQualifiedAccess>] SelectStatement = (* IsAbstract = false *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] TableReferenceWithAliasAndColumns = (* IsAbstract = true *)
-  | BulkOpenRowset of Alias:Identifier option * Columns:(Identifier) list * DataFile:StringLiteral option * Options:(BulkInsertOption) list
-  | ChangeTableChangesTableReference of Alias:Identifier option * Columns:(Identifier) list * SinceVersion:ValueExpression option * Target:SchemaObjectName option
-  | ChangeTableVersionTableReference of Alias:Identifier option * Columns:(Identifier) list * PrimaryKeyColumns:(Identifier) list * PrimaryKeyValues:(ScalarExpression) list * Target:SchemaObjectName option
-  | DataModificationTableReference of Alias:Identifier option * Columns:(Identifier) list * DataModificationSpecification:DataModificationSpecification option
-  | InlineDerivedTable of Alias:Identifier option * Columns:(Identifier) list * RowValues:(RowValue) list
-  | QueryDerivedTable of Alias:Identifier option * Columns:(Identifier) list * QueryExpression:QueryExpression option
-  | SchemaObjectFunctionTableReference of Alias:Identifier option * Columns:(Identifier) list * Parameters:(ScalarExpression) list * SchemaObject:SchemaObjectName option
-  | VariableMethodCallTableReference of Alias:Identifier option * Columns:(Identifier) list * MethodName:Identifier option * Parameters:(ScalarExpression) list * Variable:VariableReference option
+  | BulkOpenRowset of Alias:Identifier option * Columns:(Identifier) list * DataFiles:(StringLiteral) list * ForPath:bool * Options:(BulkInsertOption) list * WithColumns:(OpenRowsetColumnDefinition) list
+  | ChangeTableChangesTableReference of Alias:Identifier option * Columns:(Identifier) list * ForPath:bool * SinceVersion:ValueExpression option * Target:SchemaObjectName option
+  | ChangeTableVersionTableReference of Alias:Identifier option * Columns:(Identifier) list * ForPath:bool * PrimaryKeyColumns:(Identifier) list * PrimaryKeyValues:(ScalarExpression) list * Target:SchemaObjectName option
+  | DataModificationTableReference of Alias:Identifier option * Columns:(Identifier) list * DataModificationSpecification:DataModificationSpecification option * ForPath:bool
+  | InlineDerivedTable of Alias:Identifier option * Columns:(Identifier) list * ForPath:bool * RowValues:(RowValue) list
+  | OpenRowsetCosmos of Alias:Identifier option * Columns:(Identifier) list * ForPath:bool * Options:(OpenRowsetCosmosOption) list * WithColumns:(OpenRowsetColumnDefinition) list
+  | OpenRowsetTableReference of Alias:Identifier option * Columns:(Identifier) list * DataSource:StringLiteral option * ForPath:bool * Object:SchemaObjectName option * Password:StringLiteral option * ProviderName:StringLiteral option * ProviderString:StringLiteral option * Query:StringLiteral option * UserId:StringLiteral option * WithColumns:(OpenRowsetColumnDefinition) list
+  | QueryDerivedTable of Alias:Identifier option * Columns:(Identifier) list * ForPath:bool * QueryExpression:QueryExpression option
+  | SchemaObjectFunctionTableReference of Alias:Identifier option * Columns:(Identifier) list * ForPath:bool * Parameters:(ScalarExpression) list * SchemaObject:SchemaObjectName option
+  | VariableMethodCallTableReference of Alias:Identifier option * Columns:(Identifier) list * ForPath:bool * MethodName:Identifier option * Parameters:(ScalarExpression) list * Variable:VariableReference option
   member this.ToCs() : ScriptDom.TableReferenceWithAliasAndColumns =
     match this with
-    | BulkOpenRowset(Alias=aAlias; Columns=aColumns; DataFile=aDataFile; Options=aOptions) ->
+    | BulkOpenRowset(Alias=aAlias; Columns=aColumns; DataFiles=aDataFiles; ForPath=aForPath; Options=aOptions; WithColumns=aWithColumns) ->
       let ret = ScriptDom.BulkOpenRowset()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
-      ret.DataFile <- aDataFile |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aDataFiles do ret.DataFiles.Add (e.ToCs())
+      ret.ForPath <- aForPath
       for e in aOptions do ret.Options.Add (e.ToCs())
+      for e in aWithColumns do ret.WithColumns.Add (e.ToCs())
       ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
-    | ChangeTableChangesTableReference(Alias=aAlias; Columns=aColumns; SinceVersion=aSinceVersion; Target=aTarget) ->
+    | ChangeTableChangesTableReference(Alias=aAlias; Columns=aColumns; ForPath=aForPath; SinceVersion=aSinceVersion; Target=aTarget) ->
       let ret = ScriptDom.ChangeTableChangesTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
       ret.SinceVersion <- aSinceVersion |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Target <- aTarget |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
-    | ChangeTableVersionTableReference(Alias=aAlias; Columns=aColumns; PrimaryKeyColumns=aPrimaryKeyColumns; PrimaryKeyValues=aPrimaryKeyValues; Target=aTarget) ->
+    | ChangeTableVersionTableReference(Alias=aAlias; Columns=aColumns; ForPath=aForPath; PrimaryKeyColumns=aPrimaryKeyColumns; PrimaryKeyValues=aPrimaryKeyValues; Target=aTarget) ->
       let ret = ScriptDom.ChangeTableVersionTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
       for e in aPrimaryKeyColumns do ret.PrimaryKeyColumns.Add (e.ToCs())
       for e in aPrimaryKeyValues do ret.PrimaryKeyValues.Add (e.ToCs())
       ret.Target <- aTarget |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
-    | DataModificationTableReference(Alias=aAlias; Columns=aColumns; DataModificationSpecification=aDataModificationSpecification) ->
+    | DataModificationTableReference(Alias=aAlias; Columns=aColumns; DataModificationSpecification=aDataModificationSpecification; ForPath=aForPath) ->
       let ret = ScriptDom.DataModificationTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
       ret.DataModificationSpecification <- aDataModificationSpecification |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
-    | InlineDerivedTable(Alias=aAlias; Columns=aColumns; RowValues=aRowValues) ->
+    | InlineDerivedTable(Alias=aAlias; Columns=aColumns; ForPath=aForPath; RowValues=aRowValues) ->
       let ret = ScriptDom.InlineDerivedTable()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
       for e in aRowValues do ret.RowValues.Add (e.ToCs())
       ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
-    | QueryDerivedTable(Alias=aAlias; Columns=aColumns; QueryExpression=aQueryExpression) ->
+    | OpenRowsetCosmos(Alias=aAlias; Columns=aColumns; ForPath=aForPath; Options=aOptions; WithColumns=aWithColumns) ->
+      let ret = ScriptDom.OpenRowsetCosmos()
+      ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
+      for e in aOptions do ret.Options.Add (e.ToCs())
+      for e in aWithColumns do ret.WithColumns.Add (e.ToCs())
+      ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
+    | OpenRowsetTableReference(Alias=aAlias; Columns=aColumns; DataSource=aDataSource; ForPath=aForPath; Object=aObject; Password=aPassword; ProviderName=aProviderName; ProviderString=aProviderString; Query=aQuery; UserId=aUserId; WithColumns=aWithColumns) ->
+      let ret = ScriptDom.OpenRowsetTableReference()
+      ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.DataSource <- aDataSource |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
+      ret.Object <- aObject |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Password <- aPassword |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ProviderName <- aProviderName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ProviderString <- aProviderString |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Query <- aQuery |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.UserId <- aUserId |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aWithColumns do ret.WithColumns.Add (e.ToCs())
+      ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
+    | QueryDerivedTable(Alias=aAlias; Columns=aColumns; ForPath=aForPath; QueryExpression=aQueryExpression) ->
       let ret = ScriptDom.QueryDerivedTable()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
       ret.QueryExpression <- aQueryExpression |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
-    | SchemaObjectFunctionTableReference(Alias=aAlias; Columns=aColumns; Parameters=aParameters; SchemaObject=aSchemaObject) ->
+    | SchemaObjectFunctionTableReference(Alias=aAlias; Columns=aColumns; ForPath=aForPath; Parameters=aParameters; SchemaObject=aSchemaObject) ->
       let ret = ScriptDom.SchemaObjectFunctionTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
       for e in aParameters do ret.Parameters.Add (e.ToCs())
       ret.SchemaObject <- aSchemaObject |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret :> ScriptDom.TableReferenceWithAliasAndColumns (* 335 *)
-    | VariableMethodCallTableReference(Alias=aAlias; Columns=aColumns; MethodName=aMethodName; Parameters=aParameters; Variable=aVariable) ->
+    | VariableMethodCallTableReference(Alias=aAlias; Columns=aColumns; ForPath=aForPath; MethodName=aMethodName; Parameters=aParameters; Variable=aVariable) ->
       let ret = ScriptDom.VariableMethodCallTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aColumns do ret.Columns.Add (e.ToCs())
+      ret.ForPath <- aForPath
       ret.MethodName <- aMethodName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aParameters do ret.Parameters.Add (e.ToCs())
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -11222,21 +11676,25 @@ and [<RequireQualifiedAccess>] TableReferenceWithAliasAndColumns = (* IsAbstract
     let ret =
       match src with
       | :? ScriptDom.BulkOpenRowset as src ->
-        TableReferenceWithAliasAndColumns.BulkOpenRowset((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.DataFile |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Options |> Seq.map (fun x -> BulkInsertOption.FromCs(x, fragmentMapping)) |> List.ofSeq))
+        TableReferenceWithAliasAndColumns.BulkOpenRowset((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.DataFiles |> Seq.map (fun src -> StringLiteral.StringLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.IsLargeObject), (src.IsNational), (src.LiteralType), (Option.ofObj (src.Value)))) |> List.ofSeq),(src.ForPath),(src.Options |> Seq.map (fun x -> BulkInsertOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.WithColumns |> Seq.map (fun src -> OpenRowsetColumnDefinition.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))) |> List.ofSeq))
       | :? ScriptDom.ChangeTableChangesTableReference as src ->
-        TableReferenceWithAliasAndColumns.ChangeTableChangesTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.SinceVersion |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.Target |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+        TableReferenceWithAliasAndColumns.ChangeTableChangesTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ForPath),(src.SinceVersion |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))),(src.Target |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
       | :? ScriptDom.ChangeTableVersionTableReference as src ->
-        TableReferenceWithAliasAndColumns.ChangeTableVersionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.PrimaryKeyColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.PrimaryKeyValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Target |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+        TableReferenceWithAliasAndColumns.ChangeTableVersionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ForPath),(src.PrimaryKeyColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.PrimaryKeyValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Target |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
       | :? ScriptDom.DataModificationTableReference as src ->
-        TableReferenceWithAliasAndColumns.DataModificationTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.DataModificationSpecification |> Option.ofObj |> Option.map (fun x -> DataModificationSpecification.FromCs(x, fragmentMapping))))
+        TableReferenceWithAliasAndColumns.DataModificationTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.DataModificationSpecification |> Option.ofObj |> Option.map (fun x -> DataModificationSpecification.FromCs(x, fragmentMapping))),(src.ForPath))
       | :? ScriptDom.InlineDerivedTable as src ->
-        TableReferenceWithAliasAndColumns.InlineDerivedTable((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.RowValues |> Seq.map (fun src -> RowValue.RowValue((src.ColumnValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq))
+        TableReferenceWithAliasAndColumns.InlineDerivedTable((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ForPath),(src.RowValues |> Seq.map (fun src -> RowValue.RowValue((src.ColumnValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq))
+      | :? ScriptDom.OpenRowsetCosmos as src ->
+        TableReferenceWithAliasAndColumns.OpenRowsetCosmos((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ForPath),(src.Options |> Seq.map (fun x -> OpenRowsetCosmosOption.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.WithColumns |> Seq.map (fun src -> OpenRowsetColumnDefinition.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+      | :? ScriptDom.OpenRowsetTableReference as src ->
+        TableReferenceWithAliasAndColumns.OpenRowsetTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.DataSource |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.ForPath),(src.Object |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))),(src.Password |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.ProviderName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.ProviderString |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.Query |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.UserId |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))),(src.WithColumns |> Seq.map (fun src -> OpenRowsetColumnDefinition.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))) |> List.ofSeq))
       | :? ScriptDom.QueryDerivedTable as src ->
-        TableReferenceWithAliasAndColumns.QueryDerivedTable((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))
+        TableReferenceWithAliasAndColumns.QueryDerivedTable((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ForPath),(src.QueryExpression |> Option.ofObj |> Option.map (fun x -> QueryExpression.FromCs(x, fragmentMapping))))
       | :? ScriptDom.SchemaObjectFunctionTableReference as src ->
-        TableReferenceWithAliasAndColumns.SchemaObjectFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.SchemaObject |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+        TableReferenceWithAliasAndColumns.SchemaObjectFunctionTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ForPath),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.SchemaObject |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
       | :? ScriptDom.VariableMethodCallTableReference as src ->
-        TableReferenceWithAliasAndColumns.VariableMethodCallTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.MethodName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+        TableReferenceWithAliasAndColumns.VariableMethodCallTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Columns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.ForPath),(src.MethodName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))),(src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq),(src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] Literal = (* IsAbstract = true *)
@@ -11654,14 +12112,15 @@ and [<RequireQualifiedAccess>] IdentityOptions = (* Abstract? = false *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] IndexDefinition = (* Abstract? = false *)
-  | IndexDefinition of Columns:(ColumnWithSortOrder) list * FileStreamOn:IdentifierOrValueExpression option * FilterPredicate:BooleanExpression option * IndexOptions:(IndexOption) list * IndexType:IndexType option * Name:Identifier option * OnFileGroupOrPartitionScheme:FileGroupOrPartitionScheme option * Unique:bool  
+  | IndexDefinition of Columns:(ColumnWithSortOrder) list * FileStreamOn:IdentifierOrValueExpression option * FilterPredicate:BooleanExpression option * IncludeColumns:(ColumnReferenceExpression) list * IndexOptions:(IndexOption) list * IndexType:IndexType option * Name:Identifier option * OnFileGroupOrPartitionScheme:FileGroupOrPartitionScheme option * Unique:bool  
   member this.ToCs() : ScriptDom.IndexDefinition =
     match this with
-    | IndexDefinition(Columns=aColumns; FileStreamOn=aFileStreamOn; FilterPredicate=aFilterPredicate; IndexOptions=aIndexOptions; IndexType=aIndexType; Name=aName; OnFileGroupOrPartitionScheme=aOnFileGroupOrPartitionScheme; Unique=aUnique) ->
+    | IndexDefinition(Columns=aColumns; FileStreamOn=aFileStreamOn; FilterPredicate=aFilterPredicate; IncludeColumns=aIncludeColumns; IndexOptions=aIndexOptions; IndexType=aIndexType; Name=aName; OnFileGroupOrPartitionScheme=aOnFileGroupOrPartitionScheme; Unique=aUnique) ->
       let ret = ScriptDom.IndexDefinition()
       for e in aColumns do ret.Columns.Add (e.ToCs())
       ret.FileStreamOn <- aFileStreamOn |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.FilterPredicate <- aFilterPredicate |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aIncludeColumns do ret.IncludeColumns.Add (e.ToCs())
       for e in aIndexOptions do ret.IndexOptions.Add (e.ToCs())
       ret.IndexType <- aIndexType |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Name <- aName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
@@ -11670,7 +12129,7 @@ and [<RequireQualifiedAccess>] IndexDefinition = (* Abstract? = false *)
       ret (* 333 *)
   static member FromCs(src:ScriptDom.IndexDefinition, fragmentMapping:FragmentMapping) : IndexDefinition =
     let ret =
-      IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))
+      IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IncludeColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ColumnStorageOptions = (* Abstract? = false *)
@@ -11685,6 +12144,21 @@ and [<RequireQualifiedAccess>] ColumnStorageOptions = (* Abstract? = false *)
   static member FromCs(src:ScriptDom.ColumnStorageOptions, fragmentMapping:FragmentMapping) : ColumnStorageOptions =
     let ret =
       ColumnStorageOptions.ColumnStorageOptions((src.IsFileStream), (src.SparseOption))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] IntegerLiteral = (* Abstract? = false *)
+  | IntegerLiteral of Collation:Identifier option * LiteralType:ScriptDom.LiteralType * Value:String option  
+  member this.ToCs() : ScriptDom.IntegerLiteral =
+    match this with
+    | IntegerLiteral(Collation=aCollation; LiteralType=aLiteralType; Value=aValue) ->
+      let ret = ScriptDom.IntegerLiteral()
+      ret.Collation <- aCollation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+       // Skipping prop LiteralType - it is Readonly
+      ret.Value <- aValue |> Option.toObj
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.IntegerLiteral, fragmentMapping:FragmentMapping) : IntegerLiteral =
+    let ret =
+      IntegerLiteral.IntegerLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.LiteralType), (Option.ofObj (src.Value)))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] BinaryLiteral = (* Abstract? = false *)
@@ -11756,21 +12230,6 @@ and [<RequireQualifiedAccess>] FileGroupOrPartitionScheme = (* Abstract? = false
   static member FromCs(src:ScriptDom.FileGroupOrPartitionScheme, fragmentMapping:FragmentMapping) : FileGroupOrPartitionScheme =
     let ret =
       FileGroupOrPartitionScheme.FileGroupOrPartitionScheme((src.Name |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.PartitionSchemeColumns |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq))
-    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
-    ret
-and [<RequireQualifiedAccess>] IntegerLiteral = (* Abstract? = false *)
-  | IntegerLiteral of Collation:Identifier option * LiteralType:ScriptDom.LiteralType * Value:String option  
-  member this.ToCs() : ScriptDom.IntegerLiteral =
-    match this with
-    | IntegerLiteral(Collation=aCollation; LiteralType=aLiteralType; Value=aValue) ->
-      let ret = ScriptDom.IntegerLiteral()
-      ret.Collation <- aCollation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
-       // Skipping prop LiteralType - it is Readonly
-      ret.Value <- aValue |> Option.toObj
-      ret (* 333 *)
-  static member FromCs(src:ScriptDom.IntegerLiteral, fragmentMapping:FragmentMapping) : IntegerLiteral =
-    let ret =
-      IntegerLiteral.IntegerLiteral((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.LiteralType), (Option.ofObj (src.Value)))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] CursorOption = (* Abstract? = false *)
@@ -11845,16 +12304,17 @@ and [<RequireQualifiedAccess>] MergeActionClause = (* Abstract? = false *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] FromClause = (* Abstract? = false *)
-  | FromClause of TableReferences:(TableReference) list  
+  | FromClause of PredictTableReference:(PredictTableReference) list * TableReferences:(TableReference) list  
   member this.ToCs() : ScriptDom.FromClause =
     match this with
-    | FromClause(TableReferences=aTableReferences) ->
+    | FromClause(PredictTableReference=aPredictTableReference; TableReferences=aTableReferences) ->
       let ret = ScriptDom.FromClause()
+      for e in aPredictTableReference do ret.PredictTableReference.Add (e.ToCs())
       for e in aTableReferences do ret.TableReferences.Add (e.ToCs())
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FromClause, fragmentMapping:FragmentMapping) : FromClause =
     let ret =
-      FromClause.FromClause((src.TableReferences |> Seq.map (fun x -> TableReference.FromCs(x, fragmentMapping)) |> List.ofSeq))
+      FromClause.FromClause((src.PredictTableReference |> Seq.map (fun src -> PredictTableReference.PredictTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataSource |> Option.ofObj |> Option.map (fun x -> TableReferenceWithAlias.FromCs(x, fragmentMapping))), (src.ForPath), (src.ModelSubquery |> Option.ofObj |> Option.map (fun x -> ScalarSubquery.FromCs(x, fragmentMapping))), (src.ModelVariable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.RunTime |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq))) |> List.ofSeq), (src.TableReferences |> Seq.map (fun x -> TableReference.FromCs(x, fragmentMapping)) |> List.ofSeq))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] WhereClause = (* Abstract? = false *)
@@ -11916,7 +12376,7 @@ and [<RequireQualifiedAccess>] TableDefinition = (* Abstract? = false *)
       ret (* 333 *)
   static member FromCs(src:ScriptDom.TableDefinition, fragmentMapping:FragmentMapping) : TableDefinition =
     let ret =
-      TableDefinition.TableDefinition((src.ColumnDefinitions |> Seq.map (fun src -> ColumnDefinition.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Indexes |> Seq.map (fun src -> IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))) |> List.ofSeq), (src.SystemTimePeriod |> Option.ofObj |> Option.map (fun x -> SystemTimePeriodDefinition.FromCs(x, fragmentMapping))), (src.TableConstraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq))
+      TableDefinition.TableDefinition((src.ColumnDefinitions |> Seq.map (fun src -> ColumnDefinition.ColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ComputedColumnExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Constraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.DefaultConstraint |> Option.ofObj |> Option.map (fun x -> DefaultConstraintDefinition.FromCs(x, fragmentMapping))), (src.Encryption |> Option.ofObj |> Option.map (fun x -> ColumnEncryptionDefinition.FromCs(x, fragmentMapping))), (Option.ofNullable (src.GeneratedAlways)), (src.IdentityOptions |> Option.ofObj |> Option.map (fun x -> IdentityOptions.FromCs(x, fragmentMapping))), (src.Index |> Option.ofObj |> Option.map (fun x -> IndexDefinition.FromCs(x, fragmentMapping))), (src.IsHidden), (src.IsMasked), (src.IsPersisted), (src.IsRowGuidCol), (src.MaskingFunction |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.StorageOptions |> Option.ofObj |> Option.map (fun x -> ColumnStorageOptions.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.Indexes |> Seq.map (fun src -> IndexDefinition.IndexDefinition((src.Columns |> Seq.map (fun src -> ColumnWithSortOrder.ColumnWithSortOrder((src.Column |> Option.ofObj |> Option.map (fun x -> ColumnReferenceExpression.FromCs(x, fragmentMapping))), (src.SortOrder))) |> List.ofSeq), (src.FileStreamOn |> Option.ofObj |> Option.map (fun x -> IdentifierOrValueExpression.FromCs(x, fragmentMapping))), (src.FilterPredicate |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))), (src.IncludeColumns |> Seq.map (fun src -> ColumnReferenceExpression.ColumnReferenceExpression((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnType), (src.MultiPartIdentifier |> Option.ofObj |> Option.map (fun x -> MultiPartIdentifier.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.IndexOptions |> Seq.map (fun x -> IndexOption.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.IndexType |> Option.ofObj |> Option.map (fun x -> IndexType.FromCs(x, fragmentMapping))), (src.Name |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OnFileGroupOrPartitionScheme |> Option.ofObj |> Option.map (fun x -> FileGroupOrPartitionScheme.FromCs(x, fragmentMapping))), (src.Unique))) |> List.ofSeq), (src.SystemTimePeriod |> Option.ofObj |> Option.map (fun x -> SystemTimePeriodDefinition.FromCs(x, fragmentMapping))), (src.TableConstraints |> Seq.map (fun x -> ConstraintDefinition.FromCs(x, fragmentMapping)) |> List.ofSeq))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] NullableConstraintDefinition = (* Abstract? = false *)
@@ -12109,6 +12569,25 @@ and [<RequireQualifiedAccess>] XmlForClauseOption = (* Abstract? = false *)
   static member FromCs(src:ScriptDom.XmlForClauseOption, fragmentMapping:FragmentMapping) : XmlForClauseOption =
     let ret =
       XmlForClauseOption.XmlForClauseOption((src.OptionKind), (src.Value |> Option.ofObj |> Option.map (fun x -> Literal.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] PredictTableReference = (* Abstract? = false *)
+  | PredictTableReference of Alias:Identifier option * DataSource:TableReferenceWithAlias option * ForPath:bool * ModelSubquery:ScalarSubquery option * ModelVariable:ScalarExpression option * RunTime:Identifier option * SchemaDeclarationItems:(SchemaDeclarationItem) list  
+  member this.ToCs() : ScriptDom.PredictTableReference =
+    match this with
+    | PredictTableReference(Alias=aAlias; DataSource=aDataSource; ForPath=aForPath; ModelSubquery=aModelSubquery; ModelVariable=aModelVariable; RunTime=aRunTime; SchemaDeclarationItems=aSchemaDeclarationItems) ->
+      let ret = ScriptDom.PredictTableReference()
+      ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.DataSource <- aDataSource |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
+      ret.ModelSubquery <- aModelSubquery |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ModelVariable <- aModelVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.RunTime <- aRunTime |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aSchemaDeclarationItems do ret.SchemaDeclarationItems.Add (e.ToCs())
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.PredictTableReference, fragmentMapping:FragmentMapping) : PredictTableReference =
+    let ret =
+      PredictTableReference.PredictTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.DataSource |> Option.ofObj |> Option.map (fun x -> TableReferenceWithAlias.FromCs(x, fragmentMapping))), (src.ForPath), (src.ModelSubquery |> Option.ofObj |> Option.map (fun x -> ScalarSubquery.FromCs(x, fragmentMapping))), (src.ModelVariable |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.RunTime |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.SchemaDeclarationItems |> Seq.map (fun x -> SchemaDeclarationItem.FromCs(x, fragmentMapping)) |> List.ofSeq))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ExecuteAsClause = (* Abstract? = false *)
@@ -12356,6 +12835,19 @@ and [<RequireQualifiedAccess>] HavingClause = (* Abstract? = false *)
       HavingClause.HavingClause((src.SearchCondition |> Option.ofObj |> Option.map (fun x -> BooleanExpression.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
+and [<RequireQualifiedAccess>] WindowClause = (* Abstract? = false *)
+  | WindowClause of WindowDefinition:(WindowDefinition) list  
+  member this.ToCs() : ScriptDom.WindowClause =
+    match this with
+    | WindowClause(WindowDefinition=aWindowDefinition) ->
+      let ret = ScriptDom.WindowClause()
+      for e in aWindowDefinition do ret.WindowDefinition.Add (e.ToCs())
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.WindowClause, fragmentMapping:FragmentMapping) : WindowClause =
+    let ret =
+      WindowClause.WindowClause((src.WindowDefinition |> Seq.map (fun src -> WindowDefinition.WindowDefinition((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.RefWindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))), (src.WindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))) |> List.ofSeq))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ResourcePoolAffinitySpecification = (* Abstract? = false *)
   | ResourcePoolAffinitySpecification of AffinityType:ScriptDom.ResourcePoolAffinityType * IsAuto:bool * ParameterValue:Literal option * PoolAffinityRanges:(LiteralRange) list  
   member this.ToCs() : ScriptDom.ResourcePoolAffinitySpecification =
@@ -12429,19 +12921,34 @@ and [<RequireQualifiedAccess>] SimpleWhenClause = (* Abstract? = false *)
       SimpleWhenClause.SimpleWhenClause((src.ThenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.WhenExpression |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
+and [<RequireQualifiedAccess>] JsonKeyValue = (* Abstract? = false *)
+  | JsonKeyValue of JsonKeyName:ScalarExpression option * JsonValue:ScalarExpression option  
+  member this.ToCs() : ScriptDom.JsonKeyValue =
+    match this with
+    | JsonKeyValue(JsonKeyName=aJsonKeyName; JsonValue=aJsonValue) ->
+      let ret = ScriptDom.JsonKeyValue()
+      ret.JsonKeyName <- aJsonKeyName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.JsonValue <- aJsonValue |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.JsonKeyValue, fragmentMapping:FragmentMapping) : JsonKeyValue =
+    let ret =
+      JsonKeyValue.JsonKeyValue((src.JsonKeyName |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.JsonValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] OverClause = (* Abstract? = false *)
-  | OverClause of OrderByClause:OrderByClause option * Partitions:(ScalarExpression) list * WindowFrameClause:WindowFrameClause option  
+  | OverClause of OrderByClause:OrderByClause option * Partitions:(ScalarExpression) list * WindowFrameClause:WindowFrameClause option * WindowName:Identifier option  
   member this.ToCs() : ScriptDom.OverClause =
     match this with
-    | OverClause(OrderByClause=aOrderByClause; Partitions=aPartitions; WindowFrameClause=aWindowFrameClause) ->
+    | OverClause(OrderByClause=aOrderByClause; Partitions=aPartitions; WindowFrameClause=aWindowFrameClause; WindowName=aWindowName) ->
       let ret = ScriptDom.OverClause()
       ret.OrderByClause <- aOrderByClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aPartitions do ret.Partitions.Add (e.ToCs())
       ret.WindowFrameClause <- aWindowFrameClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.WindowName <- aWindowName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.OverClause, fragmentMapping:FragmentMapping) : OverClause =
     let ret =
-      OverClause.OverClause((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))))
+      OverClause.OverClause((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))), (src.WindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] WithinGroupClause = (* Abstract? = false *)
@@ -12473,22 +12980,26 @@ and [<RequireQualifiedAccess>] Privilege80 = (* Abstract? = false *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] FunctionCall = (* Abstract? = false *)
-  | FunctionCall of CallTarget:CallTarget option * Collation:Identifier option * FunctionName:Identifier option * OverClause:OverClause option * Parameters:(ScalarExpression) list * UniqueRowFilter:ScriptDom.UniqueRowFilter * WithinGroupClause:WithinGroupClause option  
+  | FunctionCall of AbsentOrNullOnNull:(Identifier) list * CallTarget:CallTarget option * Collation:Identifier option * FunctionName:Identifier option * IgnoreRespectNulls:(Identifier) list * JsonParameters:(JsonKeyValue) list * OverClause:OverClause option * Parameters:(ScalarExpression) list * TrimOptions:Identifier option * UniqueRowFilter:ScriptDom.UniqueRowFilter * WithinGroupClause:WithinGroupClause option  
   member this.ToCs() : ScriptDom.FunctionCall =
     match this with
-    | FunctionCall(CallTarget=aCallTarget; Collation=aCollation; FunctionName=aFunctionName; OverClause=aOverClause; Parameters=aParameters; UniqueRowFilter=aUniqueRowFilter; WithinGroupClause=aWithinGroupClause) ->
+    | FunctionCall(AbsentOrNullOnNull=aAbsentOrNullOnNull; CallTarget=aCallTarget; Collation=aCollation; FunctionName=aFunctionName; IgnoreRespectNulls=aIgnoreRespectNulls; JsonParameters=aJsonParameters; OverClause=aOverClause; Parameters=aParameters; TrimOptions=aTrimOptions; UniqueRowFilter=aUniqueRowFilter; WithinGroupClause=aWithinGroupClause) ->
       let ret = ScriptDom.FunctionCall()
+      for e in aAbsentOrNullOnNull do ret.AbsentOrNullOnNull.Add (e.ToCs())
       ret.CallTarget <- aCallTarget |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.Collation <- aCollation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.FunctionName <- aFunctionName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aIgnoreRespectNulls do ret.IgnoreRespectNulls.Add (e.ToCs())
+      for e in aJsonParameters do ret.JsonParameters.Add (e.ToCs())
       ret.OverClause <- aOverClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       for e in aParameters do ret.Parameters.Add (e.ToCs())
+      ret.TrimOptions <- aTrimOptions |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret.UniqueRowFilter <- aUniqueRowFilter
       ret.WithinGroupClause <- aWithinGroupClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.FunctionCall, fragmentMapping:FragmentMapping) : FunctionCall =
     let ret =
-      FunctionCall.FunctionCall((src.CallTarget |> Option.ofObj |> Option.map (fun x -> CallTarget.FromCs(x, fragmentMapping))), (src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.FunctionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OverClause |> Option.ofObj |> Option.map (fun x -> OverClause.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.UniqueRowFilter), (src.WithinGroupClause |> Option.ofObj |> Option.map (fun x -> WithinGroupClause.FromCs(x, fragmentMapping))))
+      FunctionCall.FunctionCall((src.AbsentOrNullOnNull |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.CallTarget |> Option.ofObj |> Option.map (fun x -> CallTarget.FromCs(x, fragmentMapping))), (src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.FunctionName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.IgnoreRespectNulls |> Seq.map (fun x -> Identifier.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.JsonParameters |> Seq.map (fun src -> JsonKeyValue.JsonKeyValue((src.JsonKeyName |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.JsonValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq), (src.OverClause |> Option.ofObj |> Option.map (fun x -> OverClause.FromCs(x, fragmentMapping))), (src.Parameters |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.TrimOptions |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.UniqueRowFilter), (src.WithinGroupClause |> Option.ofObj |> Option.map (fun x -> WithinGroupClause.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] SecurityTargetObjectName = (* Abstract? = false *)
@@ -13133,6 +13644,48 @@ and [<RequireQualifiedAccess>] TargetDeclaration = (* Abstract? = false *)
       TargetDeclaration.TargetDeclaration((src.ObjectName |> Option.ofObj |> Option.map (fun x -> EventSessionObjectName.FromCs(x, fragmentMapping))), (src.TargetDeclarationParameters |> Seq.map (fun src -> EventDeclarationSetParameter.EventDeclarationSetParameter((src.EventField |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.EventValue |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
+and [<RequireQualifiedAccess>] ExternalDataSourcePushdownOption = (* Abstract? = false *)
+  | ExternalDataSourcePushdownOption   
+  member this.ToCs() : ScriptDom.ExternalDataSourcePushdownOption =
+    match this with
+    | ExternalDataSourcePushdownOption -> ScriptDom.ExternalDataSourcePushdownOption() (* 327 *)
+  static member FromCs(src:ScriptDom.ExternalDataSourcePushdownOption, fragmentMapping:FragmentMapping) : ExternalDataSourcePushdownOption =
+    let ret =
+      ExternalDataSourcePushdownOption.ExternalDataSourcePushdownOption 
+    ret
+and [<RequireQualifiedAccess>] ExternalLanguageFileOption = (* Abstract? = false *)
+  | ExternalLanguageFileOption of Content:ScalarExpression option * EnvironmentVariables:StringLiteral option * FileName:StringLiteral option * Parameters:StringLiteral option * Path:StringLiteral option * Platform:Identifier option  
+  member this.ToCs() : ScriptDom.ExternalLanguageFileOption =
+    match this with
+    | ExternalLanguageFileOption(Content=aContent; EnvironmentVariables=aEnvironmentVariables; FileName=aFileName; Parameters=aParameters; Path=aPath; Platform=aPlatform) ->
+      let ret = ScriptDom.ExternalLanguageFileOption()
+      ret.Content <- aContent |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.EnvironmentVariables <- aEnvironmentVariables |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.FileName <- aFileName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Parameters <- aParameters |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Path <- aPath |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Platform <- aPlatform |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.ExternalLanguageFileOption, fragmentMapping:FragmentMapping) : ExternalLanguageFileOption =
+    let ret =
+      ExternalLanguageFileOption.ExternalLanguageFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.EnvironmentVariables |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.FileName |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Parameters |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] ExternalLibraryFileOption = (* Abstract? = false *)
+  | ExternalLibraryFileOption of Content:ScalarExpression option * Path:StringLiteral option * Platform:Identifier option  
+  member this.ToCs() : ScriptDom.ExternalLibraryFileOption =
+    match this with
+    | ExternalLibraryFileOption(Content=aContent; Path=aPath; Platform=aPlatform) ->
+      let ret = ScriptDom.ExternalLibraryFileOption()
+      ret.Content <- aContent |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Path <- aPath |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.Platform <- aPlatform |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.ExternalLibraryFileOption, fragmentMapping:FragmentMapping) : ExternalLibraryFileOption =
+    let ret =
+      ExternalLibraryFileOption.ExternalLibraryFileOption((src.Content |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.Path |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))), (src.Platform |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] ExternalResourcePoolParameter = (* Abstract? = false *)
   | ExternalResourcePoolParameter of AffinitySpecification:ExternalResourcePoolAffinitySpecification option * ParameterType:ScriptDom.ExternalResourcePoolParameterType * ParameterValue:Literal option  
   member this.ToCs() : ScriptDom.ExternalResourcePoolParameter =
@@ -13482,17 +14035,18 @@ and [<RequireQualifiedAccess>] UserLoginOption = (* Abstract? = false *)
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] VariableTableReference = (* Abstract? = false *)
-  | VariableTableReference of Alias:Identifier option * Variable:VariableReference option  
+  | VariableTableReference of Alias:Identifier option * ForPath:bool * Variable:VariableReference option  
   member this.ToCs() : ScriptDom.VariableTableReference =
     match this with
-    | VariableTableReference(Alias=aAlias; Variable=aVariable) ->
+    | VariableTableReference(Alias=aAlias; ForPath=aForPath; Variable=aVariable) ->
       let ret = ScriptDom.VariableTableReference()
       ret.Alias <- aAlias |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ForPath <- aForPath
       ret.Variable <- aVariable |> Option.map (fun x -> x.ToCs()) |> Option.toObj
       ret (* 333 *)
   static member FromCs(src:ScriptDom.VariableTableReference, fragmentMapping:FragmentMapping) : VariableTableReference =
     let ret =
-      VariableTableReference.VariableTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
+      VariableTableReference.VariableTableReference((src.Alias |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ForPath), (src.Variable |> Option.ofObj |> Option.map (fun x -> VariableReference.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] ColumnDefinition = (* Abstract? = false *)
@@ -13552,6 +14106,24 @@ and [<RequireQualifiedAccess>] RetentionPeriodDefinition = (* Abstract? = false 
       RetentionPeriodDefinition.RetentionPeriodDefinition((src.Duration |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.IsInfinity), (src.Units))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
+and [<RequireQualifiedAccess>] LedgerViewOption = (* Abstract? = false *)
+  | LedgerViewOption of OperationTypeColumnName:Identifier option * OperationTypeDescColumnName:Identifier option * OptionKind:ScriptDom.TableOptionKind * SequenceNumberColumnName:Identifier option * TransactionIdColumnName:Identifier option * ViewName:SchemaObjectName option  
+  member this.ToCs() : ScriptDom.LedgerViewOption =
+    match this with
+    | LedgerViewOption(OperationTypeColumnName=aOperationTypeColumnName; OperationTypeDescColumnName=aOperationTypeDescColumnName; OptionKind=aOptionKind; SequenceNumberColumnName=aSequenceNumberColumnName; TransactionIdColumnName=aTransactionIdColumnName; ViewName=aViewName) ->
+      let ret = ScriptDom.LedgerViewOption()
+      ret.OperationTypeColumnName <- aOperationTypeColumnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OperationTypeDescColumnName <- aOperationTypeDescColumnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.OptionKind <- aOptionKind
+      ret.SequenceNumberColumnName <- aSequenceNumberColumnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.TransactionIdColumnName <- aTransactionIdColumnName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ViewName <- aViewName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.LedgerViewOption, fragmentMapping:FragmentMapping) : LedgerViewOption =
+    let ret =
+      LedgerViewOption.LedgerViewOption((src.OperationTypeColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OperationTypeDescColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.OptionKind), (src.SequenceNumberColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.TransactionIdColumnName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ViewName |> Option.ofObj |> Option.map (fun x -> SchemaObjectName.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
 and [<RequireQualifiedAccess>] DataCompressionOption = (* Abstract? = false *)
   | DataCompressionOption of CompressionLevel:ScriptDom.DataCompressionLevel * OptionKind:ScriptDom.IndexOptionKind * PartitionRanges:(CompressionPartitionRange) list  
   member this.ToCs() : ScriptDom.DataCompressionOption =
@@ -13579,6 +14151,21 @@ and [<RequireQualifiedAccess>] TablePartitionOptionSpecifications = (* Abstract?
   static member FromCs(src:ScriptDom.TablePartitionOptionSpecifications, fragmentMapping:FragmentMapping) : TablePartitionOptionSpecifications =
     let ret =
       TablePartitionOptionSpecifications.TablePartitionOptionSpecifications((src.BoundaryValues |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.Range))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] XmlCompressionOption = (* Abstract? = false *)
+  | XmlCompressionOption of IsCompressed:ScriptDom.XmlCompressionOptionState * OptionKind:ScriptDom.IndexOptionKind * PartitionRanges:(CompressionPartitionRange) list  
+  member this.ToCs() : ScriptDom.XmlCompressionOption =
+    match this with
+    | XmlCompressionOption(IsCompressed=aIsCompressed; OptionKind=aOptionKind; PartitionRanges=aPartitionRanges) ->
+      let ret = ScriptDom.XmlCompressionOption()
+      ret.IsCompressed <- aIsCompressed
+      ret.OptionKind <- aOptionKind
+      for e in aPartitionRanges do ret.PartitionRanges.Add (e.ToCs())
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.XmlCompressionOption, fragmentMapping:FragmentMapping) : XmlCompressionOption =
+    let ret =
+      XmlCompressionOption.XmlCompressionOption((src.IsCompressed), (src.OptionKind), (src.PartitionRanges |> Seq.map (fun src -> CompressionPartitionRange.CompressionPartitionRange((src.From |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))), (src.To |> Option.ofObj |> Option.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping))))) |> List.ofSeq))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] SchemaObjectNameOrValueExpression = (* Abstract? = false *)
@@ -13639,6 +14226,40 @@ and [<RequireQualifiedAccess>] SchemaDeclarationItemOpenjson = (* Abstract? = fa
   static member FromCs(src:ScriptDom.SchemaDeclarationItemOpenjson, fragmentMapping:FragmentMapping) : SchemaDeclarationItemOpenjson =
     let ret =
       SchemaDeclarationItemOpenjson.SchemaDeclarationItemOpenjson((src.AsJson), (src.ColumnDefinition |> Option.ofObj |> Option.map (fun x -> ColumnDefinitionBase.FromCs(x, fragmentMapping))), (src.Mapping |> Option.ofObj |> Option.map (fun x -> ValueExpression.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] OpenRowsetColumnDefinition = (* Abstract? = false *)
+  | OpenRowsetColumnDefinition of Collation:Identifier option * ColumnIdentifier:Identifier option * ColumnOrdinal:IntegerLiteral option * DataType:DataTypeReference option * JsonPath:StringLiteral option  
+  member this.ToCs() : ScriptDom.OpenRowsetColumnDefinition =
+    match this with
+    | OpenRowsetColumnDefinition(Collation=aCollation; ColumnIdentifier=aColumnIdentifier; ColumnOrdinal=aColumnOrdinal; DataType=aDataType; JsonPath=aJsonPath) ->
+      let ret = ScriptDom.OpenRowsetColumnDefinition()
+      ret.Collation <- aCollation |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ColumnIdentifier <- aColumnIdentifier |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.ColumnOrdinal <- aColumnOrdinal |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.DataType <- aDataType |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.JsonPath <- aJsonPath |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.OpenRowsetColumnDefinition, fragmentMapping:FragmentMapping) : OpenRowsetColumnDefinition =
+    let ret =
+      OpenRowsetColumnDefinition.OpenRowsetColumnDefinition((src.Collation |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnIdentifier |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.ColumnOrdinal |> Option.ofObj |> Option.map (fun x -> IntegerLiteral.FromCs(x, fragmentMapping))), (src.DataType |> Option.ofObj |> Option.map (fun x -> DataTypeReference.FromCs(x, fragmentMapping))), (src.JsonPath |> Option.ofObj |> Option.map (fun x -> StringLiteral.FromCs(x, fragmentMapping))))
+    if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
+    ret
+and [<RequireQualifiedAccess>] WindowDefinition = (* Abstract? = false *)
+  | WindowDefinition of OrderByClause:OrderByClause option * Partitions:(ScalarExpression) list * RefWindowName:Identifier option * WindowFrameClause:WindowFrameClause option * WindowName:Identifier option  
+  member this.ToCs() : ScriptDom.WindowDefinition =
+    match this with
+    | WindowDefinition(OrderByClause=aOrderByClause; Partitions=aPartitions; RefWindowName=aRefWindowName; WindowFrameClause=aWindowFrameClause; WindowName=aWindowName) ->
+      let ret = ScriptDom.WindowDefinition()
+      ret.OrderByClause <- aOrderByClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      for e in aPartitions do ret.Partitions.Add (e.ToCs())
+      ret.RefWindowName <- aRefWindowName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.WindowFrameClause <- aWindowFrameClause |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret.WindowName <- aWindowName |> Option.map (fun x -> x.ToCs()) |> Option.toObj
+      ret (* 333 *)
+  static member FromCs(src:ScriptDom.WindowDefinition, fragmentMapping:FragmentMapping) : WindowDefinition =
+    let ret =
+      WindowDefinition.WindowDefinition((src.OrderByClause |> Option.ofObj |> Option.map (fun x -> OrderByClause.FromCs(x, fragmentMapping))), (src.Partitions |> Seq.map (fun x -> ScalarExpression.FromCs(x, fragmentMapping)) |> List.ofSeq), (src.RefWindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))), (src.WindowFrameClause |> Option.ofObj |> Option.map (fun x -> WindowFrameClause.FromCs(x, fragmentMapping))), (src.WindowName |> Option.ofObj |> Option.map (fun x -> Identifier.FromCs(x, fragmentMapping))))
     if not (obj.ReferenceEquals(fragmentMapping, null)) then fragmentMapping.[ret] <- src
     ret
 and [<RequireQualifiedAccess>] WindowDelimiter = (* Abstract? = false *)

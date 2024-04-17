@@ -1,12 +1,13 @@
 ﻿module SqlGenerationTests
 
+
 // Turn off missing pattern match cases for tests
 #nowarn "25"
 
 open FsSqlDom
 open Microsoft.SqlServer.TransactSql
-open NUnit.Framework
 open System.Text
+open Xunit
 
 let whitespaceRE = RegularExpressions.Regex("\s+", RegularExpressions.RegexOptions.Compiled)
 let normSQL (s:string) = 
@@ -16,7 +17,7 @@ let normSQL (s:string) =
 let assertEQ_sql (s1:string) (s2:string) =
   let s1 = (normSQL s1).ToLower()
   let s2 = (normSQL s2).ToLower()
-  Assert.AreEqual(s1, s2)
+  Assert.Equal(s1, s2)
 
 let opts =
   let ret = ScriptDom.SqlScriptGeneratorOptions()
@@ -57,37 +58,37 @@ let roundtrip (sql:string) =
   | ParseFragmentResult.Failure(errs) ->
     failwith (errs |> Seq.map (fun err -> err.Message) |> String.concat ";")
 
-[<Test>]
+[<Fact>]
 let ``basic queries``() =
   roundtrip "select * from foo"
   roundtrip "select foo from bar"
 
-[<Test>]
+[<Fact>]
 let ``query with subquery``() =
   roundtrip "select (select a from b)"
 
-[<Test>]
+[<Fact>]
 let ``basic query with where``() = roundtrip "select a, b from foo where 1 = 1"
   
-[<Test>]
+[<Fact>]
 let ``db func call arity 1``() = roundtrip "select a, dbo.myfun(a)"
 
-[<Test>]
+[<Fact>]
 let ``db func call arity 2``() = roundtrip "select a, dbo.myfun(a, b)"
 
-[<Test>]
+[<Fact>]
 let ``query with parameters``() = roundtrip "select a from b where c = @d"
 
-[<Test>]
+[<Fact>]
 let ``db func call with literal arguments``() = roundtrip "select dbo.myfun(1, 'foo', N'conan o''brien')"
 
-[<Test>]
+[<Fact>]
 let ``create view statement``() = roundtrip """
 create view dbo.my_view as (select * from baz where bar = z)
 """
 
 /// From http://stackoverflow.com/a/7892349/371698
-[<Test>]
+[<Fact>]
 let ``table size query``() = roundtrip """
 select 
     t.NAME as TableName,
